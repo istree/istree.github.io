@@ -1,0 +1,266 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ko" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+
+
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+<!-- prism syntax highlight style -->
+<!--<link href="https://unpkg.com/prismjs@1.20.0/themes/prism-okaidia.css" rel="stylesheet">-->
+<link href="/assets/prism/prism-nord.css" rel="stylesheet">
+
+<!-- bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  </head>
+
+  <body class="layout--">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          istree
+          <span class="site-subtitle">프로그래밍 노트</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/posts/">기록</a>
+            </li><li class="masthead__menu-item">
+              <a href="/docs/">정리</a>
+            </li><li class="masthead__menu-item">
+              <a href="/tags/">태그</a>
+            </li></ul>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">토글 메뉴</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+    <div class="initial-content">
+      
+
+
+
+
+<div id="main" role="main">
+  
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <meta itemprop="headline" content="[object Arguments]">
+
+
+
+
+
+    <meta itemprop="datePublished" content="Last Modified">
+
+
+
+    <div class="page__inner-wrap">
+      
+<header>
+
+    
+    <h1 id="page-title" class="page__title" itemprop="headline">
+        Apache2
+    </h1>
+    
+
+    
+
+</header>
+
+
+      <section class="page__content" itemprop="text">
+        
+
+        <h2>설치</h2>
+<pre class="language-sh"><code class="language-sh"><span class="token function">apt-get</span> <span class="token function">install</span> apache2</code></pre>
+<h2>설정 항목 (2.4)</h2>
+<p>/etc/apache2 : 설정 디렉토리</p>
+<p>apache2.conf : 공통 설정파일</p>
+<p>mods-available : 사용 가능한 모듈</p>
+<p>mods-enabled : 활성된 모듈</p>
+<p>conf-available : 사용 가능한 설정</p>
+<p>conf-enabled : 활성된 설정</p>
+<p>sites-enabled : 가상호스트 설정</p>
+<h2>모듈 (2.4)</h2>
+<p>아파치 루트 디렉토리 내에 mods-available 디렉토리와 mods-enabled 디렉토리가 있다.</p>
+<p>각 모듈들은 mods-available 디렉토리 내에 파일별로  미리 정의되어있고 원하는 모듈에 해당하는 파일을 mods-enabled 디렉토리에 복사하거나 심볼릭 링크를 생성해주면 된다.</p>
+<pre class="language-sh"><code class="language-sh"><span class="token builtin class-name">cd</span> /etc/apache2/mods-enabled<br><span class="token function">ln</span> <span class="token parameter variable">-s</span> <span class="token punctuation">..</span>/mods-available/proxy.load proxy.load<br><span class="token function">ln</span> <span class="token parameter variable">-s</span> <span class="token punctuation">..</span>/mods-available/proxy_http.load proxy_http.load</code></pre>
+<h2>프록시 (2.4)</h2>
+<p>프록시 사용을 위해서 proxy_module, proxy_http_module 이 필요하다.</p>
+<pre class="language-sh"><code class="language-sh">LoadModule proxy_module /usr/lib/apache2/modules/mod_proxy.so<br>LoadModule proxy_http_module /usr/lib/apache2/modules/mod_proxy_http.so</code></pre>
+<p>VirtualHost 설정에 다음 내용을 추가한다.</p>
+<pre class="language-sh"><code class="language-sh">ProxyRequests Off<br>ProxyPreserveHost On<br>ProxyPass /gitlab http://192.168.2.22/gitlab<br>ProxyPassReverse /gitlab http://192.168.2.22/gitlab</code></pre>
+<ul>
+<li>ProxyRequests : 포워드 프록시 사용시 On, 리버스 프록시 사용시 Off</li>
+<li>ProxyPreserveHost : 포워드 프록시 사용시 Off, 리버스 프록시 사용시 On</li>
+<li>ProxyPass : 프록시에 연결할 URL을 기술한다.</li>
+<li>ProxyPassReverse : WAS의 HTTP 응답 헤더를 수정하여 클라이언트에 전달한다. 이 과정이 없으면 클라이언트가 redirect시 제대로 연결할 수 없으므로 꼭 설정한다.</li>
+</ul>
+<p>서비스 재시작</p>
+<pre class="language-sh"><code class="language-sh">apachectl restart</code></pre>
+<h2>기타</h2>
+<h3>디렉토리 리스팅 비활성화</h3>
+<p>index가 없을경우 디렉토리 목록이 나타날 경우 비활성화 하는 것이 좋다.</p>
+<p>/etc/apache2/apache2.conf 를 연다.</p>
+<p>다음과 같이 되어있다면</p>
+<pre class="language-xml"><code class="language-xml">&lt;Directory /var/www/><br>        Options Indexes FollowSymLinks<br>        AllowOverride None<br>        Require all granted<br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>Directory</span><span class="token punctuation">></span></span></code></pre>
+<p>다음과 같이 Options에서 Indexes를 삭제한다.</p>
+<pre class="language-xml"><code class="language-xml">&lt;Directory /var/www/><br>        Options FollowSymLinks<br>        AllowOverride None<br>        Require all granted<br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>Directory</span><span class="token punctuation">></span></span></code></pre>
+<h3>로그 안쌓이게 하기</h3>
+<p>로그가 쌓여서 불필요하게 디스크 공간이 낭비되거나 로그가 필요없는 시스템은 로그를 쌓지 않는게 좋다.</p>
+<p>로그는 AccessLog ErrorLog CustomLog의 3가지가 있다.</p>
+<p>AccessLog와 CustomLog는 주석 처리를 해주면 쌓이지 않지만 ErrorLog는 주석 처리를 해도 계속 쌓인다.</p>
+<p>ErrorLog를 /dev/null 로 보내면 쌓이지 않는다.</p>
+<pre class="language-xml"><code class="language-xml">ErrorLog /dev/null</code></pre>
+<h3>AH00558: apache2: could not reliably determine the server's fully qualified domain name</h3>
+<p>서버 시작시 경고가 해당 경고가 발생하는 경우가 있다. 이는 서버의 도메인 이름을 확인할 수 없다는 뜻이다.</p>
+<p>apache2.conf에 ServerName 항목을 추가한다.</p>
+<pre class="language-xml"><code class="language-xml">ServerName localhost</code></pre>
+<h2>Docker</h2>
+<p>docker 컨테이너의 command는 foreground로 실행해야 제대로 동작한다.</p>
+<p>apachectl과 같은 프로그램은 apache를 background로 실행하기 때문에 제대로 동작하지 않으므로 FOREGROUND 옵션을 적용한다.</p>
+<pre class="language-sh"><code class="language-sh">apachectl <span class="token parameter variable">-D</span> FOREGROUND</code></pre>
+<h2>참고자료</h2>
+<p><a href="http://www.microhowto.info/howto/configure_apache_as_a_reverse_proxy.html">Configure Apache as a reverse proxy</a></p>
+
+        
+
+      </section>
+
+      <footer class="page__meta">
+        
+
+  
+
+
+<p class="page__taxonomy">
+  <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> 태그: </strong>
+  <span itemprop="keywords">
+  
+    <a href="/tags/정리/" class="page__taxonomy-item p-category" rel="tag">정리</a>
+    
+    <span class="sep">, </span>
+    
+  
+    <a href="/tags/Apache/" class="page__taxonomy-item p-category" rel="tag">Apache</a>
+    
+  
+  </span>
+</p>
+
+
+
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 업데이트:</strong> <time class="dt-published" datetime="Tue Dec 27 2022 13:37:44 GMT+0900 (대한민국 표준시)">2022-12-27</time></p>
+
+
+      </footer>
+      
+
+    </div>
+    
+
+  </article>
+  
+
+
+
+
+
+</div>
+
+    </div>
+
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>팔로우:</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/iistree" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> 피드</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy;  istree. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+
+
+  </body>
+
+</html>

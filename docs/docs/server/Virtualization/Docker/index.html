@@ -1,0 +1,254 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ko" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+
+
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+<!-- prism syntax highlight style -->
+<!--<link href="https://unpkg.com/prismjs@1.20.0/themes/prism-okaidia.css" rel="stylesheet">-->
+<link href="/assets/prism/prism-nord.css" rel="stylesheet">
+
+<!-- bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  </head>
+
+  <body class="layout--">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          istree
+          <span class="site-subtitle">프로그래밍 노트</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/posts/">기록</a>
+            </li><li class="masthead__menu-item">
+              <a href="/docs/">정리</a>
+            </li><li class="masthead__menu-item">
+              <a href="/tags/">태그</a>
+            </li></ul>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">토글 메뉴</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+    <div class="initial-content">
+      
+
+
+
+
+<div id="main" role="main">
+  
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <meta itemprop="headline" content="[object Arguments]">
+
+
+
+
+
+    <meta itemprop="datePublished" content="Last Modified">
+
+
+
+    <div class="page__inner-wrap">
+      
+<header>
+
+    
+    <h1 id="page-title" class="page__title" itemprop="headline">
+        Docker
+    </h1>
+    
+
+    
+
+</header>
+
+
+      <section class="page__content" itemprop="text">
+        
+
+        <h2>설치</h2>
+<h3><a href="%EB%A6%AC%EB%88%85%EC%8A%A4-Docker-%EC%84%A4%EC%B9%98">리눅스</a></h3>
+<h3><a href="https://docs.docker.com/docker-for-mac/install/">맥</a></h3>
+<h3><a href="%EC%9C%88%EB%8F%84%EC%9A%B0-Docker-%EC%84%A4%EC%B9%98">윈도우</a></h3>
+<h2>명령어</h2>
+<p><a href="./command/run(Docker)">run</a> <a href="./command/ps(Docker)">ps</a> <a href="./command/start(Docker)">start</a> <a href="./command/stop(Docker)">stop</a> <a href="./command/rm(Docker)">rm</a></p>
+<p><a href="./command/pull(Docker)">pull</a> <a href="./command/images(Docker)">images</a> <a href="./command/rmi(Docker)">rmi</a></p>
+<p><a href="./command/log(Docker)">log</a> <a href="./command/exec(Docker)">exec</a> <a href="./command/rename(Docker)">rename</a></p>
+<!--
+[commit](./command/commit(Docker))
+
+[save](./command/import(Docker))
+
+[load](./command/load(Docker))
+
+[export](./command/export(Docker))
+
+[import](./command/import(Docker))
+-->
+<h2>이미지</h2>
+<p><a href="rbenv%EA%B0%80-%EC%84%A4%EC%B9%98%EB%90%9C-jenkins-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EB%A7%8C%EB%93%A4%EA%B8%B0(Docker)">rbenv가 설치된 jenkins 이미지 만들기</a></p>
+<h2>도구</h2>
+<p><a href="Docker-Compose">Docker Compose</a></p>
+<p><a href="https://kitematic.com/">Kitematic</a></p>
+<p><a href="Portainer">Portainer</a>(Docker GUI 툴)</p>
+<h2><a href="%EB%AC%B8%EC%A0%9C%ED%95%B4%EA%B2%B0(Docker)">문제해결</a></h2>
+<h2>참고자료</h2>
+<p><a href="https://www.docker.com/">docker.com</a></p>
+<p><a href="https://hub.docker.com/">Docker Hub</a></p>
+<p><a href="https://subicura.com/2017/01/19/docker-guide-for-beginners-1.html">초보를 위한 도커 안내서 1</a></p>
+<p><a href="https://subicura.com/2017/01/19/docker-guide-for-beginners-2.html">초보를 위한 도커 안내서 2</a></p>
+<p><a href="https://subicura.com/2017/02/10/docker-guide-for-beginners-create-image-and-deploy.html">초보를 위한 도커 안내서 3</a></p>
+<p><a href="https://bobcares.com/blog/docker-backup/">Docker backup – Easy steps to backup and restore your containers</a></p>
+<p><a href="http://pyrasis.com/book/DockerForTheReallyImpatient">가장 빨리 만나는 Docker</a></p>
+<p><a href="https://forums.docker.com/t/public-accessible-ip-in-container-like-bridge-network-in-virtualbox/3668/7">Docker에서 브릿지 및 공유 네트워크 생성</a></p>
+<p><a href="https://code.i-harness.com/en/q/13e1200">Docker에서 2개 이상 포트 노출하기</a></p>
+<p><a href="https://medium.com/@dockstation/a-brief-comparison-of-gui-docker-tools-46bd6a24ae31">GUI Docker 도구의 간단한 비교</a></p>
+<p><a href="https://m.blog.naver.com/chandong83/221006388637">도커(Docker) 사용 중인 컨테이너 이미지 백업 및 복원하기</a></p>
+<p><a href="https://blog.naver.com/PostView.nhn?blogId=wideeyed&amp;logNo=221387159464">도커 컨테이너 시간 설정</a></p>
+
+        
+
+      </section>
+
+      <footer class="page__meta">
+        
+
+  
+
+
+<p class="page__taxonomy">
+  <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> 태그: </strong>
+  <span itemprop="keywords">
+  
+    <a href="/tags/정리/" class="page__taxonomy-item p-category" rel="tag">정리</a>
+    
+    <span class="sep">, </span>
+    
+  
+    <a href="/tags/Docker/" class="page__taxonomy-item p-category" rel="tag">Docker</a>
+    
+  
+  </span>
+</p>
+
+
+
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 업데이트:</strong> <time class="dt-published" datetime="Mon Dec 19 2022 16:47:38 GMT+0900 (대한민국 표준시)">2022-12-19</time></p>
+
+
+      </footer>
+      
+
+    </div>
+    
+
+  </article>
+  
+
+
+
+
+
+</div>
+
+    </div>
+
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>팔로우:</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/iistree" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> 피드</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy;  istree. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+
+
+  </body>
+
+</html>

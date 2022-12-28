@@ -1,0 +1,380 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ko" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+
+
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+<!-- prism syntax highlight style -->
+<!--<link href="https://unpkg.com/prismjs@1.20.0/themes/prism-okaidia.css" rel="stylesheet">-->
+<link href="/assets/prism/prism-nord.css" rel="stylesheet">
+
+<!-- bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  </head>
+
+  <body class="layout--">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          istree
+          <span class="site-subtitle">프로그래밍 노트</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/posts/">기록</a>
+            </li><li class="masthead__menu-item">
+              <a href="/docs/">정리</a>
+            </li><li class="masthead__menu-item">
+              <a href="/tags/">태그</a>
+            </li></ul>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">토글 메뉴</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+    <div class="initial-content">
+      
+
+
+
+
+<div id="main" role="main">
+  
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <meta itemprop="headline" content="[object Arguments]">
+
+
+
+
+
+    <meta itemprop="datePublished" content="Last Modified">
+
+
+
+    <div class="page__inner-wrap">
+      
+<header>
+
+    
+    <h1 id="page-title" class="page__title" itemprop="headline">
+        단축키 요약(Vim)
+    </h1>
+    
+
+    
+
+</header>
+
+
+      <section class="page__content" itemprop="text">
+        
+
+        <h2>이동</h2>
+<p><code>h</code> 좌<br>
+<code>j</code> 하<br>
+<code>k</code> 상<br>
+<code>l</code> 우</p>
+<h3>단어</h3>
+<p><code>w</code> 다음 단어의 첫 글자로 이동<br>
+<code>e</code> 다음 단어의 마지막 글자로 이동<br>
+<code>b</code> 이전 단어의 첫 글자로 이동</p>
+<h3>행</h3>
+<p><code>^</code> 행의 첫 글자로 이동<br>
+<code>$</code> 행의 끝 글자로 이동<br>
+<code>+</code> 다음 행의 첫 글자로 이동<br>
+<code>-</code> 이전 행의 첫 글자로 이동</p>
+<h3>문장</h3>
+<p><code>(</code> 이전 문장의 첫 글자로 이동<br>
+<code>)</code> 다음 문장의 첫 글자로 이동</p>
+<h3>문단</h3>
+<p><code>{</code> 이전 문단으로 이동<br>
+<code>}</code> 다음 문단으로 이동</p>
+<h3>화면</h3>
+<p><code>H</code> 화면 상단으로 이동<br>
+<code>M</code> 화면 중앙으로 이동<br>
+<code>L</code> 화면 하단으로 이동</p>
+<h3>문서</h3>
+<p><code>gg</code> 문서의 첫 행으로 이동<br>
+<code>G</code> 문서의 끝 행으로 이동<br>
+<code>[n]G</code> n 행으로 이동</p>
+<h3>프로그래밍</h3>
+<p><code>gd</code> 지역 변수 또는 함수 선언 위치로 이동<br>
+<code>gD</code> 전역 변수 또는 함수 선언 위치로 이동<br>
+<code>%</code> 괄호 양 끝으로 이동<br>
+<code>K</code> 함수 원형 또는 변수 설명 보기</p>
+<h3>검색 이동</h3>
+<p><code>f + 문자</code> 다음 검색한 문자로 이동<br>
+<code>t + 문자</code> 다음 검색한 문자 앞으로 이동</p>
+<p><code>F + 문자</code> 이전 검색한 문자로 이동<br>
+<code>T + 문자</code> 다음 검색한 문자 뒤로 이동</p>
+<p><code>;</code> 최근 검색한 명령어 실행</p>
+<h2>스크롤</h2>
+<h3>아래로</h3>
+<p><code>ctrl+e</code> 한 줄 아래로 스크롤<br>
+<code>ctrl+d</code> 반 화면 아래로 스크롤<br>
+<code>ctrl+f</code> 한 화면 아래로 스크롤</p>
+<h3>위로</h3>
+<p><code>ctrl+y</code> 한 줄 위로 스크롤<br>
+<code>ctrl+u</code> 반 화면 위로 스크롤<br>
+<code>ctrl+b</code> 한 화면 위로 스크롤</p>
+<h3>수직</h3>
+<p><code>z&lt;CR&gt;</code> 화면 상단으로 스크롤 하고 커서를 공백이 아닌 첫번째 위치로 이동<br>
+<code>zt</code> 화면 상단으로 스크롤 하고 커서를 현재 위치로 유지</p>
+<p><code>z.</code> 화면 중앙으로 스크롤 하고 커서를 공백이 아닌 첫번째 위치로 이동<br>
+<code>zz</code> 화면 중앙으로 스크롤 하고 커서를 현재 위치로 유지</p>
+<p><code>z-</code> 화면 하단으로 스크롤 하고 커서를 공백이 아닌 첫번째 위치로 이동<br>
+<code>zb</code> 화면 하단으로 스크롤 하고 커서를 현재 위치로 유지</p>
+<h3>수평</h3>
+<p><code>zl</code> 오른쪽 한칸 스크롤<br>
+<code>zL</code> 오른쪽 화면의 절반만큼 스크롤<br>
+<code>ze</code> 오른쪽 끝으로 스크롤</p>
+<p><code>zh</code> 왼쪽 한칸 스크롤<br>
+<code>zH</code> 왼쪽 화면의 절반만큼  스크롤<br>
+<code>zs</code> 왼쪽 끝으로 스크롤</p>
+<h2>편집</h2>
+<h3>입력</h3>
+<p><code>a</code> 커서 다음 칸에서 입력<br>
+<code>A</code> 커서 행 끝에서 입력<br>
+<code>i</code> 커서 위치에서 입력<br>
+<code>I</code> 커서 행 처음에서 입력<br>
+<code>o</code> 커서 다음 행에서 입력<br>
+<code>O</code> 커서 이전 행에서 입력<br>
+<code>s</code> 커서가 위치한 글자를 지우고 입력<br>
+<code>S</code> 커서가 위치한 행을 지우고 입력</p>
+<h3>삭제</h3>
+<p><code>d</code> + <code>이동 명령</code><br>
+<code>D</code> 커서부터 행 끝까지 삭제<br>
+<code>dd</code> 커서가 위치한 행 삭제<br>
+<code>diw</code> 커서에 위치한 단어를 삭제</p>
+<h3>삭제 후 입력</h3>
+<p><code>c</code> + <code>이동 명령</code><br>
+<code>C</code> 커서부터 행 끝까지 삭제 후 입력<br>
+<code>cc</code> 커서가 위치한 행 삭제 후 입력<br>
+<code>ciw</code> 커서에 위치한 단어를 삭제 후 입력</p>
+<h3>복사</h3>
+<p><code>yy</code> or <code>Y</code> 한행 복사<br>
+<code>[n]Y</code> n행 복사<br>
+<code>yiw</code> 커서가 위치한 단어를 복사</p>
+<h3>붙여넣기</h3>
+<p><code>p</code> 커서 뒤에 붙여넣기<br>
+<code>P</code> 커서 앞에 붙여넣기</p>
+<h3>들여쓰기</h3>
+<p><code>&gt;&gt;</code> 들여쓰기<br>
+<code>&lt;&lt;</code> 내어쓰기</p>
+<h2>블럭 지정</h2>
+<p><code>v</code> 블럭 지정<br>
+<code>V</code> 행 단위 블럭 지정<br>
+<code>ctrl+v</code> 열 단위 블럭 지정</p>
+<h3>블럭 지정 중 선택</h3>
+<p><code>aw</code> 단어 영역 선택<br>
+<code>iw</code> 단어 안쪽 선택</p>
+<p><code>ab</code> 소괄호 영역 선택<br>
+<code>ib</code> 소괄호 안쪽 선택</p>
+<p><code>aB</code> 중괄호 영역 선택<br>
+<code>iB</code> 중괄호 안쪽 선택</p>
+<p><code>at</code> 꺾쇠 영역 선택<br>
+<code>it</code> 꺾쇠 안쪽 선택</p>
+<h3>블럭 지정 중 이동</h3>
+<p><code>o</code> 선택 영역 양 끝으로 이동</p>
+<h3>블럭 지정 중 편집</h3>
+<p><code>J</code> 행 합치기<br>
+<code>&lt;</code> 행 앞에 탭 제거<br>
+<code>&gt;</code> 행 앞에 탭 삽입<br>
+<code>:</code> 선택 블럭에 대해 명령어 실행</p>
+<h2>마킹</h2>
+<p><code>m[a-z0-9]</code> 현재 영역에서 마킹<br>
+<code>m[A-Z]</code> 전체 영역에서 마킹 (다른 파일로도 이동함)<br>
+<code>`[a-z0-9A-Z]</code> 마킹된 위치로 돌아감<br>
+<code>'[a-z0-9A-Z]</code> 마킹이 위치한 행의 처음으로 돌아감<br>
+<code>:marks</code> 마킹 항목 표시</p>
+<p><code>'.</code> 최근 변경한 위치로 이동<br>
+<code>''</code> 최근 이동 전 위치로 이동<br>
+<code>:ju</code> 이동 목록</p>
+<h2>레지스터</h2>
+<p><code>&quot;[a-z0-9]</code> 현재 영역에서 레지스터 지정</p>
+<p><code>&quot;ay</code> a 레지스터에 복사<br>
+<code>&quot;ap</code> a 레지스터에 붙여넣기<br>
+<code>:reg</code> 레지스터 내용 확인</p>
+<h2>매크로</h2>
+<p><code>qa</code> a에 매크로 기록 시작<br>
+<code>q</code> 매크로 기록 중지<br>
+<code>@a</code> a 매크로 실행<br>
+<code>@@</code> 최근 매크로 실행</p>
+<h2>검색 및 치환</h2>
+<p><code>/[문자열]</code> 문자열 검색<br>
+<code>:s/old/new</code> 현재 행의 처음 old를 new로 교체 (블럭 지정 가능)<br>
+<code>:s/old/new/g</code> 현재 행의 모든 old를 new로 교체 (블럭 지정 가능)<br>
+<code>:%s/old/new</code> 전체 행의 처음 old를 new로 교체<br>
+<code>:%s/old/new/g</code> 전체 행의 모든 old를 new로 교체<br>
+<code>:%s/old/new/gc</code> 전체 행의 모든 old를 new로 확인하면서 교체<br>
+<code>:/g/pattern/s/old/new/g</code> pattern이 있는 모든 행의 old를 new로 교체</p>
+<h2>창</h2>
+<h3>창 분할</h3>
+<p><code>ctrl-w</code> <code>s</code> 수평 창 분할<br>
+<code>ctrl-w</code> <code>v</code> 수직 창 분할<br>
+<code>ctrl-w</code> <code>n</code> 수평 창 생성</p>
+<h3>창 종료</h3>
+<p><code>ctrl-w</code> <code>q</code> 커서가 위치한 창 종료<br>
+<code>ctrl-w</code> <code>c</code> 커서가 위치한 창 닫기<br>
+<code>ctrl-w</code> <code>o</code> 커서가 위치한 창 외에 모든 창 닫기</p>
+<h3>창 이동</h3>
+<p><code>ctrl-w</code> <code>h</code> <code>j</code> <code>k</code> <code>l</code> 좌 하 상 우 이동<br>
+<code>ctrl-w</code> <code>w</code> 순차적으로 이동</p>
+<h2>탭</h2>
+<p><code>gt</code> 다음 탭으로 이동<br>
+<code>gT</code> 이전 탭으로 이동<br>
+<code>숫자gt</code> 숫자 번째 탭으로 이동<br>
+<code>:tabc</code> 현재 탭 닫기<br>
+<code>:tabo</code> 현재 탭 제외 모두 닫기</p>
+<h2>저장 및 종료</h2>
+<p><code>:w</code> 저장<br>
+<code>:w file.txt</code> file.txt로 저장<br>
+<code>:w &gt;&gt; file.txt</code> file.txt에 덧붙여서 저장<br>
+<code>:wq</code> 저장 후 종료<br>
+<code>:wq!</code> 저장 후 강제 종료<br>
+<code>:q</code> 종료<br>
+<code>:q!</code> 강제 종료</p>
+
+        
+
+      </section>
+
+      <footer class="page__meta">
+        
+
+  
+
+
+<p class="page__taxonomy">
+  <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> 태그: </strong>
+  <span itemprop="keywords">
+  
+    <a href="/tags/정리/" class="page__taxonomy-item p-category" rel="tag">정리</a>
+    
+    <span class="sep">, </span>
+    
+  
+    <a href="/tags/Vim/" class="page__taxonomy-item p-category" rel="tag">Vim</a>
+    
+  
+  </span>
+</p>
+
+
+
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 업데이트:</strong> <time class="dt-published" datetime="Mon Dec 19 2022 16:47:38 GMT+0900 (대한민국 표준시)">2022-12-19</time></p>
+
+
+      </footer>
+      
+
+    </div>
+    
+
+  </article>
+  
+
+
+
+
+
+</div>
+
+    </div>
+
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>팔로우:</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/iistree" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> 피드</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy;  istree. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+
+
+  </body>
+
+</html>

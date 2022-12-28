@@ -1,0 +1,13 @@
+# common
+.DS_Store
+Thumbs.db
+
+# ide
+.idea/
+
+# node
+node_modules/
+.module-cache
+
+# 11ty
+_site/

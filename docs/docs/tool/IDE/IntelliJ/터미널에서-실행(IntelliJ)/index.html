@@ -1,0 +1,247 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ko" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+
+
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+<!-- prism syntax highlight style -->
+<!--<link href="https://unpkg.com/prismjs@1.20.0/themes/prism-okaidia.css" rel="stylesheet">-->
+<link href="/assets/prism/prism-nord.css" rel="stylesheet">
+
+<!-- bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  </head>
+
+  <body class="layout--">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          istree
+          <span class="site-subtitle">프로그래밍 노트</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/posts/">기록</a>
+            </li><li class="masthead__menu-item">
+              <a href="/docs/">정리</a>
+            </li><li class="masthead__menu-item">
+              <a href="/tags/">태그</a>
+            </li></ul>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">토글 메뉴</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+    <div class="initial-content">
+      
+
+
+
+
+<div id="main" role="main">
+  
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <meta itemprop="headline" content="[object Arguments]">
+
+
+
+
+
+    <meta itemprop="datePublished" content="Last Modified">
+
+
+
+    <div class="page__inner-wrap">
+      
+<header>
+
+    
+    <h1 id="page-title" class="page__title" itemprop="headline">
+        터미널에서 실행(IntelliJ)
+    </h1>
+    
+
+    
+
+</header>
+
+
+      <section class="page__content" itemprop="text">
+        
+
+        <p>JetBrains Toolbox App으로 해당 기능을 지원하고 기타 JetBrains 도구에도 동일하게 적용 된다.</p>
+<h3>1</h3>
+<p><img src="./img/1.png" alt="image"></p>
+<p>툴박스 오른쪽 상단에 육각 나사 아이콘을 선택한다.</p>
+<h3>2</h3>
+<p><img src="./img/2.png" alt="image"></p>
+<p>Shell Scripts 항목의 Generate shell scripts 항목을 활성화 한다.<br>
+Shell scripts location에 /usr/local/bin 을 입력한다. 또는 PATH 환경변수에서 사용하는 경로를 입력한다.</p>
+<h3>3</h3>
+<p><img src="./img/3.png" alt="image"></p>
+<p>도구에 해당하는 육각 나사 아이콘을 선택하고 팝업 메뉴에서 Settings 항목을 선택한다.</p>
+<h3>4</h3>
+<p><img src="./img/4.png" alt="image"></p>
+<p>IntelliJ의 경우 Shell script name이 idea로 되어있다.<br>
+기본 이름 대신 원하는 이름으로 바꿀 수도 있다.<br>
+만약 항목이 표시되지 않는다면 Toolbox를 종료하고 다시 열어보면 표시되어있다.</p>
+<h3>6</h3>
+<p>터미널에서 명령어를 입력하면 IntelliJ가 실행된다.</p>
+<pre class="language-sh"><code class="language-sh">idea</code></pre>
+<p>디렉토리를 매개변수로 입력할 수 있다. 현재 디렉토리를 열 경우 다음과 같다.</p>
+<pre class="language-sh"><code class="language-sh">idea ./</code></pre>
+<h3>5</h3>
+<p><img src="./img/5.png" alt="image"></p>
+<p>New Window를 선택하여 프로젝트를 새로운 윈도우로 연다.<br>
+IntelliJ의 경우 Don't ask again을 선택하면 열때 마다 선택하지 않아서 편리하다.</p>
+<p><img src="./img/6.png" alt="image"></p>
+<p>WebStorm은 경우 Don't ask again가 없어서 열때 마다 선택해야 해서 귀찮다.</p>
+<p><img src="./img/7.png" alt="image"></p>
+<p>환경설정을 열고 Appearance &amp; Behavior &gt; System Settings로 이동한다.<br>
+Open project in New window를 선택하고 Apply 또는 OK로 저장한다.</p>
+<h3>참고자료</h3>
+<p><a href="https://www.jetbrains.com/help/idea/working-with-the-ide-features-from-command-line.html">IntelliJ IDEA Manual - Command-line interface</a></p>
+
+        
+
+      </section>
+
+      <footer class="page__meta">
+        
+
+  
+
+
+<p class="page__taxonomy">
+  <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> 태그: </strong>
+  <span itemprop="keywords">
+  
+    <a href="/tags/정리/" class="page__taxonomy-item p-category" rel="tag">정리</a>
+    
+    <span class="sep">, </span>
+    
+  
+    <a href="/tags/IntelliJ/" class="page__taxonomy-item p-category" rel="tag">IntelliJ</a>
+    
+  
+  </span>
+</p>
+
+
+
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 업데이트:</strong> <time class="dt-published" datetime="Tue Dec 27 2022 13:37:44 GMT+0900 (대한민국 표준시)">2022-12-27</time></p>
+
+
+      </footer>
+      
+
+    </div>
+    
+
+  </article>
+  
+
+
+
+
+
+</div>
+
+    </div>
+
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>팔로우:</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/iistree" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> 피드</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy;  istree. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+
+
+  </body>
+
+</html>

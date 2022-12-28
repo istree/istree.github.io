@@ -1,0 +1,266 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ko" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+
+
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+<!-- prism syntax highlight style -->
+<!--<link href="https://unpkg.com/prismjs@1.20.0/themes/prism-okaidia.css" rel="stylesheet">-->
+<link href="/assets/prism/prism-nord.css" rel="stylesheet">
+
+<!-- bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  </head>
+
+  <body class="layout--">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          istree
+          <span class="site-subtitle">프로그래밍 노트</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/posts/">기록</a>
+            </li><li class="masthead__menu-item">
+              <a href="/docs/">정리</a>
+            </li><li class="masthead__menu-item">
+              <a href="/tags/">태그</a>
+            </li></ul>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">토글 메뉴</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+    <div class="initial-content">
+      
+
+
+
+
+<div id="main" role="main">
+  
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <meta itemprop="headline" content="[object Arguments]">
+
+
+
+
+
+    <meta itemprop="datePublished" content="Last Modified">
+
+
+
+    <div class="page__inner-wrap">
+      
+<header>
+
+    
+    <h1 id="page-title" class="page__title" itemprop="headline">
+        Electron에서 React 사용하기
+    </h1>
+    
+
+    
+
+</header>
+
+
+      <section class="page__content" itemprop="text">
+        
+
+        <h2>프로젝트 생성</h2>
+<p>React 앱을 생성하거나 기존 앱으로 이동한다.</p>
+<pre class="language-sh"><code class="language-sh">npx create-react-app my-app<br><span class="token builtin class-name">cd</span> my-app<br><span class="token function">npm</span> start</code></pre>
+<h2>Electron 추가</h2>
+<h3>Electron 설치</h3>
+<pre class="language-sh"><code class="language-sh"><span class="token function">npm</span> <span class="token function">install</span> electron <span class="token parameter variable">-D</span></code></pre>
+<h3>electron.js 작성</h3>
+<p>다음과 같이 electron.js 파일을 만든다.</p>
+<pre class="language-javascript"><code class="language-javascript"><span class="token keyword">const</span> <span class="token punctuation">{</span> app<span class="token punctuation">,</span> BrowserWindow <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'electron'</span><span class="token punctuation">)</span><br><br>app<span class="token punctuation">.</span><span class="token function">whenReady</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span><br>  <span class="token keyword">const</span> win <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BrowserWindow</span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>  win<span class="token punctuation">.</span><span class="token function">loadURL</span><span class="token punctuation">(</span><span class="token string">'http://localhost:3000'</span><span class="token punctuation">)</span><br><span class="token punctuation">}</span><span class="token punctuation">)</span><br><br>app<span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'window-all-closed'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span><br>    app<span class="token punctuation">.</span><span class="token function">quit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>    <br><span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
+<h3>pakcage.json에 electron.js 연결</h3>
+<p>package.json을 편집하여 main.js를 연결해준다.</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span><br>  <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"my-app"</span><span class="token punctuation">,</span><br>  <span class="token property">"main"</span><span class="token operator">:</span> <span class="token string">"pubilc/electron.js"</span><span class="token punctuation">,</span><br>  <span class="token property">"scripts"</span><span class="token operator">:</span> <span class="token punctuation">{</span><br>    ...<br>    <span class="token property">"electron:start"</span><span class="token operator">:</span> <span class="token string">"electron ."</span><br>  <span class="token punctuation">}</span><br><span class="token punctuation">}</span></code></pre>
+<h2>concurrently</h2>
+<p>개발시 localhost의 react앱을 electron 브라우저로 보는 방식이기 때문에 React와 Electron을 동시에 실행해야 한다.</p>
+<p>이를 위해 concurrently를 사용한다.</p>
+<p>concurrently를 설치한다.</p>
+<pre class="language-sh"><code class="language-sh"><span class="token function">npm</span> <span class="token function">install</span> concurrently</code></pre>
+<p>package.json에 추가한다.</p>
+<pre class="language-json"><code class="language-json">  <span class="token property">"scripts"</span><span class="token operator">:</span> <span class="token punctuation">{</span><br>    ...<br>    <span class="token property">"start"</span><span class="token operator">:</span> <span class="token string">"concurrently \"npm run react:start\" \"npm run electron:start\""</span><br>  <span class="token punctuation">}</span></code></pre>
+<h2>wait-on</h2>
+<p>electron이 React 앱을 기다린 후 http를 호출할 수 있도록 wait-on이 필요하다.</p>
+<p>wait-on을 설치한다.</p>
+<pre class="language-sh"><code class="language-sh"><span class="token function">npm</span> <span class="token function">install</span> wait-on </code></pre>
+<p>package.json에 추가한다.</p>
+<pre class="language-json"><code class="language-json">  <span class="token property">"scripts"</span><span class="token operator">:</span> <span class="token punctuation">{</span><br>    ...<br>    <span class="token property">"electron:start"</span><span class="token operator">:</span> <span class="token string">"wait-on http://localhost:3000 &amp;&amp; electron ."</span><span class="token punctuation">,</span><br>  <span class="token punctuation">}</span></code></pre>
+<h2>브라우저 숨김</h2>
+<p>브라우저 앱 실행후 Electron이 보여지게 되는데 브라우저가 필요 없는 경우 숨길 수 있다.</p>
+<p>.env 파일이 없다면 만들고 다음과 같이 추가한다.</p>
+<pre class="language-sh"><code class="language-sh"><span class="token assign-left variable">BROWSER</span><span class="token operator">=</span>none</code></pre>
+<h2>preload.js</h2>
+<p>preload는 React 앱을 본격적으로 실행하기 전에 미리 로드할 스크립트를 지정하는 기능이다.</p>
+<p>React 앱에서 Electron API를 사용하기 위해서 preload를 사용해 다음과 같이 불러온다.</p>
+<p>preload.js 파일을 다음과 같이 만든다.</p>
+<pre class="language-javascript"><code class="language-javascript">window<span class="token punctuation">.</span>ipcRenderer <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'electron'</span><span class="token punctuation">)</span><span class="token punctuation">.</span>ipcRenderer<span class="token punctuation">;</span></code></pre>
+<p>main.js에 다음과 같이 추가한다.</p>
+<pre class="language-javascript"><code class="language-javascript"><span class="token keyword">let</span> win <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BrowserWindow</span><span class="token punctuation">(</span><span class="token punctuation">{</span><br>  <span class="token comment">// ...</span><br>  <span class="token literal-property property">webPreferences</span><span class="token operator">:</span> <span class="token punctuation">{</span><br>    <span class="token literal-property property">enableRemoteModule</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span><br>    <span class="token literal-property property">preload</span><span class="token operator">:</span> __dirname <span class="token operator">+</span> <span class="token string">'/preload.js'</span><br>  <span class="token punctuation">}</span><br><span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
+<h2>빌드</h2>
+<p>electron builder 설치</p>
+<pre class="language-sh"><code class="language-sh"><span class="token function">npm</span> <span class="token function">install</span> electron-builder</code></pre>
+<p>pakage.json 편집</p>
+<pre class="language-json"><code class="language-json">  <span class="token property">"scripts"</span><span class="token operator">:</span> <span class="token punctuation">{</span><br>    <span class="token property">"react:build"</span><span class="token operator">:</span> <span class="token string">"react-scripts build"</span><span class="token punctuation">,</span><br>    <span class="token property">"build"</span><span class="token operator">:</span> <span class="token string">"npm run react:build &amp;&amp; electron-builder --publish=always"</span><br>    ...<br>  <span class="token punctuation">}</span><span class="token punctuation">,</span><br>  ...      <br>  <span class="token property">"build"</span><span class="token operator">:</span> <span class="token punctuation">{</span><br>    <span class="token property">"appId"</span><span class="token operator">:</span> <span class="token string">"my-app.com"</span><span class="token punctuation">,</span><br>    <span class="token property">"files"</span><span class="token operator">:</span> <span class="token punctuation">[</span><br>      <span class="token string">"build/**/*"</span><span class="token punctuation">,</span><br>      <span class="token string">"node_modules/**/*"</span><br>    <span class="token punctuation">]</span><span class="token punctuation">,</span><br>    <span class="token property">"directories"</span><span class="token operator">:</span> <span class="token punctuation">{</span><br>      <span class="token property">"buildResources"</span><span class="token operator">:</span> <span class="token string">"assets"</span><br>    <span class="token punctuation">}</span><br>  <span class="token punctuation">}</span></code></pre>
+<p>electron.js 수정</p>
+<pre class="language-javascript"><code class="language-javascript"><span class="token keyword">if</span> <span class="token punctuation">(</span>process<span class="token punctuation">.</span>env<span class="token punctuation">.</span>mode <span class="token operator">===</span> <span class="token string">'dev'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>  win<span class="token punctuation">.</span><span class="token function">loadURL</span><span class="token punctuation">(</span><span class="token string">'http://localhost:3000'</span><span class="token punctuation">)</span><br><span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span><br>  win<span class="token punctuation">.</span><span class="token function">loadURL</span><span class="token punctuation">(</span><br>    <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">file://</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>path<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">,</span> <span class="token string">'../build/index.html'</span><span class="token punctuation">)</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><br>  <span class="token punctuation">)</span><br>  win<span class="token punctuation">.</span><span class="token function">loadFile</span><span class="token punctuation">(</span><br>    <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>path<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">,</span> <span class="token string">'../build/index.html'</span><span class="token punctuation">)</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><br>  <span class="token punctuation">)</span><br><span class="token punctuation">}</span></code></pre>
+<p>빌드 실행</p>
+<pre class="language-sh"><code class="language-sh"><span class="token function">npm</span> run build</code></pre>
+<p>빌드 성공시 dist/OS 디렉토리에 결과물이 저장된다.</p>
+
+        
+
+      </section>
+
+      <footer class="page__meta">
+        
+
+  
+
+
+<p class="page__taxonomy">
+  <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> 태그: </strong>
+  <span itemprop="keywords">
+  
+    <a href="/tags/정리/" class="page__taxonomy-item p-category" rel="tag">정리</a>
+    
+    <span class="sep">, </span>
+    
+  
+    <a href="/tags/Javascript/" class="page__taxonomy-item p-category" rel="tag">Javascript</a>
+    
+    <span class="sep">, </span>
+    
+  
+    <a href="/tags/Electron/" class="page__taxonomy-item p-category" rel="tag">Electron</a>
+    
+  
+  </span>
+</p>
+
+
+
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 업데이트:</strong> <time class="dt-published" datetime="Tue Dec 27 2022 13:37:44 GMT+0900 (대한민국 표준시)">2022-12-27</time></p>
+
+
+      </footer>
+      
+
+    </div>
+    
+
+  </article>
+  
+
+
+
+
+
+</div>
+
+    </div>
+
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>팔로우:</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/iistree" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> 피드</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy;  istree. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+
+
+  </body>
+
+</html>

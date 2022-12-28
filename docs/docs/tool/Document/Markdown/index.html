@@ -1,0 +1,263 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ko" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+
+
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+<!-- prism syntax highlight style -->
+<!--<link href="https://unpkg.com/prismjs@1.20.0/themes/prism-okaidia.css" rel="stylesheet">-->
+<link href="/assets/prism/prism-nord.css" rel="stylesheet">
+
+<!-- bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  </head>
+
+  <body class="layout--">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          istree
+          <span class="site-subtitle">프로그래밍 노트</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/posts/">기록</a>
+            </li><li class="masthead__menu-item">
+              <a href="/docs/">정리</a>
+            </li><li class="masthead__menu-item">
+              <a href="/tags/">태그</a>
+            </li></ul>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">토글 메뉴</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+    <div class="initial-content">
+      
+
+
+
+
+<div id="main" role="main">
+  
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <meta itemprop="headline" content="[object Arguments]">
+
+
+
+
+
+    <meta itemprop="datePublished" content="Last Modified">
+
+
+
+    <div class="page__inner-wrap">
+      
+<header>
+
+    
+    <h1 id="page-title" class="page__title" itemprop="headline">
+        Markdown
+    </h1>
+    
+
+    
+
+</header>
+
+
+      <section class="page__content" itemprop="text">
+        
+
+        <h2>기본 문법</h2>
+<h3>머리말</h3>
+<p>샵(#)을 반복적으로 입력한다. H1 부터 H6까지 있다.</p>
+<pre class="language-markdown"><code class="language-markdown"><span class="token title important"><span class="token punctuation">#</span> H1</span><br><span class="token title important"><span class="token punctuation">##</span> H2</span><br><span class="token title important"><span class="token punctuation">###</span> H3</span><br><span class="token title important"><span class="token punctuation">####</span> H4</span><br><span class="token title important"><span class="token punctuation">#####</span> H5</span><br><span class="token title important"><span class="token punctuation">######</span> H6</span></code></pre>
+<h3>개행</h3>
+<p>문장의 마지막에 공백을 2개 입력하면 한줄 개행<br>
+Enter를 두번 입력하면 두줄 개행된다.</p>
+<pre class="language-markdown"><code class="language-markdown">공백 2개 입력  <br>한줄 개행<br><br>Enter 두번 입력<br><br>두줄 개행</code></pre>
+<h3>굵게</h3>
+<pre class="language-markdown"><code class="language-markdown"><span class="token bold"><span class="token punctuation">**</span><span class="token content">강조</span><span class="token punctuation">**</span></span></code></pre>
+<h3>기울임</h3>
+<pre class="language-markdown"><code class="language-markdown"><span class="token italic"><span class="token punctuation">*</span><span class="token content">강조</span><span class="token punctuation">*</span></span></code></pre>
+<h3>인용</h3>
+<p>들여쓰기로 강조한다.</p>
+<pre class="language-markdown"><code class="language-markdown"><span class="token blockquote punctuation">></span> 인용1<br><span class="token blockquote punctuation">>></span> 인용2<br><span class="token blockquote punctuation">>>></span> 인용3</code></pre>
+<h3>순차 목록(Ordered List)</h3>
+<p>앞에 번호가 붙는 목록</p>
+<pre class="language-markdown"><code class="language-markdown"><span class="token list punctuation">1.</span> 첫째줄<br><span class="token list punctuation">2.</span> 둘째줄<br><span class="token list punctuation">3.</span> 셋째줄</code></pre>
+<h3>비순차 목록(Unordered List)</h3>
+<p>앞에 점이 붙는 목록</p>
+<pre class="language-markdown"><code class="language-markdown"><span class="token list punctuation">-</span> 첫째줄 <br><span class="token list punctuation">-</span> 둘째줄 <br><span class="token list punctuation">-</span> 셋째줄</code></pre>
+<h3>코드</h3>
+<pre class="language-markdown"><code class="language-markdown"><span class="token code-snippet code keyword">`코드`</span></code></pre>
+<h3>구분선</h3>
+<pre class="language-markdown"><code class="language-markdown"><span class="token hr punctuation">---</span></code></pre>
+<h3>링크</h3>
+<pre class="language-markdown"><code class="language-markdown"><span class="token url">[<span class="token content">이름</span>](<span class="token url">http://주소</span>)</span></code></pre>
+<h3>이미지</h3>
+<pre class="language-markdown"><code class="language-markdown"><span class="token url"><span class="token operator">!</span>[<span class="token content">이름</span>](<span class="token url">image.jpg</span>)</span></code></pre>
+<h2>확장 문법</h2>
+<h3>표</h3>
+<pre class="language-markdown"><code class="language-markdown"><span class="token table"><span class="token table-header-row"><span class="token punctuation">|</span><span class="token table-header important"> 열1 </span><span class="token punctuation">|</span><span class="token table-header important"> 열2 </span><span class="token punctuation">|</span><br></span><span class="token table-line"><span class="token punctuation">|</span> <span class="token punctuation">---</span> <span class="token punctuation">|</span> <span class="token punctuation">---</span> <span class="token punctuation">|</span><br></span><span class="token table-data-rows"><span class="token punctuation">|</span><span class="token table-data"> 행1 </span><span class="token punctuation">|</span><span class="token table-data"> 내용1 </span><span class="token punctuation">|</span><br><span class="token punctuation">|</span><span class="token table-data"> 행2 </span><span class="token punctuation">|</span><span class="token table-data"> 내용2 </span><span class="token punctuation">|</span></code></pre>
+<h3>코드 블록</h3>
+<pre class="language-markdown"><code class="language-markdown"><span class="token code"><span class="token punctuation">```</span><span class="token code-language">markdown</span><br><span class="token code-block language-markdown">int main() {<br>    printf("hello world");<br>}</span><br><span class="token punctuation">```</span></span></code></pre>
+<h3>각주</h3>
+<pre class="language-markdown"><code class="language-markdown">각주를 사용합니다. [^1]<br><br><span class="token url-reference url"><span class="token punctuation">[</span><span class="token variable">^1</span><span class="token punctuation">]</span><span class="token punctuation">:</span> 각주</span> 내용.</code></pre>
+<h3>머릿말 ID</h3>
+<pre class="language-markdown"><code class="language-markdown"><span class="token title important"><span class="token punctuation">###</span> 머릿말 {#id}</span><br><span class="token url">[<span class="token content">머릿말로 이동</span>](<span class="token url">#id</span>)</span></code></pre>
+<h3>정의 목록</h3>
+<pre class="language-markdown"><code class="language-markdown">용어<br>: 정의1<br>: 정의2</code></pre>
+<h3>취소선</h3>
+<pre class="language-markdown"><code class="language-markdown"><span class="token strike"><span class="token punctuation">~~</span><span class="token content">취소선 내용</span><span class="token punctuation">~~</span></span></code></pre>
+<h3>작업 목록</h3>
+<pre class="language-markdown"><code class="language-markdown"><span class="token list punctuation">-</span> [x] 작업1<br><span class="token list punctuation">-</span> [ ] 작업2<br><span class="token list punctuation">-</span> [ ] 작업3</code></pre>
+<h3>참고자료</h3>
+<p><a href="https://www.markdownguide.org/cheat-sheet/">Markdown Cheat Sheet</a></p>
+<p><a href="https://steemit.com/kr/@antares007/-201787t14245290z">마크다운 표만들기</a></p>
+<p><a href="https://markdownmonster.west-wind.com/docs/_5eg1brc0z.htm">Escape Markdown Fenced Code Blocks</a></p>
+
+        
+
+      </section>
+
+      <footer class="page__meta">
+        
+
+  
+
+
+<p class="page__taxonomy">
+  <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> 태그: </strong>
+  <span itemprop="keywords">
+  
+    <a href="/tags/정리/" class="page__taxonomy-item p-category" rel="tag">정리</a>
+    
+    <span class="sep">, </span>
+    
+  
+    <a href="/tags/Markdown/" class="page__taxonomy-item p-category" rel="tag">Markdown</a>
+    
+  
+  </span>
+</p>
+
+
+
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 업데이트:</strong> <time class="dt-published" datetime="Tue Dec 27 2022 13:13:12 GMT+0900 (대한민국 표준시)">2022-12-27</time></p>
+
+
+      </footer>
+      
+
+    </div>
+    
+
+  </article>
+  
+
+
+
+
+
+</div>
+
+    </div>
+
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>팔로우:</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/iistree" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> 피드</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy;  istree. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+
+
+  </body>
+
+</html>
