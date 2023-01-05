@@ -104,11 +104,13 @@
 
     
     <h1 id="page-title" class="page__title" itemprop="headline">
-        일레븐티(11ty) 정적 웹사이트 생성기(SSG)
+        11ty SASS(SCSS) 사용
     </h1>
     
 
     
+
+    <p/>
 
 </header>
 
@@ -116,20 +118,20 @@
       <section class="page__content" itemprop="text">
         
 
-        <p>Jekyll의 Liquid를 수정하다가 JS 기반으로 할 수 없을까 하는 생각이 문득 들어서 찾아보았고 다음과 같은 글을 발견하였다.</p>
-<p><a href="https://www.takeshape.io/articles/jekyll-alternatives-the-benefits-to-javascript-static-site-generators/">Jekyll 대안: JavaScript 정적 사이트 생성기의 이점</a></p>
-<p>나열된 항목 중에서 첫번째인 11ty가 눈에 들어와서 가볍게 해봤는데 마음에 들었다.</p>
-<p>layout과 include 컨셉을 차용하여 Jekyll로 만든 사이트와 구조적으로 익숙하고 Liquid 템플릿이 100%는 아니지만 주로 쓰는 것들은 지원 되는듯 하다.</p>
-<p>다음 글을 참고하여 변환을 위해 작업하기로 했다.</p>
-<p><a href="https://samhermes.com/posts/my-attempt-to-convert-from-jekyll-to-eleventy/">Jekyll에서 Eleventy로의 전환 시도</a></p>
-<p>시험삼아 필터 기능을 해보았는데 의도된 대로 잘 동작한다.</p>
-<p>Jekyll의 post는 파일명에서 날짜와 제목을 가져오고 제목에는 하이픈을 제거해준다.</p>
-<p>11ty에서는 page.fileSlug 로 가져올 수 있으나 하이픈이 그대로 붙어있다.</p>
-<p>다음과 같이 커스텀 필터를 만들어 이를 제거할 수 있다.</p>
-<pre class="language-sh"><code class="language-sh"><span class="token punctuation">{</span><span class="token punctuation">{</span> page.fileSlug <span class="token operator">|</span> removeHyphen<span class="token punctuation">}</span><span class="token punctuation">}</span></code></pre>
-<p>.eleventy.js 에 커스텀 필터 함수 추가</p>
-<pre class="language-javascript"><code class="language-javascript"><span class="token keyword">function</span> <span class="token function">eleventy</span><span class="token punctuation">(</span><span class="token parameter">config</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>    config<span class="token punctuation">.</span><span class="token function">addFilter</span><span class="token punctuation">(</span><span class="token string">'removeHyphen'</span><span class="token punctuation">,</span><br>        <span class="token parameter">dateObj</span> <span class="token operator">=></span> dateObj<span class="token punctuation">.</span><span class="token function">replaceAll</span><span class="token punctuation">(</span><span class="token string">'-'</span><span class="token punctuation">,</span> <span class="token string">' '</span><span class="token punctuation">)</span><br>    <span class="token punctuation">)</span><span class="token punctuation">;</span><br><span class="token punctuation">}</span><br><br>module<span class="token punctuation">.</span>exports <span class="token operator">=</span> eleventy<span class="token punctuation">;</span></code></pre>
-<p>컬렉션에서 카테고리, 태그로 group_by 하는 것과 CSS등의 외부리소스 포함등만 해결하면 전환에 문제는 없어보이나 단시간에 익숙해지긴 쉽지 않을듯 하다.</p>
+        <p>기존 사이트의 테마를 옮기다 SCSS가 적용된 것을 보고 찾아보았다.</p>
+<p>간단히 말해 CSS를 전처리 하기 위한 스크립트 언어이다.</p>
+<p>SASS나 SCSS 구문은 브라우저가 직접 처리할 수 없고 작성한 파일을 컴파일 하여 CSS 형태로 출력해서 사용한다.</p>
+<p>SASS나 SCSS를 같이 묶어서 취급하는듯 하고 개인적으로는 중괄호가 있는 SCSS가 더 눈에 잘 들어온다.</p>
+<p>변수, 중첩, 루프 등은 둘째 치고 import가 있어서 부분부분 쪼개서 만들면 컴파일 시 하나의 파일로 출력되어 파일 하나만 link 해서 사용하면 되는 점이 편리하다.</p>
+<p><a href="https://en.wikipedia.org/wiki/Sass_(stylesheet_language)">위키백과</a>, <a href="https://sass-lang.com/">공식 사이트</a>에 정리가 잘 되어있다.</p>
+<p><a href="https://jkc.codes/blog/using-sass-with-eleventy/">Eleventy와 함께 SASS 사용</a> 문서를 보고 가볍게 해보았다.</p>
+<p>npm으로 설치한다.</p>
+<pre class="language-sh"><code class="language-sh"><span class="token function">npm</span> <span class="token function">install</span> sass --save-dev</code></pre>
+<p>_sass 디렉토리에 main.scss를 만들었다.</p>
+<p>_sass 디렉토리의 내용을 컴파일하여 _site/assets/css 디렉토리에 출력한다.</p>
+<pre class="language-sh"><code class="language-sh">npx sass _sass:_site/assets/css</code></pre>
+<p>원하는 곳에 연결하여 사용한다.</p>
+<pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>link</span> <span class="token attr-name">rel</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>stylesheet<span class="token punctuation">"</span></span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/assets/css/main.css<span class="token punctuation">"</span></span><span class="token punctuation">></span></span></code></pre>
 
         
 
@@ -152,6 +154,16 @@
   
     <a href="/tags/11ty/" class="page__taxonomy-item p-category" rel="tag">11ty</a>
     
+    <span class="sep">, </span>
+    
+  
+    <a href="/tags/SASS/" class="page__taxonomy-item p-category" rel="tag">SASS</a>
+    
+    <span class="sep">, </span>
+    
+  
+    <a href="/tags/SCSS/" class="page__taxonomy-item p-category" rel="tag">SCSS</a>
+    
   
   </span>
 </p>
@@ -159,7 +171,7 @@
 
 
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 업데이트:</strong> <time class="dt-published" datetime="Thu Oct 27 2022 09:00:00 GMT+0900 (대한민국 표준시)">2022-10-27</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 업데이트:</strong> <time class="dt-published" datetime="Tue Nov 01 2022 09:00:00 GMT+0900 (대한민국 표준시)">2022-11-01</time></p>
 
 
       </footer>
