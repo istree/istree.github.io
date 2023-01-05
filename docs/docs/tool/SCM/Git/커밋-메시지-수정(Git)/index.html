@@ -106,11 +106,13 @@
 
     
     <h1 id="page-title" class="page__title" itemprop="headline">
-        Vim
+        커밋 메시지 수정
     </h1>
     
 
     
+
+    <p/>
 
 </header>
 
@@ -118,16 +120,23 @@
       <section class="page__content" itemprop="text">
         
 
-        <h2>단축키</h2>
-<p><a href="%EB%8B%A8%EC%B6%95%ED%82%A4-%EC%9A%94%EC%95%BD(Vim)">단축키 요약</a></p>
-<p><a href="%ED%85%8D%EC%8A%A4%ED%8A%B8-%EA%B0%9D%EC%B2%B4(Vim)">텍스트 객체</a></p>
-<h2>스크립팅</h2>
-<p><a href="vim-%ED%98%84%EC%9E%AC-%EB%B2%84%ED%8D%BC%EC%9D%98-%EB%82%B4%EC%9A%A9%EC%9D%84-python-%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8%EB%A1%9C-%ED%8E%B8%EC%A7%91%ED%95%98%EA%B8%B0">vim 현재 버퍼의 내용을 python 스크립트로 편집하기</a></p>
-<h2>참고자료</h2>
-<p><a href="https://github.com/johngrib/simple_vim_guide">simple vim guide</a></p>
-<p><a href="https://vim.rtorr.com/lang/ko">Vim Cheat Sheet</a></p>
-<p><a href="https://devhints.io/vim">Vim cheatsheet</a></p>
-<p><a href="https://kldp.org/node/102947">Graphical vi-vim Cheat Sheet(한글)</a></p>
+        <h3>가장 최근의 커밋 메시지 수정</h3>
+<pre class="language-sh"><code class="language-sh"><span class="token function">git</span> commit <span class="token parameter variable">--amend</span></code></pre>
+<h3>특정 커밋의 메시지 수정</h3>
+<p>수정하고 싶은 커밋의 바로 전 hash 값을 확인한다.
+hash 값이 342f5f3일 경우</p>
+<p>명령어를 입력</p>
+<pre class="language-sh"><code class="language-sh"><span class="token function">git</span> rebase <span class="token parameter variable">-i</span> <span class="token parameter variable">-p</span> 342f5f3</code></pre>
+<p>다음과 같이 커밋 내역이 편집기로 실행된다.</p>
+<pre class="language-vim"><code class="language-vim">pick 342f5f3 커밋 메시지<br><span class="token operator">.</span><br><span class="token operator">.</span></code></pre>
+<p>여기서 편집을 원하는 부분의 pick을 edit로 고치고 저장후 종료한다.<br>
+edit 외에도 drop(삭제) reword(메시지수정) 등도 가능하다.</p>
+<p>작성자를 수정한다.</p>
+<pre class="language-sh"><code class="language-sh"><span class="token function">git</span> commit <span class="token parameter variable">--amend</span> <span class="token parameter variable">--author</span><span class="token operator">=</span><span class="token string">"name&lt;email@example.com>"</span></code></pre>
+<p>rebase 대상이 여러개일 경우 다음으로 진행한다.</p>
+<pre class="language-sh"><code class="language-sh"><span class="token function">git</span> rebase <span class="token parameter variable">--continue</span></code></pre>
+<p>서버에 push 한다. 이력을 고쳤기 때문에 강제로 push 해야 한다.</p>
+<pre class="language-sh"><code class="language-sh"><span class="token function">git</span> push origin +master</code></pre>
 
         
 
@@ -148,7 +157,7 @@
     <span class="sep">, </span>
     
   
-    <a href="/tags/Vim/" class="page__taxonomy-item p-category" rel="tag">Vim</a>
+    <a href="/tags/Git/" class="page__taxonomy-item p-category" rel="tag">Git</a>
     
   
   </span>
@@ -157,7 +166,7 @@
 
 
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 업데이트:</strong> <time class="dt-published" datetime="Tue Dec 27 2022 15:20:58 GMT+0900 (대한민국 표준시)">2022-12-27</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 업데이트:</strong> <time class="dt-published" datetime="Thu Dec 29 2022 10:59:01 GMT+0900 (대한민국 표준시)">2022-12-29</time></p>
 
 
       </footer>

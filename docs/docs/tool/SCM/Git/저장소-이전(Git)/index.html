@@ -106,11 +106,13 @@
 
     
     <h1 id="page-title" class="page__title" itemprop="headline">
-        커밋 메시지 수정
+        저장소 이전(Git)
     </h1>
     
 
     
+
+    <p/>
 
 </header>
 
@@ -118,23 +120,15 @@
       <section class="page__content" itemprop="text">
         
 
-        <h3>가장 최근의 커밋 메시지 수정</h3>
-<pre class="language-sh"><code class="language-sh"><span class="token function">git</span> commit <span class="token parameter variable">--amend</span></code></pre>
-<h3>특정 커밋의 메시지 수정</h3>
-<p>수정하고 싶은 커밋의 바로 전 hash 값을 확인한다.
-hash 값이 342f5f3일 경우</p>
-<p>명령어를 입력</p>
-<pre class="language-sh"><code class="language-sh"><span class="token function">git</span> rebase <span class="token parameter variable">-i</span> <span class="token parameter variable">-p</span> 342f5f3</code></pre>
-<p>다음과 같이 커밋 내역이 편집기로 실행된다.</p>
-<pre class="language-vim"><code class="language-vim">pick 342f5f3 커밋 메시지<br><span class="token operator">.</span><br><span class="token operator">.</span></code></pre>
-<p>여기서 편집을 원하는 부분의 pick을 edit로 고치고 저장후 종료한다.<br>
-edit 외에도 drop(삭제) reword(메시지수정) 등도 가능하다.</p>
-<p>작성자를 수정한다.</p>
-<pre class="language-sh"><code class="language-sh"><span class="token function">git</span> commit <span class="token parameter variable">--amend</span> <span class="token parameter variable">--author</span><span class="token operator">=</span><span class="token string">"name&lt;email@example.com>"</span></code></pre>
-<p>rebase 대상이 여러개일 경우 다음으로 진행한다.</p>
-<pre class="language-sh"><code class="language-sh"><span class="token function">git</span> rebase <span class="token parameter variable">--continue</span></code></pre>
-<p>서버에 push 한다. 이력을 고쳤기 때문에 강제로 push 해야 한다.</p>
-<pre class="language-sh"><code class="language-sh"><span class="token function">git</span> push origin +master</code></pre>
+        <p>서버에 빈 저장소를 생성한다.</p>
+<p>--mirror 옵션을 적용하여 이전 저장소를 내려받는다.</p>
+<pre class="language-sh"><code class="language-sh"><span class="token function">git</span> clone <span class="token parameter variable">--mirror</span> http://site/old.git</code></pre>
+<p>디렉토리 이동</p>
+<pre class="language-sh"><code class="language-sh"><span class="token builtin class-name">cd</span> old.git</code></pre>
+<p>새로운 저장소 지정</p>
+<pre class="language-sh"><code class="language-sh"><span class="token function">git</span> remote set-url <span class="token parameter variable">--push</span> origin http://site/new.git</code></pre>
+<p>원격 저장소로 push 한다.</p>
+<pre class="language-sh"><code class="language-sh"><span class="token function">git</span> push <span class="token parameter variable">--mirror</span></code></pre>
 
         
 
@@ -164,7 +158,7 @@ edit 외에도 drop(삭제) reword(메시지수정) 등도 가능하다.</p>
 
 
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 업데이트:</strong> <time class="dt-published" datetime="Tue Dec 27 2022 13:37:44 GMT+0900 (대한민국 표준시)">2022-12-27</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 업데이트:</strong> <time class="dt-published" datetime="Thu Dec 29 2022 10:59:01 GMT+0900 (대한민국 표준시)">2022-12-29</time></p>
 
 
       </footer>

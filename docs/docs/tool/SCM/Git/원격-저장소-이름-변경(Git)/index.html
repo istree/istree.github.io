@@ -106,11 +106,13 @@
 
     
     <h1 id="page-title" class="page__title" itemprop="headline">
-        원격 저장소 초기화(Git)
+        원격 저장소 이름 변경(Git)
     </h1>
     
 
     
+
+    <p/>
 
 </header>
 
@@ -118,18 +120,7 @@
       <section class="page__content" itemprop="text">
         
 
-        <p>로컬 저장소의 .git 디렉토리를 삭제한다.</p>
-<pre class="language-sh"><code class="language-sh"><span class="token function">rm</span> <span class="token parameter variable">-rf</span> .git</code></pre>
-<p>로컬 저장소를 초기화 시킨다.</p>
-<pre class="language-sh"><code class="language-sh"><span class="token function">git</span> init</code></pre>
-<p>초기화에 등록될 파일을 추가 및 커밋한다.</p>
-<pre class="language-sh"><code class="language-sh"><span class="token function">git</span> <span class="token function">add</span> <span class="token builtin class-name">.</span><br><span class="token function">git</span> commit <span class="token parameter variable">-m</span> <span class="token string">'Initial commit'</span></code></pre>
-<p>초기화 시킬 원격 저장소를 추가시킨다.</p>
-<pre class="language-sh"><code class="language-sh"><span class="token function">git</span> remote <span class="token function">add</span> origin <span class="token operator">&lt;</span>url<span class="token operator">></span></code></pre>
-<p>현재 상태를 원격저장소에 적용시킨다.</p>
-<pre class="language-sh"><code class="language-sh"> <span class="token function">git</span> push <span class="token parameter variable">--force</span> --set-upstream origin master</code></pre>
-<p>또는 master branch를 삭제한다.</p>
-<pre class="language-sh"><code class="language-sh"><span class="token function">git</span> push origin <span class="token parameter variable">--delete</span> master</code></pre>
+        <pre class="language-sh"><code class="language-sh"><span class="token function">git</span> remote set-url origin <span class="token operator">&lt;</span>url<span class="token operator">></span></code></pre>
 
         
 
@@ -159,7 +150,7 @@
 
 
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 업데이트:</strong> <time class="dt-published" datetime="Tue Dec 27 2022 13:37:44 GMT+0900 (대한민국 표준시)">2022-12-27</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 업데이트:</strong> <time class="dt-published" datetime="Thu Dec 29 2022 10:59:01 GMT+0900 (대한민국 표준시)">2022-12-29</time></p>
 
 
       </footer>

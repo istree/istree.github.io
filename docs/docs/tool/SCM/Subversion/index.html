@@ -106,11 +106,13 @@
 
     
     <h1 id="page-title" class="page__title" itemprop="headline">
-        Git
+        Subversion
     </h1>
     
 
     
+
+    <p/>
 
 </header>
 
@@ -118,17 +120,15 @@
       <section class="page__content" itemprop="text">
         
 
-        <h2>사용</h2>
-<p><a href="%EC%82%AC%EC%9A%A9%EC%9E%90-%EC%A0%95%EB%B3%B4(Git)">사용자 정보</a></p>
-<p><a href="%EC%9B%90%EA%B2%A9-%EC%A0%80%EC%9E%A5%EC%86%8C-%EC%B4%88%EA%B8%B0%ED%99%94(Git)">원격 저장소 초기화</a></p>
-<p><a href="%EC%9B%90%EA%B2%A9-%EC%A0%80%EC%9E%A5%EC%86%8C-%EC%9D%B4%EB%A6%84-%EB%B3%80%EA%B2%BD(Git)">원격 저장소 이름 변경</a></p>
-<p><a href="%EC%A0%80%EC%9E%A5%EC%86%8C-%EC%9D%B4%EC%A0%84(Git)">저장소 이전</a></p>
-<p><a href="%EC%A0%80%EC%9E%A5%EC%86%8C-%EC%9E%90%EB%8F%99-%EA%B0%B1%EC%8B%A0(Git)">저장소 자동 갱신</a></p>
-<p><a href="%EC%BB%A4%EB%B0%8B-%EB%A9%94%EC%8B%9C%EC%A7%80-%EC%88%98%EC%A0%95(Git)">커밋 메시지 수정</a></p>
-<h2>문제해결</h2>
-<p><a href="%ED%8C%8C%EC%9D%BC%EC%9D%B4-stage%EC%97%90-%EC%98%AC%EB%9D%BC%EA%B0%80%EC%A7%80-%EC%95%8A%EB%8A%94-%EA%B2%BD%EC%9A%B0(Git)">파일이 stage에 올라가지 않는 경우</a></p>
-<h2>참고자료</h2>
-<p><a href="https://git-scm.com/book/ko/v2/%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-Git-%EA%B8%B0%EC%B4%88">Git 기초</a></p>
+        <h2>문제 해결</h2>
+<h3>커밋 시 No space left on device 발생</h3>
+<p>데이터 공간이 충분한데도 위 메시지가 발생할 경우 iNode가 부족해서 그렇다고 한다. iNode를 확보하면 해결된다고 함</p>
+<p>관련 글 : <a href="http://blog.thilinamb.com/2010/03/svn-error-no-space-left-on-device.html">http://blog.thilinamb.com/2010/03/svn-error-no-space-left-on-device.html</a></p>
+<p>또는 .subversion 디렉토리를 삭제하고 https 재인증으로 해결할 수 있다.</p>
+<p>서버의 하드 디스크가 꽉 찼을때도 발생한다.</p>
+<h2>특정 날짜의 범위내 이력 보기</h2>
+<p><a href="https://stackoverrun.com/ko/q/2181625">참고</a></p>
+<pre class="language-sh"><code class="language-sh">svn <span class="token function">diff</span> <span class="token parameter variable">-r</span> <span class="token punctuation">{</span><span class="token number">2016</span>-01-01<span class="token punctuation">}</span>:<span class="token punctuation">{</span><span class="token number">2016</span>-01-31<span class="token punctuation">}</span> –summarize </code></pre>
 
         
 
@@ -149,7 +149,7 @@
     <span class="sep">, </span>
     
   
-    <a href="/tags/Git/" class="page__taxonomy-item p-category" rel="tag">Git</a>
+    <a href="/tags/Subversion/" class="page__taxonomy-item p-category" rel="tag">Subversion</a>
     
   
   </span>
@@ -158,7 +158,7 @@
 
 
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 업데이트:</strong> <time class="dt-published" datetime="Mon Dec 19 2022 16:47:38 GMT+0900 (대한민국 표준시)">2022-12-19</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 업데이트:</strong> <time class="dt-published" datetime="Thu Dec 29 2022 10:59:01 GMT+0900 (대한민국 표준시)">2022-12-29</time></p>
 
 
       </footer>

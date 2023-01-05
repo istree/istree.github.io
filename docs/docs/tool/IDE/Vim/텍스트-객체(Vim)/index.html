@@ -106,11 +106,13 @@
 
     
     <h1 id="page-title" class="page__title" itemprop="headline">
-        Subversion
+        텍스트 객체(Vim)
     </h1>
     
 
     
+
+    <p/>
 
 </header>
 
@@ -118,15 +120,50 @@
       <section class="page__content" itemprop="text">
         
 
-        <h2>문제 해결</h2>
-<h3>커밋 시 No space left on device 발생</h3>
-<p>데이터 공간이 충분한데도 위 메시지가 발생할 경우 iNode가 부족해서 그렇다고 한다. iNode를 확보하면 해결된다고 함</p>
-<p>관련 글 : <a href="http://blog.thilinamb.com/2010/03/svn-error-no-space-left-on-device.html">http://blog.thilinamb.com/2010/03/svn-error-no-space-left-on-device.html</a></p>
-<p>또는 .subversion 디렉토리를 삭제하고 https 재인증으로 해결할 수 있다.</p>
-<p>서버의 하드 디스크가 꽉 찼을때도 발생한다.</p>
-<h2>특정 날짜의 범위내 이력 보기</h2>
-<p><a href="https://stackoverrun.com/ko/q/2181625">참고</a></p>
-<pre class="language-sh"><code class="language-sh">svn <span class="token function">diff</span> <span class="token parameter variable">-r</span> <span class="token punctuation">{</span><span class="token number">2016</span>-01-01<span class="token punctuation">}</span>:<span class="token punctuation">{</span><span class="token number">2016</span>-01-31<span class="token punctuation">}</span> –summarize </code></pre>
+        <h2>사용법</h2>
+<p><code>연산자 옵션 텍스트객체</code></p>
+<h2>연산자</h2>
+<p><code>d</code> 삭제<br>
+<code>y</code> 복사<br>
+<code>c</code> 삭제 후 입력<br>
+<code>v</code> 비주얼 블럭 지정</p>
+<h2>옵션</h2>
+<p><code>a</code> 주변(around, 주위, 여백을 포함)<br>
+<code>i</code> 안쪽(inside, 안쪽, 여백을 포함하지 않음)</p>
+<h2>텍스트 객체</h2>
+<h3>텍스트</h3>
+<p><code>w</code> 단어(word)<br>
+<code>s</code> 문장(sentence)<br>
+<code>p</code> 문단(paragraph)</p>
+<h3>괄호</h3>
+<p><code>(</code> 소괄호<br>
+<code>{</code> 중괄호<br>
+<code>[</code> 대괄호<br>
+<code>&lt;</code> 꺾쇠<br>
+<code>b</code> 블록 [(<br>
+<code>B</code> 블록 [{<br>
+<code>t</code> 태그 &lt;&gt;</p>
+<h3>인용 부호</h3>
+<p><code>'</code> '<br>
+<code>&quot;</code> &quot;<br>
+<code>`</code> `</p>
+<h3>함수 매개변수</h3>
+<p><code>a</code> 매개변수</p>
+<p><code>aa</code> 매개변수(,을 포함)<br>
+<code>ia</code> 매개변수(,을 포함하지 않음)</p>
+<h3>들여쓰기</h3>
+<p><code>i</code> 들여쓰기</p>
+<p><code>ia</code> 들여쓰기(상위 레벨 포함)
+<code>ii</code> 들여쓰기(현제 레벨만)</p>
+<h2>예제</h2>
+<p><code>ciw</code> 단어 편집<br>
+<code>cis</code> 문장 편집<br>
+<code>cip</code> 문단 편집<br>
+<code>ci&quot;</code> 큰따옴표로 감싼 문자열 편집<br>
+<code>cit</code> 태그로 감싼 내용 편집</p>
+<p><code>daa</code> 함수 매개변수 삭제<br>
+<code>cia</code> 함수 매개변수 편집<br>
+<code>cii</code> 현재 레벨 들여쓰기 편집</p>
 
         
 
@@ -147,7 +184,7 @@
     <span class="sep">, </span>
     
   
-    <a href="/tags/Subversion/" class="page__taxonomy-item p-category" rel="tag">Subversion</a>
+    <a href="/tags/Vim/" class="page__taxonomy-item p-category" rel="tag">Vim</a>
     
   
   </span>
@@ -156,7 +193,7 @@
 
 
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 업데이트:</strong> <time class="dt-published" datetime="Tue Dec 27 2022 13:37:44 GMT+0900 (대한민국 표준시)">2022-12-27</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 업데이트:</strong> <time class="dt-published" datetime="Mon Dec 19 2022 16:47:38 GMT+0900 (대한민국 표준시)">2022-12-19</time></p>
 
 
       </footer>

@@ -106,11 +106,13 @@
 
     
     <h1 id="page-title" class="page__title" itemprop="headline">
-        파일이 stage에 올라가지 않는 경우(Git)
+        사용자 정보
     </h1>
     
 
     
+
+    <p/>
 
 </header>
 
@@ -118,8 +120,23 @@
       <section class="page__content" itemprop="text">
         
 
-        <p>.gitignore 외에도 사용자별로 홈 디렉토리에 .gitignore_global 파일이 존재한다.</p>
-<p>.gitignore 목록에 없는데도 불구하고 파일이 stage에 올라가지 않는다면 확인해본다.</p>
+        <p>git config로 사용자 이름과 이메일 주소를 설정한다.<br>
+commit이나 push할 경우 변경하기 상당히 까다롭기 때문에 최대한 정확해야 한다.</p>
+<p>git config는 세가지 옵션이 있다.</p>
+<ul>
+<li>--system : /etc/gitconfig 파일, 시스템 전역 설정</li>
+<li>--global : ~/.gitconfig 파일, 사용자별 설정</li>
+<li>--local : .git/config 파일, 저장소 별 설정</li>
+</ul>
+<p>옵션을 입력하지 않을 경우 기본 옵션은 --local 이다.</p>
+<p>이름</p>
+<pre class="language-sh"><code class="language-sh"><span class="token function">git</span> config <span class="token parameter variable">--global</span> user.name <span class="token string">"your name"</span></code></pre>
+<p>이메일</p>
+<pre class="language-sh"><code class="language-sh"><span class="token function">git</span> config <span class="token parameter variable">--global</span> user.email <span class="token string">"yourname@example.com"</span></code></pre>
+<p>이름 확인</p>
+<pre class="language-sh"><code class="language-sh"><span class="token function">git</span> config user.name</code></pre>
+<p>모든 정보 확인</p>
+<pre class="language-sh"><code class="language-sh"><span class="token function">git</span> config <span class="token parameter variable">--list</span></code></pre>
 
         
 
@@ -149,7 +166,7 @@
 
 
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 업데이트:</strong> <time class="dt-published" datetime="Mon Dec 19 2022 16:47:38 GMT+0900 (대한민국 표준시)">2022-12-19</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 업데이트:</strong> <time class="dt-published" datetime="Thu Dec 29 2022 10:59:01 GMT+0900 (대한민국 표준시)">2022-12-29</time></p>
 
 
       </footer>
