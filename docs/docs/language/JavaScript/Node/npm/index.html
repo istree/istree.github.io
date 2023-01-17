@@ -129,9 +129,23 @@
 <pre class="language-sh"><code class="language-sh"><span class="token comment"># 우분투 sudo 사용</span><br><span class="token function">curl</span> <span class="token parameter variable">-sL</span> https://deb.nodesource.com/setup_13.x <span class="token operator">|</span> <span class="token function">sudo</span> <span class="token parameter variable">-E</span> <span class="token function">bash</span> -<br><span class="token function">sudo</span> <span class="token function">apt-get</span> <span class="token function">install</span> <span class="token parameter variable">-y</span> nodejs<br><br><span class="token comment"># 데비안 root 설치 </span><br><span class="token function">curl</span> <span class="token parameter variable">-sL</span> https://deb.nodesource.com/setup_13.x <span class="token operator">|</span> <span class="token function">bash</span> -<br><span class="token function">apt-get</span> <span class="token function">install</span> <span class="token parameter variable">-y</span> nodejs</code></pre>
 <h2>git 저장소에 있는 모듈 설치</h2>
 <pre class="language-sh"><code class="language-sh"><span class="token function">npm</span> <span class="token function">install</span> git+https://github.com/your/repo.git</code></pre>
-<h2>npx</h2>
-<p>Node 패키지를 실행하기 위한 도구이다.</p>
-<pre class="language-sh"><code class="language-sh"><span class="token function">npm</span> <span class="token function">install</span> npx <span class="token parameter variable">-g</span></code></pre>
+<h2>npmjs</h2>
+<p><a href="https://www.npmjs.com/">npmjs.com</a></p>
+<p>npm의 저장소이다. 기본적으로 무료이나 유료로 공개 패키지를 사용할 수 있다.</p>
+<h2>npm에 패키지 배포 준비</h2>
+<p>npmjs 에서는 배포시 packages.json 의 내용을 바탕으로 패키지를 게시한다.
+최소한 다음 항목들의 내용은 채우는 것이 좋다.</p>
+<p>description</p>
+<pre class="language-json"><code class="language-json"><span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"my project"</span></code></pre>
+<p>author</p>
+<pre class="language-json"><code class="language-json"><span class="token property">"author"</span><span class="token operator">:</span> <span class="token string">"my name"</span></code></pre>
+<p>license</p>
+<pre class="language-json"><code class="language-json"><span class="token property">"license"</span><span class="token operator">:</span> <span class="token string">"MIT"</span></code></pre>
+<p>repository</p>
+<pre class="language-json"><code class="language-json"><span class="token property">"repository"</span><span class="token operator">:</span> <span class="token punctuation">{</span><br>    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"git"</span><span class="token punctuation">,</span><br>    <span class="token property">"url"</span><span class="token operator">:</span> <span class="token string">"https://github.com/my/repo"</span><br><span class="token punctuation">}</span></code></pre>
+<p>keywords</p>
+<pre class="language-json"><code class="language-json"><span class="token property">"keywords"</span><span class="token operator">:</span> <span class="token punctuation">[</span><br>    <span class="token string">"any"</span><span class="token punctuation">,</span><br>    <span class="token string">"words"</span><br><span class="token punctuation">]</span></code></pre>
+<p>README.md 에 해당 패키지의 사용법 및 예제 등을 적는다.</p>
 <h2>npm에 패키지 배포</h2>
 <p>일단 계정이 있어야 한다.</p>
 <p><a href="https://www.npmjs.com/">npm 회원가입</a></p>
@@ -140,6 +154,13 @@
 <p>기본적으로 private이기 때문에 유료 사용자가 아니라면 오류가 발생한다.
 무료 사용자라면 public 옵션을 준다.</p>
 <pre class="language-sh"><code class="language-sh"><span class="token function">npm</span> publish <span class="token parameter variable">--access</span><span class="token operator">=</span>public</code></pre>
+<h2>npm 패키지 갱신</h2>
+<p>내용을 수정하여 재배포 하는 경우</p>
+<pre class="language-sh"><code class="language-sh"><span class="token function">npm</span> publish</code></pre>
+<p>오류가 발생한다.</p>
+<p>재배포시에는 항상 버전을 올려주어야 한다.</p>
+<pre class="language-sh"><code class="language-sh"><span class="token function">npm</span> version patch</code></pre>
+<p>다시 publish를 수행하면 갱신된다.</p>
 
         
 
@@ -174,7 +195,7 @@
 
 
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 업데이트:</strong> <time class="dt-published" datetime="Fri Jan 13 2023 14:50:55 GMT+0900 (대한민국 표준시)">2023-1-13</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 업데이트:</strong> <time class="dt-published" datetime="Tue Jan 17 2023 14:39:43 GMT+0900 (대한민국 표준시)">2023-1-17</time></p>
 
 
       </footer>
