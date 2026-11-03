@@ -1,13 +1,25 @@
-<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>C,C++ | istree</title><link rel="stylesheet" href="/_astro/Default.ClJAexbv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main"><article><h1 class="page-title">C,C++</h1><div class="content"><h2 id="win32">Win32</h2>
-<p><a href="MFC/">MFC</a></p>
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>C,C++ | istree</title><link rel="stylesheet" href="/_astro/Default.C7c7iAcB.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">C,C++</span><span class="up"> / <a href="/docs/" title="한 단계 위로">언어</a></span></p><ul><li><a href="/docs/language/C-CPP/" aria-current="page">개요</a></li><li><a href="/docs/language/C-CPP/MFC/">MFC</a></li><li><a href="/docs/language/C-CPP/CMake/">CMake</a></li></ul></nav><article><h1 class="page-title">C,C++</h1><details class="sidebar-m"><summary>목록 · C,C++</summary><ul><li><a href="/docs/language/C-CPP/" aria-current="page">개요</a></li><li><a href="/docs/language/C-CPP/MFC/">MFC</a></li><li><a href="/docs/language/C-CPP/CMake/">CMake</a></li></ul></details><div class="content"><p>C 는 운영체제 · 임베디드처럼 하드웨어에 가까운 곳에서 쓰는 언어다. C++ 은 C 에 클래스 · 템플릿 · 예외를 더한 언어로, C++11 부터 3 년마다 새 표준(14 · 17 · 20 · 23) 이 나오며 많이 바뀌었다.</p>
+<p>여기에는 Windows 화면 프로그래밍(MFC) 과 빌드 도구(CMake) 를 정리한다.</p>
+<h2 id="정보">정보</h2>
+<ul>
+<li><a href="https://isocpp.org/">isocpp.org</a> — 표준 C++ 재단. 표준 소식 · FAQ</li>
+<li><a href="https://www.stroustrup.com/">stroustrup.com</a> — C++ 을 만든 Bjarne Stroustrup 의 홈페이지</li>
+<li><a href="https://scottmeyers.blogspot.com/">The View from Aristeia</a> — Effective C++ 시리즈를 쓴 Scott Meyers 의 블로그</li>
+</ul>
+<h2 id="문서">문서</h2>
+<ul>
+<li><a href="https://en.cppreference.com/w/">cppreference.com</a> — 언어 · 표준 라이브러리 참조. 표준 버전마다 무엇이 바뀌었는지 함께 나온다</li>
+<li><a href="https://cplusplus.com/">cplusplus.com</a> — 참조 · 튜토리얼</li>
+<li><a href="https://learn.microsoft.com/ko-kr/cpp/">Microsoft C++ 문서</a> — Visual C++ · MSVC 컴파일러 · 빌드</li>
+<li><a href="https://alandefreitas.github.io/moderncpp/">Modern C++: Snippets and Examples</a> — C++11 이후 기능을 짧은 예제로 정리</li>
+</ul>
 <h2 id="도구">도구</h2>
-<p><a href="CMake/">CMake</a></p>
-<h2 id="커뮤니티">커뮤니티</h2>
-<p><a href="http://en.cppreference.com/w/">cppreference.com</a></p>
-<p><a href="http://www.cplusplus.com/">cplusplus.com</a></p>
-<h2 id="블로그">블로그</h2>
-<p><a href="http://www.stroustrup.com/">stroustrup.com</a></p>
-<h2 id="도서">도서</h2>
-<p>Effective Modern C++</p>
-<p>C++ 11 &amp; 14 Tips: Understand novelties in C++ with working examples</p>
-</div><footer class="page-meta"><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/C/" rel="tag">C</a><a class="chip" href="/tags/C++/" rel="tag">C++</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-03T02:21:00.000Z">2026-11-03</time></p></footer></article></main><footer class="site-footer"><div class="site-footer__inner"><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul><p>&copy; istree</p></div></footer></body></html>
+<ul>
+<li><a href="https://godbolt.org/">Compiler Explorer</a> — 코드가 어떤 기계어로 바뀌는지 컴파일러별로 바로 본다</li>
+</ul>
+<h2 id="책">책</h2>
+<ul>
+<li><a href="https://www.oreilly.com/library/view/effective-modern-c/9781491908419/">Effective Modern C++</a> — Scott Meyers. C++11 · 14 를 잘 쓰는 법</li>
+<li><a href="https://www.amazon.com/dp/B01G3CXS8E">C++ 11 &amp; 14 Tips: Understand novelties in C++ with working examples</a> — Damien Loison. C++11 · 14 의 새 기능을 돌아가는 예제로</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">언어</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/C/" rel="tag">C</a><a class="chip" href="/tags/C++/" rel="tag">C++</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-03T15:22:10.000Z">2026-11-04</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer></body></html>
