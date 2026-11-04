@@ -1,0 +1,69 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>블록 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">Ruby</span><span class="up"> / <a href="/docs/" title="한 단계 위로">언어</a></span></p><ul><li><a href="/docs/language/Ruby/">개요</a></li><li><a href="/docs/language/Ruby/설치/">설치</a></li><li><a href="/docs/language/Ruby/기본/">기본</a></li><li><a href="/docs/language/Ruby/블록/" aria-current="page">블록</a></li><li><a href="/docs/language/Ruby/클래스와-모듈/">클래스와 모듈</a></li><li><a href="/docs/language/Ruby/메타프로그래밍/">메타프로그래밍</a></li></ul></nav><article><h1 class="page-title">블록</h1><details class="sidebar-m"><summary>목록 · Ruby</summary><ul><li><a href="/docs/language/Ruby/">개요</a></li><li><a href="/docs/language/Ruby/설치/">설치</a></li><li><a href="/docs/language/Ruby/기본/">기본</a></li><li><a href="/docs/language/Ruby/블록/" aria-current="page">블록</a></li><li><a href="/docs/language/Ruby/클래스와-모듈/">클래스와 모듈</a></li><li><a href="/docs/language/Ruby/메타프로그래밍/">메타프로그래밍</a></li></ul></details><div class="content"><p>블록은 메서드에 넘기는 코드 덩어리다. 반복 · 자원 관리 · 콜백을 블록으로 쓴다. 한 줄이면 <code>{ }</code> 로, 여러 줄이면 <code>do … end</code> 로 쓴다.</p>
+<h2 id="블록-넘기기">블록 넘기기</h2>
+<pre class="language-ruby" data-language="ruby"><code class="language-ruby"><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token keyword">each</span> <span class="token punctuation">{</span> <span class="token operator">|</span>x<span class="token operator">|</span> puts x <span class="token punctuation">}</span>
+
+<span class="token builtin">File</span><span class="token punctuation">.</span>open<span class="token punctuation">(</span><span class="token string-literal"><span class="token string">'memo.txt'</span></span><span class="token punctuation">)</span> <span class="token keyword">do</span> <span class="token operator">|</span>f<span class="token operator">|</span>
+  puts f<span class="token punctuation">.</span>read
+<span class="token keyword">end</span>                            <span class="token comment"># 블록이 끝나면 파일을 닫는다</span></code></pre>
+<h2 id="yield">yield</h2>
+<p>메서드 안에서 <code>yield</code> 를 부르면 넘겨받은 블록이 돈다.</p>
+<pre class="language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">def</span> <span class="token method-definition"><span class="token function">twice</span></span>
+  <span class="token keyword">yield</span>
+  <span class="token keyword">yield</span>
+<span class="token keyword">end</span>
+
+twice <span class="token punctuation">{</span> puts <span class="token string-literal"><span class="token string">'안녕'</span></span> <span class="token punctuation">}</span></code></pre>
+<p>블록에 값을 넘기고, 블록이 돌려준 값을 받는다.</p>
+<pre class="language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">def</span> <span class="token method-definition"><span class="token function">each_pair_sum</span></span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">)</span>
+  <span class="token keyword">yield</span><span class="token punctuation">(</span>a <span class="token operator">+</span> b<span class="token punctuation">)</span>
+<span class="token keyword">end</span>
+
+each_pair_sum<span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token operator">|</span>sum<span class="token operator">|</span> puts sum <span class="token punctuation">}</span>   <span class="token comment"># 7</span></code></pre>
+<h2 id="block--블록을-받아-넘기기">&amp;block — 블록을 받아 넘기기</h2>
+<p>블록을 이름으로 받아 다른 메서드에 그대로 넘긴다. 트리를 돌며 노드마다 같은 블록을 부르는 식이다.</p>
+<pre class="language-ruby" data-language="ruby"><code class="language-ruby"><span class="token keyword">class</span> <span class="token class-name">Tree</span>
+  attr_accessor <span class="token symbol">:children</span><span class="token punctuation">,</span> <span class="token symbol">:name</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">initialize</span></span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> children <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token variable">@name</span> <span class="token operator">=</span> name
+    <span class="token variable">@children</span> <span class="token operator">=</span> children
+  <span class="token keyword">end</span>
+
+  <span class="token keyword">def</span> <span class="token method-definition"><span class="token function">visit_all</span></span><span class="token punctuation">(</span><span class="token operator">&amp;</span>block<span class="token punctuation">)</span>
+    block<span class="token punctuation">.</span>call<span class="token punctuation">(</span><span class="token keyword">self</span><span class="token punctuation">)</span>
+    children<span class="token punctuation">.</span><span class="token keyword">each</span> <span class="token punctuation">{</span> <span class="token operator">|</span>c<span class="token operator">|</span> c<span class="token punctuation">.</span>visit_all<span class="token punctuation">(</span><span class="token operator">&amp;</span>block<span class="token punctuation">)</span> <span class="token punctuation">}</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+tree <span class="token operator">=</span> <span class="token class-name">Tree</span><span class="token punctuation">.</span><span class="token keyword">new</span><span class="token punctuation">(</span><span class="token string-literal"><span class="token string">'Ruby'</span></span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token class-name">Tree</span><span class="token punctuation">.</span><span class="token keyword">new</span><span class="token punctuation">(</span><span class="token string-literal"><span class="token string">'Reia'</span></span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token class-name">Tree</span><span class="token punctuation">.</span><span class="token keyword">new</span><span class="token punctuation">(</span><span class="token string-literal"><span class="token string">'MacRuby'</span></span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+tree<span class="token punctuation">.</span>visit_all <span class="token punctuation">{</span> <span class="token operator">|</span>node<span class="token operator">|</span> puts node<span class="token punctuation">.</span>name <span class="token punctuation">}</span></code></pre>
+<ul>
+<li><code>&amp;block</code> 은 블록을 <code>Proc</code> 객체로 받는다. 부를 때는 <code>block.call</code>, 넘길 때는 다시 <code>&amp;block</code></li>
+<li>블록이 왔는지는 <code>block_given?</code> 으로 본다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://docs.ruby-lang.org/en/master/Proc.html">Ruby API — Proc</a></li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">언어</a></li><li><a href="/docs/language/Ruby/">Ruby</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Ruby/" rel="tag">Ruby</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-04T11:20:14.000Z">2026-11-04</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

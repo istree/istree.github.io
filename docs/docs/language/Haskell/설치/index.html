@@ -1,0 +1,53 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>설치 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">Haskell</span><span class="up"> / <a href="/docs/" title="한 단계 위로">언어</a></span></p><ul><li><a href="/docs/language/Haskell/">개요</a></li><li><a href="/docs/language/Haskell/설치/" aria-current="page">설치</a></li><li><a href="/docs/language/Haskell/기본/">기본</a></li><li><a href="/docs/language/Haskell/타입/">타입</a></li><li><a href="/docs/language/Haskell/함수-문법/">함수 문법</a></li><li><a href="/docs/language/Haskell/재귀/">재귀</a></li></ul></nav><article><h1 class="page-title">설치</h1><details class="sidebar-m"><summary>목록 · Haskell</summary><ul><li><a href="/docs/language/Haskell/">개요</a></li><li><a href="/docs/language/Haskell/설치/" aria-current="page">설치</a></li><li><a href="/docs/language/Haskell/기본/">기본</a></li><li><a href="/docs/language/Haskell/타입/">타입</a></li><li><a href="/docs/language/Haskell/함수-문법/">함수 문법</a></li><li><a href="/docs/language/Haskell/재귀/">재귀</a></li></ul></details><div class="content"><p>GHCup 으로 컴파일러(GHC) 와 도구를 깔고, GHCi 에서 바로 돌려 보며 공부한다. 예전의 Haskell Platform 은 더 이상 쓰지 않는다.</p>
+<h2 id="ghcup">GHCup</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">curl</span> <span class="token parameter variable">--proto</span> <span class="token string">'=https'</span> <span class="token parameter variable">--tlsv1.2</span> <span class="token parameter variable">-sSf</span> https://get-ghcup.haskell.org <span class="token operator">|</span> <span class="token function">sh</span></code></pre>
+<p>설치가 끝나면 다음이 깔린다.</p>
+<ul>
+<li><code>ghc</code> — 컴파일러</li>
+<li><code>ghci</code> — 대화형 실행기</li>
+<li><code>cabal</code> · <code>stack</code> — 빌드 · 패키지 도구</li>
+<li><code>haskell-language-server</code> — 편집기의 자동 완성 · 오류 표시</li>
+</ul>
+<p>버전을 보고 바꿀 때는 <code>ghcup tui</code> 를 띄운다.</p>
+<h2 id="ghci">GHCi</h2>
+<p><code>ghci</code> 를 띄워 식을 바로 돌린다. 파일에 함수를 적어 두고 불러와 시험한다.</p>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">ghci&gt; :load baby.hs          -- 파일 불러오기 (줄여서 :l)
+ghci&gt; doubleMe 9
+18
+ghci&gt; :reload                -- 파일을 고친 뒤 다시 불러오기 (:r)
+ghci&gt; :type doubleMe         -- 타입 보기 (:t)
+doubleMe :: Num a =&gt; a -&gt; a
+ghci&gt; :quit                  -- 끝내기 (:q)</code></pre>
+<h2 id="컴파일">컴파일</h2>
+<p><code>main</code> 이 있는 파일은 실행 파일로 만든다.</p>
+<pre class="language-haskell" data-language="haskell"><code class="language-haskell"><span class="token comment">-- hello.hs</span>
+<span class="token hvariable">main</span> <span class="token operator">=</span> <span class="token builtin">putStrLn</span> <span class="token string">"hello"</span></code></pre>
+<pre class="language-sh" data-language="sh"><code class="language-sh">ghc hello.hs
+./hello</code></pre>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://www.haskell.org/ghcup/">GHCup</a></li>
+<li><a href="https://downloads.haskell.org/ghc/latest/docs/users_guide/ghci.html">GHC User's Guide — GHCi</a></li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">언어</a></li><li><a href="/docs/language/Haskell/">Haskell</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Haskell/" rel="tag">Haskell</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-04T11:15:12.000Z">2026-11-04</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>
