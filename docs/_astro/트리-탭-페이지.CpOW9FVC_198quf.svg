@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" width="640" height="300" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#2f7d95"/></marker></defs>
+<rect width="640" height="300" fill="#ffffff"/>
+<rect x="20" y="20" width="600" height="260" rx="8" fill="none" stroke="#3d4144" stroke-width="1.5"/>
+<rect x="36" y="36" width="170" height="228" rx="4" fill="#f4f5f6" stroke="#7a8288" stroke-width="1.5"/>
+<text x="52" y="58" font-size="14" font-weight="400" fill="#3d4144" text-anchor="start" dominant-baseline="middle">차트</text>
+<line x1="58" y1="70" x2="58" y2="154" stroke="#bdc1c4" stroke-width="1.5"/>
+<line x1="58" y1="84" x2="68" y2="84" stroke="#bdc1c4" stroke-width="1.5"/>
+<text x="74" y="84" font-size="14" font-weight="400" fill="#3d4144" text-anchor="start" dominant-baseline="middle">제목</text>
+<rect x="68" y="98" width="64" height="24" rx="3" fill="#e3f0f3" stroke="#2f7d95" stroke-width="1.5"/>
+<line x1="58" y1="110" x2="68" y2="110" stroke="#bdc1c4" stroke-width="1.5"/>
+<text x="74" y="110" font-size="14" font-weight="600" fill="#2f7d95" text-anchor="start" dominant-baseline="middle">범례</text>
+<line x1="58" y1="136" x2="68" y2="136" stroke="#bdc1c4" stroke-width="1.5"/>
+<text x="74" y="136" font-size="14" font-weight="400" fill="#3d4144" text-anchor="start" dominant-baseline="middle">축</text>
+<line x1="80" y1="148" x2="80" y2="188" stroke="#bdc1c4" stroke-width="1.5"/>
+<line x1="80" y1="162" x2="90" y2="162" stroke="#bdc1c4" stroke-width="1.5"/>
+<text x="96" y="162" font-size="14" font-weight="400" fill="#3d4144" text-anchor="start" dominant-baseline="middle">X</text>
+<line x1="80" y1="188" x2="90" y2="188" stroke="#bdc1c4" stroke-width="1.5"/>
+<text x="96" y="188" font-size="14" font-weight="400" fill="#3d4144" text-anchor="start" dominant-baseline="middle">Y</text>
+<rect x="222" y="36" width="70" height="28" rx="3" fill="none" stroke="#3d4144" stroke-width="1.5"/>
+<text x="257" y="50" font-size="13" font-weight="600" fill="#3d4144" text-anchor="middle" dominant-baseline="middle">글꼴</text>
+<rect x="296" y="38" width="70" height="26" rx="3" fill="#f4f5f6" stroke="#7a8288" stroke-width="1.5"/>
+<text x="331" y="51" font-size="13" font-weight="400" fill="#7a8288" text-anchor="middle" dominant-baseline="middle">배경</text>
+<rect x="370" y="38" width="70" height="26" rx="3" fill="#f4f5f6" stroke="#7a8288" stroke-width="1.5"/>
+<text x="405" y="51" font-size="13" font-weight="400" fill="#7a8288" text-anchor="middle" dominant-baseline="middle">테두리</text>
+<rect x="222" y="64" width="382" height="200" rx="2" fill="none" stroke="#3d4144" stroke-width="1.5"/>
+<rect x="238" y="80" width="350" height="168" rx="4" fill="none" stroke="#7a8288" stroke-width="1.5" stroke-dasharray="6 4"/>
+<text x="413" y="154" font-size="14" font-weight="600" fill="#3d4144" text-anchor="middle" dominant-baseline="middle">페이지 (패널 윈도우)</text>
+<text x="413" y="176" font-size="12" font-weight="400" fill="#7a8288" text-anchor="middle" dominant-baseline="middle">고른 대상(범례) 의 글꼴</text>
+</svg>

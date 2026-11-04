@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 290" width="640" height="290" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#2f7d95"/></marker></defs>
+<rect width="640" height="290" fill="#ffffff"/>
+<rect x="245" y="24" width="150" height="52" rx="6" fill="#f4f5f6" stroke="#7a8288" stroke-width="1.5"/>
+<text x="320" y="42" font-size="14" font-weight="600" fill="#3d4144" text-anchor="middle" dominant-baseline="middle">MyApp</text>
+<text x="320" y="61" font-size="12" font-weight="400" fill="#7a8288" text-anchor="middle" dominant-baseline="middle">EXE</text>
+<rect x="110" y="120" width="150" height="52" rx="6" fill="#f4f5f6" stroke="#7a8288" stroke-width="1.5"/>
+<text x="185" y="138" font-size="14" font-weight="600" fill="#3d4144" text-anchor="middle" dominant-baseline="middle">MyUI</text>
+<text x="185" y="157" font-size="12" font-weight="400" fill="#7a8288" text-anchor="middle" dominant-baseline="middle">확장 DLL</text>
+<rect x="380" y="120" width="150" height="52" rx="6" fill="#f4f5f6" stroke="#7a8288" stroke-width="1.5"/>
+<text x="455" y="138" font-size="14" font-weight="600" fill="#3d4144" text-anchor="middle" dominant-baseline="middle">MyData</text>
+<text x="455" y="157" font-size="12" font-weight="400" fill="#7a8288" text-anchor="middle" dominant-baseline="middle">DLL</text>
+<rect x="245" y="216" width="150" height="52" rx="6" fill="#f4f5f6" stroke="#7a8288" stroke-width="1.5"/>
+<text x="320" y="234" font-size="14" font-weight="600" fill="#3d4144" text-anchor="middle" dominant-baseline="middle">MyCore</text>
+<text x="320" y="253" font-size="12" font-weight="400" fill="#7a8288" text-anchor="middle" dominant-baseline="middle">정적 라이브러리</text>
+<line x1="280" y1="76" x2="215" y2="118" stroke="#2f7d95" stroke-width="1.5" marker-end="url(#a)"/>
+<line x1="360" y1="76" x2="425" y2="118" stroke="#2f7d95" stroke-width="1.5" marker-end="url(#a)"/>
+<line x1="320" y1="76" x2="320" y2="214" stroke="#2f7d95" stroke-width="1.5" marker-end="url(#a)"/>
+<line x1="205" y1="172" x2="268" y2="214" stroke="#2f7d95" stroke-width="1.5" marker-end="url(#a)"/>
+<line x1="435" y1="172" x2="372" y2="214" stroke="#2f7d95" stroke-width="1.5" marker-end="url(#a)"/>
+</svg>
