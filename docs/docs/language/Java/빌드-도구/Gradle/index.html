@@ -1,0 +1,208 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Gradle | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">Java</span><span class="up"> / <a href="/docs/" title="한 단계 위로">언어</a></span></p><ul><li><a href="/docs/language/Java/">개요</a></li><li class="side-folder"><details name="side-0"><summary><span class="side-name">언어</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/language/Java/언어/시작하기/">시작하기</a></li><li><a href="/docs/language/Java/언어/기본/">기본</a></li><li><a href="/docs/language/Java/언어/클래스와-객체/">클래스와 객체</a></li><li><a href="/docs/language/Java/언어/제네릭과-람다/">제네릭과 람다</a></li><li><a href="/docs/language/Java/언어/컬렉션과-스트림/">컬렉션과 스트림</a></li><li><a href="/docs/language/Java/언어/예외-처리/">예외 처리</a></li><li><a href="/docs/language/Java/언어/입출력과-파일/">입출력과 파일</a></li><li><a href="/docs/language/Java/언어/동시성/">동시성</a></li><li><a href="/docs/language/Java/언어/네트워크/">네트워크</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><span class="side-name">가상머신</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/language/Java/가상머신/JDK-설치/">JDK 설치</a></li><li><a href="/docs/language/Java/가상머신/JVM-옵션과-진단/">JVM 옵션과 진단</a></li></ul></details></li><li class="side-folder"><details name="side-0" open><summary><span class="side-name">빌드 도구</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/language/Java/빌드-도구/Maven/">Maven</a></li><li><a href="/docs/language/Java/빌드-도구/Gradle/" aria-current="page">Gradle</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><span class="side-name">GUI</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/language/Java/GUI/AWT-텍스트/">AWT 텍스트</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><span class="side-name">스크립팅</span><span class="fold" aria-label="펼치기"></span></summary><ul><li class="side-folder"><details name="side-1"><summary><a href="/docs/language/Java/스크립팅/JS-on-Java/">JS on Java</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/language/Java/스크립팅/JS-on-Java/Scripting-API/">Scripting API</a></li><li><a href="/docs/language/Java/스크립팅/JS-on-Java/Rhino/">Rhino</a></li></ul></details></li></ul></details></li><li><a href="/docs/language/Java/라이브러리/">라이브러리</a></li></ul></nav><article><h1 class="page-title">Gradle</h1><details class="sidebar-m"><summary>목록 · Java</summary><ul><li><a href="/docs/language/Java/">개요</a></li><li class="side-folder"><details name="side-m-0"><summary><span class="side-name">언어</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/language/Java/언어/시작하기/">시작하기</a></li><li><a href="/docs/language/Java/언어/기본/">기본</a></li><li><a href="/docs/language/Java/언어/클래스와-객체/">클래스와 객체</a></li><li><a href="/docs/language/Java/언어/제네릭과-람다/">제네릭과 람다</a></li><li><a href="/docs/language/Java/언어/컬렉션과-스트림/">컬렉션과 스트림</a></li><li><a href="/docs/language/Java/언어/예외-처리/">예외 처리</a></li><li><a href="/docs/language/Java/언어/입출력과-파일/">입출력과 파일</a></li><li><a href="/docs/language/Java/언어/동시성/">동시성</a></li><li><a href="/docs/language/Java/언어/네트워크/">네트워크</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><span class="side-name">가상머신</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/language/Java/가상머신/JDK-설치/">JDK 설치</a></li><li><a href="/docs/language/Java/가상머신/JVM-옵션과-진단/">JVM 옵션과 진단</a></li></ul></details></li><li class="side-folder"><details name="side-m-0" open><summary><span class="side-name">빌드 도구</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/language/Java/빌드-도구/Maven/">Maven</a></li><li><a href="/docs/language/Java/빌드-도구/Gradle/" aria-current="page">Gradle</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><span class="side-name">GUI</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/language/Java/GUI/AWT-텍스트/">AWT 텍스트</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><span class="side-name">스크립팅</span><span class="fold" aria-label="펼치기"></span></summary><ul><li class="side-folder"><details name="side-m-1"><summary><a href="/docs/language/Java/스크립팅/JS-on-Java/">JS on Java</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/language/Java/스크립팅/JS-on-Java/Scripting-API/">Scripting API</a></li><li><a href="/docs/language/Java/스크립팅/JS-on-Java/Rhino/">Rhino</a></li></ul></details></li></ul></details></li><li><a href="/docs/language/Java/라이브러리/">라이브러리</a></li></ul></details><div class="content"><p>Gradle 은 빌드를 Kotlin(또는 Groovy) 코드로 적는 도구다. Maven 과 같은 폴더 구조 · Maven Central 을 쓰면서, 바뀐 것만 다시 빌드하고 결과를 캐시해 빠르다. 안드로이드 · Spring Boot 프로젝트의 기본이다. 여기의 예제는 Gradle 9.9 · Java 25 로 돌렸다.</p>
+<h2 id="설치--프로젝트-만들기">설치 · 프로젝트 만들기</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh">brew <span class="token function">install</span> gradle           <span class="token comment"># macOS — 처음 만들 때만 쓴다</span>
+sdk <span class="token function">install</span> gradle
+
+gradle init <span class="token parameter variable">--type</span> java-application <span class="token parameter variable">--dsl</span> kotlin --test-framework junit-jupiter <span class="token punctuation">\</span>
+            <span class="token parameter variable">--package</span> com.example --project-name demo --java-version <span class="token number">25</span></code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">settings.gradle.kts
+gradle/libs.versions.toml          의존성 판 목록 (version catalog)
+gradle/wrapper/                    Gradle Wrapper
+gradlew · gradlew.bat
+app/build.gradle.kts
+app/src/main/java/com/example/App.java
+app/src/test/java/com/example/AppTest.java</code></pre>
+<ul>
+<li>프로젝트는 늘 <code>./gradlew</code> 로 빌드한다. Wrapper 가 정해진 판의 Gradle 을 받아 쓰므로, 설치된 Gradle 판과 상관없이 모두 같은 판으로 빌드한다</li>
+<li>Wrapper 를 더하거나 판을 바꿀 때: <code>gradle wrapper --gradle-version 9.9.0</code></li>
+</ul>
+<h2 id="buildgradlekts">build.gradle.kts</h2>
+<pre class="language-kotlin" data-language="kotlin"><code class="language-kotlin"><span class="token comment">// settings.gradle.kts</span>
+rootProject<span class="token punctuation">.</span>name <span class="token operator">=</span> <span class="token string-literal singleline"><span class="token string">"notes"</span></span></code></pre>
+<pre class="language-kotlin" data-language="kotlin"><code class="language-kotlin"><span class="token comment">// build.gradle.kts</span>
+plugins <span class="token punctuation">{</span>
+    application                                   <span class="token comment">// run · installDist · distZip</span>
+<span class="token punctuation">}</span>
+
+group <span class="token operator">=</span> <span class="token string-literal singleline"><span class="token string">"com.example"</span></span>
+version <span class="token operator">=</span> <span class="token string-literal singleline"><span class="token string">"1.0.0"</span></span>
+
+java <span class="token punctuation">{</span>
+    toolchain <span class="token punctuation">{</span>
+        languageVersion <span class="token operator">=</span> JavaLanguageVersion<span class="token punctuation">.</span><span class="token function">of</span><span class="token punctuation">(</span><span class="token number">25</span><span class="token punctuation">)</span>   <span class="token comment">// 없으면 Gradle 이 JDK 를 받는다</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+repositories <span class="token punctuation">{</span>
+    <span class="token function">mavenCentral</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+dependencies <span class="token punctuation">{</span>
+    <span class="token function">implementation</span><span class="token punctuation">(</span><span class="token string-literal singleline"><span class="token string">"tools.jackson.core:jackson-databind:3.2.4"</span></span><span class="token punctuation">)</span>
+    <span class="token function">testImplementation</span><span class="token punctuation">(</span><span class="token function">platform</span><span class="token punctuation">(</span><span class="token string-literal singleline"><span class="token string">"org.junit:junit-bom:6.1.3"</span></span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token function">testImplementation</span><span class="token punctuation">(</span><span class="token string-literal singleline"><span class="token string">"org.junit.jupiter:junit-jupiter"</span></span><span class="token punctuation">)</span>
+    <span class="token function">testRuntimeOnly</span><span class="token punctuation">(</span><span class="token string-literal singleline"><span class="token string">"org.junit.platform:junit-platform-launcher"</span></span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+application <span class="token punctuation">{</span>
+    mainClass <span class="token operator">=</span> <span class="token string-literal singleline"><span class="token string">"com.example.notes.App"</span></span>
+<span class="token punctuation">}</span>
+
+tasks<span class="token punctuation">.</span><span class="token function">test</span> <span class="token punctuation">{</span>
+    <span class="token function">useJUnitPlatform</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    testLogging <span class="token punctuation">{</span> <span class="token function">events</span><span class="token punctuation">(</span><span class="token string-literal singleline"><span class="token string">"passed"</span></span><span class="token punctuation">,</span> <span class="token string-literal singleline"><span class="token string">"failed"</span></span><span class="token punctuation">)</span> <span class="token punctuation">}</span>    <span class="token comment">// 테스트마다 결과 줄</span>
+<span class="token punctuation">}</span></code></pre>
+<table>
+<thead>
+<tr>
+<th>설정</th>
+<th>Maven scope</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>implementation</code></td>
+<td>compile</td>
+<td>컴파일 · 실행에 쓴다. 이 모듈을 쓰는 쪽에는 드러나지 않는다</td>
+</tr>
+<tr>
+<td><code>api</code> (<code>java-library</code> 플러그인)</td>
+<td>compile</td>
+<td>쓰는 쪽에도 드러난다 — 공개 API 의 타입</td>
+</tr>
+<tr>
+<td><code>compileOnly</code></td>
+<td>provided</td>
+<td>컴파일만 (Lombok · 어노테이션)</td>
+</tr>
+<tr>
+<td><code>runtimeOnly</code></td>
+<td>runtime</td>
+<td>실행만 (JDBC 드라이버)</td>
+</tr>
+<tr>
+<td><code>testImplementation</code></td>
+<td>test</td>
+<td>테스트에서만</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>툴체인을 정하면 <code>JAVA_HOME</code> 이 다른 판이어도 그 판으로 컴파일한다</li>
+<li><code>platform(...)</code> 은 BOM 이다. JUnit · Spring 처럼 모듈이 여럿인 것의 판을 한 번에 맞춘다</li>
+</ul>
+<h2 id="명령">명령</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh">./gradlew build                 <span class="token comment"># 컴파일 · 테스트 · jar — build/libs/notes-1.0.0.jar</span>
+./gradlew <span class="token builtin class-name">test</span>                  <span class="token comment"># 테스트</span>
+./gradlew <span class="token builtin class-name">test</span> <span class="token parameter variable">--tests</span> NoteTest <span class="token comment"># 하나만</span>
+./gradlew run                   <span class="token comment"># 실행 (application)</span>
+./gradlew installDist           <span class="token comment"># build/install/notes/bin/notes — 실행 스크립트 + 의존성 jar</span>
+./gradlew clean
+./gradlew dependencies <span class="token parameter variable">--configuration</span> runtimeClasspath   <span class="token comment"># 의존성 트리</span>
+./gradlew tasks                 <span class="token comment"># 쓸 수 있는 작업</span>
+./gradlew build <span class="token parameter variable">--scan</span>          <span class="token comment"># 빌드 기록을 웹으로 — 느린 곳 · 실패 찾기</span></code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">NoteTest &gt; shortTextIsTitle() PASSED
+NoteTest &gt; longTextIsCut(String, String) &gt; [1] "운동하고 샤워하기", "운동하고 …" PASSED
+NoteTest &gt; longTextIsCut(String, String) &gt; [2] "abcdef", "abcde…" PASSED
+NoteTest &gt; nullTextThrows() PASSED
+BUILD SUCCESSFUL in 825ms</code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">runtimeClasspath - Runtime classpath of source set 'main'.
+\--- tools.jackson.core:jackson-databind:3.2.4
+     +--- com.fasterxml.jackson.core:jackson-annotations:2.22
+     +--- tools.jackson.core:jackson-core:3.2.4</code></pre>
+<ul>
+<li>같은 작업을 다시 하면 바뀐 것이 없는 단계는 <code>UP-TO-DATE</code> 로 건너뛴다. 테스트를 다시 돌리려면 <code>--rerun</code> 을 준다</li>
+<li><code>application</code> 의 <code>jar</code> 는 내 클래스만 들어 있다. 의존성까지 한 파일로 내려면 Shadow 플러그인(<code>com.gradleup.shadow</code>) 을 쓰고, 보통은 <code>installDist</code> · <code>distZip</code> 으로 낸다</li>
+</ul>
+<h2 id="version-catalog">version catalog</h2>
+<p>여러 모듈이 같은 판을 쓰도록 <code>gradle/libs.versions.toml</code> 에 모아 두고 이름으로 가져온다.</p>
+<pre class="language-toml" data-language="toml"><code class="language-toml"><span class="token punctuation">[</span><span class="token table class-name">versions</span><span class="token punctuation">]</span>
+<span class="token key property">jackson</span> <span class="token punctuation">=</span> <span class="token string">"3.2.4"</span>
+<span class="token key property">junit</span> <span class="token punctuation">=</span> <span class="token string">"6.1.3"</span>
+
+<span class="token punctuation">[</span><span class="token table class-name">libraries</span><span class="token punctuation">]</span>
+<span class="token key property">jackson-databind</span> <span class="token punctuation">=</span> <span class="token punctuation">{</span> <span class="token key property">module</span> <span class="token punctuation">=</span> <span class="token string">"tools.jackson.core:jackson-databind"</span><span class="token punctuation">,</span> <span class="token key property">version.ref</span> <span class="token punctuation">=</span> <span class="token string">"jackson"</span> <span class="token punctuation">}</span>
+<span class="token key property">junit-bom</span> <span class="token punctuation">=</span> <span class="token punctuation">{</span> <span class="token key property">module</span> <span class="token punctuation">=</span> <span class="token string">"org.junit:junit-bom"</span><span class="token punctuation">,</span> <span class="token key property">version.ref</span> <span class="token punctuation">=</span> <span class="token string">"junit"</span> <span class="token punctuation">}</span></code></pre>
+<pre class="language-kotlin" data-language="kotlin"><code class="language-kotlin">dependencies <span class="token punctuation">{</span>
+    <span class="token function">implementation</span><span class="token punctuation">(</span>libs<span class="token punctuation">.</span>jackson<span class="token punctuation">.</span>databind<span class="token punctuation">)</span>
+    <span class="token function">testImplementation</span><span class="token punctuation">(</span><span class="token function">platform</span><span class="token punctuation">(</span>libs<span class="token punctuation">.</span>junit<span class="token punctuation">.</span>bom<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<h2 id="여러-모듈">여러 모듈</h2>
+<pre class="language-kotlin" data-language="kotlin"><code class="language-kotlin"><span class="token comment">// settings.gradle.kts</span>
+rootProject<span class="token punctuation">.</span>name <span class="token operator">=</span> <span class="token string-literal singleline"><span class="token string">"notes"</span></span>
+<span class="token function">include</span><span class="token punctuation">(</span><span class="token string-literal singleline"><span class="token string">"core"</span></span><span class="token punctuation">,</span> <span class="token string-literal singleline"><span class="token string">"app"</span></span><span class="token punctuation">)</span>
+
+<span class="token comment">// app/build.gradle.kts</span>
+dependencies <span class="token punctuation">{</span>
+    <span class="token function">implementation</span><span class="token punctuation">(</span><span class="token function">project</span><span class="token punctuation">(</span><span class="token string-literal singleline"><span class="token string">":core"</span></span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<ul>
+<li>모듈마다 같은 설정은 <code>buildSrc</code> 나 <code>build-logic</code> 의 convention 플러그인으로 뺀다</li>
+</ul>
+<h2 id="maven-과-견주기">Maven 과 견주기</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Maven</th>
+<th>Gradle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>설정</td>
+<td><code>pom.xml</code> (XML)</td>
+<td><code>build.gradle.kts</code> (Kotlin)</td>
+</tr>
+<tr>
+<td>빌드 속도</td>
+<td>늘 처음부터</td>
+<td>바뀐 것만 · 캐시 · 데몬</td>
+</tr>
+<tr>
+<td>고치기</td>
+<td>플러그인 설정으로</td>
+<td>코드로 작업을 바로 짠다</td>
+</tr>
+<tr>
+<td>쓰는 곳</td>
+<td>기업 · 오래된 프로젝트</td>
+<td>안드로이드 · 새 Spring 프로젝트</td>
+</tr>
+</tbody>
+</table>
+<h2 id="예전에는">예전에는</h2>
+<ul>
+<li>설정을 Groovy(<code>build.gradle</code>) 로 썼다. Gradle 8 부터 <code>gradle init</code> 의 기본이 Kotlin DSL 이다</li>
+<li>의존성을 <code>compile</code> · <code>testCompile</code> 로 적었다. Gradle 7 에서 빠졌고 <code>implementation</code> · <code>testImplementation</code> 이다</li>
+<li><code>sourceCompatibility = 1.8</code> 로 판을 정했다. 지금은 툴체인을 쓴다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://docs.gradle.org/current/userguide/userguide.html">Gradle User Manual</a> · <a href="https://docs.gradle.org/current/userguide/building_java_projects.html">Building Java Projects</a></li>
+<li><a href="https://docs.gradle.org/current/userguide/version_catalogs.html">Version Catalogs</a> · <a href="https://docs.gradle.org/current/userguide/toolchains.html">Toolchains</a></li>
+<li><a href="https://plugins.gradle.org/">Gradle Plugin Portal</a> — 플러그인 찾기</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">언어</a></li><li><a href="/docs/language/Java/">Java</a></li><li><a href="/docs/language/Java/빌드-도구/">빌드 도구</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Java/" rel="tag">Java</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-07T14:15:14.000Z">2026-11-07</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

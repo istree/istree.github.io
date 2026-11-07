@@ -1,0 +1,115 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>JVM 옵션과 진단 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">Java</span><span class="up"> / <a href="/docs/" title="한 단계 위로">언어</a></span></p><ul><li><a href="/docs/language/Java/">개요</a></li><li class="side-folder"><details name="side-0"><summary><span class="side-name">언어</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/language/Java/언어/시작하기/">시작하기</a></li><li><a href="/docs/language/Java/언어/기본/">기본</a></li><li><a href="/docs/language/Java/언어/클래스와-객체/">클래스와 객체</a></li><li><a href="/docs/language/Java/언어/제네릭과-람다/">제네릭과 람다</a></li><li><a href="/docs/language/Java/언어/컬렉션과-스트림/">컬렉션과 스트림</a></li><li><a href="/docs/language/Java/언어/예외-처리/">예외 처리</a></li><li><a href="/docs/language/Java/언어/입출력과-파일/">입출력과 파일</a></li><li><a href="/docs/language/Java/언어/동시성/">동시성</a></li><li><a href="/docs/language/Java/언어/네트워크/">네트워크</a></li></ul></details></li><li class="side-folder"><details name="side-0" open><summary><span class="side-name">가상머신</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/language/Java/가상머신/JDK-설치/">JDK 설치</a></li><li><a href="/docs/language/Java/가상머신/JVM-옵션과-진단/" aria-current="page">JVM 옵션과 진단</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><span class="side-name">빌드 도구</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/language/Java/빌드-도구/Maven/">Maven</a></li><li><a href="/docs/language/Java/빌드-도구/Gradle/">Gradle</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><span class="side-name">GUI</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/language/Java/GUI/AWT-텍스트/">AWT 텍스트</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><span class="side-name">스크립팅</span><span class="fold" aria-label="펼치기"></span></summary><ul><li class="side-folder"><details name="side-1"><summary><a href="/docs/language/Java/스크립팅/JS-on-Java/">JS on Java</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/language/Java/스크립팅/JS-on-Java/Scripting-API/">Scripting API</a></li><li><a href="/docs/language/Java/스크립팅/JS-on-Java/Rhino/">Rhino</a></li></ul></details></li></ul></details></li><li><a href="/docs/language/Java/라이브러리/">라이브러리</a></li></ul></nav><article><h1 class="page-title">JVM 옵션과 진단</h1><details class="sidebar-m"><summary>목록 · Java</summary><ul><li><a href="/docs/language/Java/">개요</a></li><li class="side-folder"><details name="side-m-0"><summary><span class="side-name">언어</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/language/Java/언어/시작하기/">시작하기</a></li><li><a href="/docs/language/Java/언어/기본/">기본</a></li><li><a href="/docs/language/Java/언어/클래스와-객체/">클래스와 객체</a></li><li><a href="/docs/language/Java/언어/제네릭과-람다/">제네릭과 람다</a></li><li><a href="/docs/language/Java/언어/컬렉션과-스트림/">컬렉션과 스트림</a></li><li><a href="/docs/language/Java/언어/예외-처리/">예외 처리</a></li><li><a href="/docs/language/Java/언어/입출력과-파일/">입출력과 파일</a></li><li><a href="/docs/language/Java/언어/동시성/">동시성</a></li><li><a href="/docs/language/Java/언어/네트워크/">네트워크</a></li></ul></details></li><li class="side-folder"><details name="side-m-0" open><summary><span class="side-name">가상머신</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/language/Java/가상머신/JDK-설치/">JDK 설치</a></li><li><a href="/docs/language/Java/가상머신/JVM-옵션과-진단/" aria-current="page">JVM 옵션과 진단</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><span class="side-name">빌드 도구</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/language/Java/빌드-도구/Maven/">Maven</a></li><li><a href="/docs/language/Java/빌드-도구/Gradle/">Gradle</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><span class="side-name">GUI</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/language/Java/GUI/AWT-텍스트/">AWT 텍스트</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><span class="side-name">스크립팅</span><span class="fold" aria-label="펼치기"></span></summary><ul><li class="side-folder"><details name="side-m-1"><summary><a href="/docs/language/Java/스크립팅/JS-on-Java/">JS on Java</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/language/Java/스크립팅/JS-on-Java/Scripting-API/">Scripting API</a></li><li><a href="/docs/language/Java/스크립팅/JS-on-Java/Rhino/">Rhino</a></li></ul></details></li></ul></details></li><li><a href="/docs/language/Java/라이브러리/">라이브러리</a></li></ul></details><div class="content"><p>JVM 은 실행 중에 바이트코드를 기계어로 바꾸고(JIT), 쓰지 않는 객체를 알아서 치운다(GC). 대부분은 기본값으로 충분하고, 메모리 크기 · GC 를 바꿀 때만 옵션을 준다. 느리거나 멈추거나 메모리가 새면 JDK 에 들어 있는 <code>jcmd</code> · JFR 로 실행 중인 프로세스를 들여다본다.</p>
+<h2 id="메모리">메모리</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">java</span> <span class="token parameter variable">-Xms512m</span> <span class="token parameter variable">-Xmx2g</span> <span class="token parameter variable">-jar</span> app.jar             <span class="token comment"># 힙 처음 · 최대 크기</span>
+<span class="token function">java</span> <span class="token parameter variable">-XX:MaxRAMPercentage</span><span class="token operator">=</span><span class="token number">75</span> <span class="token parameter variable">-jar</span> app.jar     <span class="token comment"># 컨테이너 메모리의 75% 를 최대 힙으로</span>
+<span class="token function">java</span> <span class="token parameter variable">-XshowSettings:vm</span> <span class="token parameter variable">-version</span>               <span class="token comment"># 지금 설정 — Max. Heap Size (Estimated): 4.00G</span></code></pre>
+<ul>
+<li>힙 최대값을 주지 않으면 물리 메모리(컨테이너면 그 한도) 의 1/4 이다. 16 GB 맥에서 4 GB 다</li>
+<li>컨테이너에서는 <code>-Xmx</code> 대신 <code>MaxRAMPercentage</code> 로 준다. 컨테이너 크기를 바꿔도 따라간다</li>
+<li>힙이 모자라면 <code>java.lang.OutOfMemoryError: Java heap space</code> 로 멈춘다. 늘 늘리기 전에 무엇이 메모리를 잡고 있는지 본다(아래 힙 덤프)</li>
+</ul>
+<h2 id="gc">GC</h2>
+<table>
+<thead>
+<tr>
+<th>GC</th>
+<th>옵션</th>
+<th>쓰는 곳</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>G1</td>
+<td>기본 (<code>-XX:+UseG1GC</code>)</td>
+<td>대부분 — 처리량과 멈춤의 균형</td>
+</tr>
+<tr>
+<td>ZGC</td>
+<td><code>-XX:+UseZGC</code></td>
+<td>큰 힙 · 멈춤을 1 ms 아래로</td>
+</tr>
+<tr>
+<td>Parallel</td>
+<td><code>-XX:+UseParallelGC</code></td>
+<td>일괄 처리 — 멈춰도 되고 처리량이 중요할 때</td>
+</tr>
+<tr>
+<td>Serial</td>
+<td><code>-XX:+UseSerialGC</code></td>
+<td>작은 컨테이너 · CPU 하나</td>
+</tr>
+</tbody>
+</table>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">java</span> -Xlog:gc:file<span class="token operator">=</span>gc.log <span class="token parameter variable">-jar</span> app.jar        <span class="token comment"># GC 로그</span></code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">[0.003s][info][gc] Using G1
+[3.036s][info][gc] GC(0) Pause Young (Concurrent Start) (G1 Humongous Allocation) 44M-&gt;29M(64M) 5.362ms</code></pre>
+<ul>
+<li>로그 한 줄은 GC 종류 · 정리 전 → 후 크기(전체) · 멈춘 시간이다. 멈춤이 길고 잦으면 힙 크기 · GC 를 바꿔 본다</li>
+</ul>
+<h2 id="jcmd--실행-중인-jvm-보기">jcmd — 실행 중인 JVM 보기</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh">jcmd                                  <span class="token comment"># 돌고 있는 JVM 목록 — pid 와 메인 클래스</span>
+jcmd <span class="token operator">&lt;</span>pid<span class="token operator">&gt;</span> VM.version
+jcmd <span class="token operator">&lt;</span>pid<span class="token operator">&gt;</span> VM.flags                   <span class="token comment"># 적용된 옵션</span>
+jcmd <span class="token operator">&lt;</span>pid<span class="token operator">&gt;</span> GC.heap_info               <span class="token comment"># garbage-first heap total reserved 65536K, committed 65536K, used 3198K …</span>
+jcmd <span class="token operator">&lt;</span>pid<span class="token operator">&gt;</span> Thread.print               <span class="token comment"># 스레드 덤프 (= jstack &lt;pid&gt;)</span>
+jcmd <span class="token operator">&lt;</span>pid<span class="token operator">&gt;</span> GC.heap_dump heap.hprof    <span class="token comment"># 힙 덤프</span></code></pre>
+<ul>
+<li>멈춘 것처럼 보이면 스레드 덤프를 몇 초 사이로 두세 번 떠서 견준다. 계속 같은 줄에 있는 스레드가 범인이다</li>
+<li><code>"main" #3 … waiting on condition</code> 처럼 스레드마다 상태(<code>RUNNABLE</code> · <code>WAITING</code> · <code>BLOCKED</code>) 와 스택이 나온다. <code>BLOCKED</code> 가 많으면 잠금을 다툰다</li>
+</ul>
+<h2 id="힙-덤프--메모리-누수-찾기">힙 덤프 — 메모리 누수 찾기</h2>
+<p>메모리가 모자라 죽을 때 그 순간의 힙을 파일로 남기게 해 둔다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">java</span> <span class="token parameter variable">-Xmx64m</span> <span class="token parameter variable">-XX:+HeapDumpOnOutOfMemoryError</span> <span class="token parameter variable">-XX:HeapDumpPath</span><span class="token operator">=</span>heap.hprof <span class="token parameter variable">-jar</span> app.jar</code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">java.lang.OutOfMemoryError: Java heap space
+Dumping heap to heap.hprof ...
+Heap dump file created [39048650 bytes in 0.031 secs]</code></pre>
+<ul>
+<li><code>.hprof</code> 는 Eclipse MAT · VisualVM · IntelliJ 로 연다. 크기가 큰 객체와 그것을 붙잡고 있는 참조(GC root 까지의 길) 를 본다</li>
+<li>운영 서버에는 <code>HeapDumpOnOutOfMemoryError</code> 를 늘 켜 둔다. 다시 일어나기를 기다리지 않아도 된다</li>
+</ul>
+<h2 id="jfr--실행-기록">JFR — 실행 기록</h2>
+<p>Java Flight Recorder 는 CPU · 메모리 · GC · 잠금 · I/O 를 거의 부담 없이 기록한다. 운영 중에도 켠다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">java</span> <span class="token parameter variable">-XX:StartFlightRecording</span><span class="token operator">=</span>filename<span class="token operator">=</span>rec.jfr,settings<span class="token operator">=</span>profile <span class="token parameter variable">-jar</span> app.jar   <span class="token comment"># 시작부터 기록</span>
+jcmd <span class="token operator">&lt;</span>pid<span class="token operator">&gt;</span> JFR.start <span class="token assign-left variable">duration</span><span class="token operator">=</span>60s <span class="token assign-left variable">filename</span><span class="token operator">=</span>rec.jfr                            <span class="token comment"># 돌고 있는 것을 60 초</span>
+
+<span class="token variable">$JAVA_HOME</span>/bin/jfr summary rec.jfr                                <span class="token comment"># 이벤트 종류 · 개수</span>
+<span class="token variable">$JAVA_HOME</span>/bin/jfr print <span class="token parameter variable">--events</span> jdk.ExecutionSample rec.jfr     <span class="token comment"># CPU 를 쓴 곳의 스택</span></code></pre>
+<ul>
+<li>그래프로는 JDK Mission Control(JMC) · IntelliJ 의 프로파일러로 연다</li>
+<li><code>jfr</code> 명령은 macOS 의 <code>/usr/bin</code> 에 없다. <code>$JAVA_HOME/bin</code> 을 PATH 에 넣거나 경로째 부른다</li>
+</ul>
+<h2 id="예전에는">예전에는</h2>
+<ul>
+<li><code>-XX:PermSize</code> · <code>-XX:MaxPermSize</code> 로 클래스 영역(PermGen) 을 정했다. Java 8 부터 Metaspace 로 바뀌어 보통 정하지 않는다</li>
+<li>기본 GC 는 Parallel 이었다. Java 9 부터 G1 이다. CMS 는 Java 14 에서 빠졌다</li>
+<li>컨테이너 안의 JVM 이 호스트 전체 메모리를 보고 힙을 잡아 컨테이너가 죽었다. Java 10(8u191) 부터 컨테이너 한도를 읽는다</li>
+<li>JFR 은 Oracle JDK 의 유료 기능이었다. Java 11 부터 OpenJDK 에 들어 있다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://docs.oracle.com/en/java/javase/25/docs/specs/man/java.html">The java Command — Advanced options</a> — 옵션 전부</li>
+<li><a href="https://docs.oracle.com/en/java/javase/25/gctuning/">Garbage Collection Tuning Guide</a> · <a href="https://docs.oracle.com/en/java/javase/25/troubleshoot/">Troubleshooting Guide</a></li>
+<li><a href="https://adoptium.net/jmc/">JDK Mission Control</a> · <a href="https://eclipse.dev/mat/">Eclipse MAT</a> · <a href="https://visualvm.github.io/">VisualVM</a></li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">언어</a></li><li><a href="/docs/language/Java/">Java</a></li><li><a href="/docs/language/Java/가상머신/">가상머신</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Java/" rel="tag">Java</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-07T14:15:14.000Z">2026-11-07</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

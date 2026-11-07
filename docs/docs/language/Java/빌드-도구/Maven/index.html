@@ -1,0 +1,224 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Maven | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">Java</span><span class="up"> / <a href="/docs/" title="한 단계 위로">언어</a></span></p><ul><li><a href="/docs/language/Java/">개요</a></li><li class="side-folder"><details name="side-0"><summary><span class="side-name">언어</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/language/Java/언어/시작하기/">시작하기</a></li><li><a href="/docs/language/Java/언어/기본/">기본</a></li><li><a href="/docs/language/Java/언어/클래스와-객체/">클래스와 객체</a></li><li><a href="/docs/language/Java/언어/제네릭과-람다/">제네릭과 람다</a></li><li><a href="/docs/language/Java/언어/컬렉션과-스트림/">컬렉션과 스트림</a></li><li><a href="/docs/language/Java/언어/예외-처리/">예외 처리</a></li><li><a href="/docs/language/Java/언어/입출력과-파일/">입출력과 파일</a></li><li><a href="/docs/language/Java/언어/동시성/">동시성</a></li><li><a href="/docs/language/Java/언어/네트워크/">네트워크</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><span class="side-name">가상머신</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/language/Java/가상머신/JDK-설치/">JDK 설치</a></li><li><a href="/docs/language/Java/가상머신/JVM-옵션과-진단/">JVM 옵션과 진단</a></li></ul></details></li><li class="side-folder"><details name="side-0" open><summary><span class="side-name">빌드 도구</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/language/Java/빌드-도구/Maven/" aria-current="page">Maven</a></li><li><a href="/docs/language/Java/빌드-도구/Gradle/">Gradle</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><span class="side-name">GUI</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/language/Java/GUI/AWT-텍스트/">AWT 텍스트</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><span class="side-name">스크립팅</span><span class="fold" aria-label="펼치기"></span></summary><ul><li class="side-folder"><details name="side-1"><summary><a href="/docs/language/Java/스크립팅/JS-on-Java/">JS on Java</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/language/Java/스크립팅/JS-on-Java/Scripting-API/">Scripting API</a></li><li><a href="/docs/language/Java/스크립팅/JS-on-Java/Rhino/">Rhino</a></li></ul></details></li></ul></details></li><li><a href="/docs/language/Java/라이브러리/">라이브러리</a></li></ul></nav><article><h1 class="page-title">Maven</h1><details class="sidebar-m"><summary>목록 · Java</summary><ul><li><a href="/docs/language/Java/">개요</a></li><li class="side-folder"><details name="side-m-0"><summary><span class="side-name">언어</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/language/Java/언어/시작하기/">시작하기</a></li><li><a href="/docs/language/Java/언어/기본/">기본</a></li><li><a href="/docs/language/Java/언어/클래스와-객체/">클래스와 객체</a></li><li><a href="/docs/language/Java/언어/제네릭과-람다/">제네릭과 람다</a></li><li><a href="/docs/language/Java/언어/컬렉션과-스트림/">컬렉션과 스트림</a></li><li><a href="/docs/language/Java/언어/예외-처리/">예외 처리</a></li><li><a href="/docs/language/Java/언어/입출력과-파일/">입출력과 파일</a></li><li><a href="/docs/language/Java/언어/동시성/">동시성</a></li><li><a href="/docs/language/Java/언어/네트워크/">네트워크</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><span class="side-name">가상머신</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/language/Java/가상머신/JDK-설치/">JDK 설치</a></li><li><a href="/docs/language/Java/가상머신/JVM-옵션과-진단/">JVM 옵션과 진단</a></li></ul></details></li><li class="side-folder"><details name="side-m-0" open><summary><span class="side-name">빌드 도구</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/language/Java/빌드-도구/Maven/" aria-current="page">Maven</a></li><li><a href="/docs/language/Java/빌드-도구/Gradle/">Gradle</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><span class="side-name">GUI</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/language/Java/GUI/AWT-텍스트/">AWT 텍스트</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><span class="side-name">스크립팅</span><span class="fold" aria-label="펼치기"></span></summary><ul><li class="side-folder"><details name="side-m-1"><summary><a href="/docs/language/Java/스크립팅/JS-on-Java/">JS on Java</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/language/Java/스크립팅/JS-on-Java/Scripting-API/">Scripting API</a></li><li><a href="/docs/language/Java/스크립팅/JS-on-Java/Rhino/">Rhino</a></li></ul></details></li></ul></details></li><li><a href="/docs/language/Java/라이브러리/">라이브러리</a></li></ul></details><div class="content"><p>Maven 은 <code>pom.xml</code> 하나에 프로젝트 이름 · 의존성 · 플러그인을 적고, 정해진 폴더 구조와 단계(compile → test → package) 로 빌드하는 도구다. 의존성은 Maven Central 에서 받아 <code>~/.m2/repository</code> 에 모아 둔다. 설정이 XML 이라 길지만, 어느 프로젝트나 모양이 같아 읽기 쉽다. 여기의 예제는 Maven 3.10 · Java 25 로 돌렸다.</p>
+<h2 id="설치">설치</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh">brew <span class="token function">install</span> maven            <span class="token comment"># macOS</span>
+sdk <span class="token function">install</span> maven             <span class="token comment"># SDKMAN</span>
+mvn <span class="token parameter variable">-v</span>                        <span class="token comment"># Apache Maven 3.10.0 … Java version: 25.0.5</span></code></pre>
+<ul>
+<li>프로젝트에 Maven Wrapper(<code>mvnw</code>) 를 두면 Maven 을 설치하지 않은 사람도 같은 판으로 빌드한다: <code>mvn wrapper:wrapper</code> 뒤 <code>./mvnw package</code></li>
+</ul>
+<h2 id="폴더-구조">폴더 구조</h2>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">pom.xml
+src/main/java/com/example/notes/App.java
+src/main/java/com/example/notes/Note.java
+src/main/resources/            설정 파일 · 리소스 — jar 안으로 들어간다
+src/test/java/com/example/notes/NoteTest.java
+target/                        빌드 결과 (git 에 올리지 않는다)</code></pre>
+<h2 id="pomxml">pom.xml</h2>
+<pre class="language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>project</span> <span class="token attr-name">xmlns</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>http://maven.apache.org/POM/4.0.0<span class="token punctuation">"</span></span> <span class="token attr-name">…</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>modelVersion</span><span class="token punctuation">&gt;</span></span>4.0.0<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>modelVersion</span><span class="token punctuation">&gt;</span></span>
+
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>com.example<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>          <span class="token comment">&lt;!-- 조직 --&gt;</span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>notes<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>          <span class="token comment">&lt;!-- 프로젝트 이름 --&gt;</span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">&gt;</span></span>1.0.0<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">&gt;</span></span>
+
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>properties</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>maven.compiler.release</span><span class="token punctuation">&gt;</span></span>25<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>maven.compiler.release</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>project.build.sourceEncoding</span><span class="token punctuation">&gt;</span></span>UTF-8<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>project.build.sourceEncoding</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>properties</span><span class="token punctuation">&gt;</span></span>
+
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependencyManagement</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependencies</span><span class="token punctuation">&gt;</span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">&gt;</span></span>                          <span class="token comment">&lt;!-- BOM — JUnit 모듈들의 판을 한 번에 맞춘다 --&gt;</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>org.junit<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>junit-bom<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">&gt;</span></span>6.1.3<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>type</span><span class="token punctuation">&gt;</span></span>pom<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>type</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>scope</span><span class="token punctuation">&gt;</span></span>import<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>scope</span><span class="token punctuation">&gt;</span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependencies</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependencyManagement</span><span class="token punctuation">&gt;</span></span>
+
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependencies</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">&gt;</span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>tools.jackson.core<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>jackson-databind<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">&gt;</span></span>3.2.4<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">&gt;</span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>org.junit.jupiter<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>junit-jupiter<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>scope</span><span class="token punctuation">&gt;</span></span>test<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>scope</span><span class="token punctuation">&gt;</span></span>                   <span class="token comment">&lt;!-- 테스트에서만 --&gt;</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependencies</span><span class="token punctuation">&gt;</span></span>
+
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>build</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>plugins</span><span class="token punctuation">&gt;</span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>plugin</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>org.apache.maven.plugins<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>maven-surefire-plugin<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>   <span class="token comment">&lt;!-- 테스트 실행 --&gt;</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">&gt;</span></span>3.6.1<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">&gt;</span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>plugin</span><span class="token punctuation">&gt;</span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>plugin</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>org.codehaus.mojo<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>exec-maven-plugin<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>       <span class="token comment">&lt;!-- mvn exec:java --&gt;</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">&gt;</span></span>3.6.4<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>configuration</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>mainClass</span><span class="token punctuation">&gt;</span></span>com.example.notes.App<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>mainClass</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>configuration</span><span class="token punctuation">&gt;</span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>plugin</span><span class="token punctuation">&gt;</span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>plugin</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>org.apache.maven.plugins<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>maven-shade-plugin<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>      <span class="token comment">&lt;!-- 의존성까지 넣은 jar 하나 --&gt;</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">&gt;</span></span>3.6.2<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>executions</span><span class="token punctuation">&gt;</span></span>
+          <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>execution</span><span class="token punctuation">&gt;</span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>phase</span><span class="token punctuation">&gt;</span></span>package<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>phase</span><span class="token punctuation">&gt;</span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>goals</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>goal</span><span class="token punctuation">&gt;</span></span>shade<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>goal</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>goals</span><span class="token punctuation">&gt;</span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>configuration</span><span class="token punctuation">&gt;</span></span>
+              <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>transformers</span><span class="token punctuation">&gt;</span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>transformer</span> <span class="token attr-name">implementation</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>org.apache.maven.plugins.shade.resource.ManifestResourceTransformer<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+                  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>mainClass</span><span class="token punctuation">&gt;</span></span>com.example.notes.App<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>mainClass</span><span class="token punctuation">&gt;</span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>transformer</span><span class="token punctuation">&gt;</span></span>
+              <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>transformers</span><span class="token punctuation">&gt;</span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>configuration</span><span class="token punctuation">&gt;</span></span>
+          <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>execution</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>executions</span><span class="token punctuation">&gt;</span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>plugin</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>plugins</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>build</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>project</span><span class="token punctuation">&gt;</span></span></code></pre>
+<table>
+<thead>
+<tr>
+<th>scope</th>
+<th>컴파일</th>
+<th>테스트</th>
+<th>실행 · 패키지</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>compile</code> (기본)</td>
+<td>○</td>
+<td>○</td>
+<td>○</td>
+</tr>
+<tr>
+<td><code>provided</code></td>
+<td>○</td>
+<td>○</td>
+<td>서버 · 실행 환경이 준다 (Servlet API)</td>
+</tr>
+<tr>
+<td><code>runtime</code></td>
+<td>—</td>
+<td>○</td>
+<td>○ (JDBC 드라이버)</td>
+</tr>
+<tr>
+<td><code>test</code></td>
+<td>—</td>
+<td>○</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>플러그인 판을 적지 않으면 Maven 판마다 다른 기본값이 쓰여 빌드가 달라진다. 판을 정해 둔다</li>
+<li>의존성 좌표(<code>groupId:artifactId:version</code>) 는 <a href="https://central.sonatype.com/">Maven Central</a> 에서 찾는다</li>
+</ul>
+<h2 id="명령">명령</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh">mvn compile                 <span class="token comment"># 컴파일 — target/classes</span>
+mvn <span class="token builtin class-name">test</span>                    <span class="token comment"># 테스트까지</span>
+mvn package                 <span class="token comment"># target/notes-1.0.0.jar</span>
+mvn clean package           <span class="token comment"># target 을 지우고 다시</span>
+mvn <span class="token function">install</span>                 <span class="token comment"># ~/.m2 에도 넣는다 — 다른 로컬 프로젝트가 쓰게</span>
+mvn <span class="token builtin class-name">test</span> <span class="token parameter variable">-Dtest</span><span class="token operator">=</span>NoteTest    <span class="token comment"># 테스트 하나만</span>
+mvn package <span class="token parameter variable">-DskipTests</span>     <span class="token comment"># 테스트 건너뛰기</span>
+mvn exec:java               <span class="token comment"># 실행</span>
+mvn dependency:tree         <span class="token comment"># 의존성 트리 — 판 충돌을 찾는다</span>
+mvn versions:display-dependency-updates   <span class="token comment"># 새 판이 나온 의존성</span></code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">$ java -jar target/notes-1.0.0.jar
+[{"id":1,"text":"장보기"},{"id":2,"text":"운동하고 샤워하기"}]
+Note[id=3, text=청소]</code></pre>
+<ul>
+<li>단계는 차례로 돈다. <code>mvn package</code> 는 compile · test 를 거친다</li>
+<li><code>mvn dependency:tree</code> 로 누가 어떤 판을 끌어왔는지 본다. 같은 라이브러리의 판이 여럿이면 가장 가까운 것 하나가 쓰인다</li>
+</ul>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">[INFO] com.example:notes:jar:1.0.0
+[INFO] +- tools.jackson.core:jackson-databind:jar:3.2.4:compile
+[INFO] \- org.junit.jupiter:junit-jupiter:jar:6.1.3:test
+[INFO]    +- org.junit.jupiter:junit-jupiter-api:jar:6.1.3:test</code></pre>
+<h2 id="테스트-junit">테스트 (JUnit)</h2>
+<pre class="language-java" data-language="java"><code class="language-java"><span class="token comment">// src/test/java/com/example/notes/NoteTest.java</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>junit<span class="token punctuation">.</span>jupiter<span class="token punctuation">.</span>api<span class="token punctuation">.</span></span><span class="token class-name">Test</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>junit<span class="token punctuation">.</span>jupiter<span class="token punctuation">.</span>params<span class="token punctuation">.</span></span><span class="token class-name">ParameterizedTest</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">org<span class="token punctuation">.</span>junit<span class="token punctuation">.</span>jupiter<span class="token punctuation">.</span>params<span class="token punctuation">.</span>provider<span class="token punctuation">.</span></span><span class="token class-name">CsvSource</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token keyword">static</span> <span class="token import static"><span class="token namespace">org<span class="token punctuation">.</span>junit<span class="token punctuation">.</span>jupiter<span class="token punctuation">.</span>api<span class="token punctuation">.</span></span><span class="token class-name">Assertions</span><span class="token punctuation">.</span><span class="token operator">*</span></span><span class="token punctuation">;</span>
+
+<span class="token keyword">class</span> <span class="token class-name">NoteTest</span> <span class="token punctuation">{</span>
+    <span class="token annotation punctuation">@Test</span>
+    <span class="token keyword">void</span> <span class="token function">shortTextIsTitle</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">assertEquals</span><span class="token punctuation">(</span><span class="token string">"장보기"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">Note</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">"장보기"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">title</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@ParameterizedTest</span>
+    <span class="token annotation punctuation">@CsvSource</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token string">"운동하고 샤워하기, 운동하고 …"</span><span class="token punctuation">,</span> <span class="token string">"abcdef, abcde…"</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token keyword">void</span> <span class="token function">longTextIsCut</span><span class="token punctuation">(</span><span class="token class-name">String</span> text<span class="token punctuation">,</span> <span class="token class-name">String</span> expected<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">assertEquals</span><span class="token punctuation">(</span>expected<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">Note</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> text<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">title</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Test</span>
+    <span class="token keyword">void</span> <span class="token function">nullTextThrows</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">assertThrows</span><span class="token punctuation">(</span><span class="token class-name">NullPointerException</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-&gt;</span> <span class="token keyword">new</span> <span class="token class-name">Note</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">title</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS</code></pre>
+<p>실패하면 어디서 무엇이 달랐는지 보여 주고 빌드를 멈춘다.</p>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">[ERROR] com.example.notes.NoteTest.shortTextIsTitle -- Time elapsed: 0.007 s &lt;&lt;&lt; FAILURE!
+org.opentest4j.AssertionFailedError: expected: &lt;장보&gt; but was: &lt;장보기&gt;
+[ERROR] Tests run: 4, Failures: 1, Errors: 0, Skipped: 0
+[ERROR] BUILD FAILURE</code></pre>
+<h2 id="여러-모듈">여러 모듈</h2>
+<pre class="language-xml" data-language="xml"><code class="language-xml"><span class="token comment">&lt;!-- 맨 위 pom.xml --&gt;</span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>packaging</span><span class="token punctuation">&gt;</span></span>pom<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>packaging</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>modules</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>module</span><span class="token punctuation">&gt;</span></span>core<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>module</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>module</span><span class="token punctuation">&gt;</span></span>app<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>module</span><span class="token punctuation">&gt;</span></span>             <span class="token comment">&lt;!-- app 의 pom 에서 core 를 dependency 로 --&gt;</span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>modules</span><span class="token punctuation">&gt;</span></span></code></pre>
+<ul>
+<li>맨 위에서 <code>mvn package</code> 하면 모듈 사이의 의존 순서대로 빌드한다. 공통 판 · 플러그인은 맨 위 pom 의 <code>dependencyManagement</code> · <code>pluginManagement</code> 에 둔다</li>
+</ul>
+<h2 id="예전에는">예전에는</h2>
+<ul>
+<li>판을 <code>&lt;source&gt;1.8&lt;/source&gt;</code> · <code>&lt;target&gt;1.8&lt;/target&gt;</code> 로 정했다. 지금은 <code>maven.compiler.release</code> 하나다(옛 API 를 쓰면 컴파일 오류로 잡는다)</li>
+<li>JUnit 4 는 <code>@Test</code> 가 <code>org.junit.Test</code> 이고 <code>@Before</code> · <code>@RunWith</code> 를 썼다. JUnit 5 부터 <code>org.junit.jupiter.api</code>, <code>@BeforeEach</code> · <code>@ExtendWith</code> 다</li>
+<li>Maven 4 가 준비 중이다(2026-11 RC). pom 의 모델이 4.1.0 으로 바뀌지만 4.0.0 pom 도 그대로 빌드한다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://maven.apache.org/guides/">Maven 문서</a> · <a href="https://maven.apache.org/pom.html">POM Reference</a> — 공식 문서</li>
+<li><a href="https://central.sonatype.com/">Maven Central</a> — 라이브러리 찾기</li>
+<li><a href="https://docs.junit.org/current/user-guide/">JUnit User Guide</a> — 테스트</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">언어</a></li><li><a href="/docs/language/Java/">Java</a></li><li><a href="/docs/language/Java/빌드-도구/">빌드 도구</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Java/" rel="tag">Java</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-07T14:15:14.000Z">2026-11-07</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>
