@@ -1,0 +1,102 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>키 바꾸기 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">Hammerspoon</span><span class="up"> / <a href="/docs/tool/Mac/" title="한 단계 위로">Mac</a></span></p><ul><li><a href="/docs/tool/Mac/Hammerspoon/">개요</a></li><li><a href="/docs/tool/Mac/Hammerspoon/시작하기/">시작하기</a></li><li><a href="/docs/tool/Mac/Hammerspoon/키-바꾸기/" aria-current="page">키 바꾸기</a></li><li><a href="/docs/tool/Mac/Hammerspoon/입력기-전환/">입력기 전환</a></li><li><a href="/docs/tool/Mac/Hammerspoon/원격-데스크톱/">원격 데스크톱</a></li></ul></nav><article><h1 class="page-title">키 바꾸기</h1><details class="sidebar-m"><summary>목록 · Hammerspoon</summary><ul><li><a href="/docs/tool/Mac/Hammerspoon/">개요</a></li><li><a href="/docs/tool/Mac/Hammerspoon/시작하기/">시작하기</a></li><li><a href="/docs/tool/Mac/Hammerspoon/키-바꾸기/" aria-current="page">키 바꾸기</a></li><li><a href="/docs/tool/Mac/Hammerspoon/입력기-전환/">입력기 전환</a></li><li><a href="/docs/tool/Mac/Hammerspoon/원격-데스크톱/">원격 데스크톱</a></li></ul></details><div class="content"><p>macOS 는 <code>hidutil</code> 명령으로 키를 다른 키로 바꿀 수 있다. 따로 프로그램을 깔지 않아도 되지만, 재부팅하면 풀린다. Hammerspoon 이 시작할 때마다 다시 걸면 늘 바뀐 채로 쓴다.</p>
+<h2 id="hidutil">hidutil</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token comment"># 오른쪽 Cmd → F18</span>
+hidutil property <span class="token parameter variable">--set</span> <span class="token string">'{"UserKeyMapping":[
+  {"HIDKeyboardModifierMappingSrc":0x7000000E7, "HIDKeyboardModifierMappingDst":0x70000006D}
+]}'</span>
+
+hidutil property <span class="token parameter variable">--get</span> <span class="token string">"UserKeyMapping"</span>          <span class="token comment"># 지금 걸린 것</span>
+hidutil property <span class="token parameter variable">--set</span> <span class="token string">'{"UserKeyMapping":[]}'</span>   <span class="token comment"># 모두 풀기</span></code></pre>
+<ul>
+<li><code>--set</code> 은 목록을 통째로 바꾼다. 여러 키를 바꾸려면 한 번에 모두 적는다</li>
+<li><code>--get</code> 은 코드를 10진수로 보여 준다. <code>30064771303</code> 이 <code>0x7000000E7</code>(오른쪽 Cmd) 이다</li>
+<li>코드는 <code>0x700000000</code> 에 HID 사용 코드를 더한 값이다</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>키</th>
+<th>코드</th>
+<th>키</th>
+<th>코드</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Caps Lock</td>
+<td><code>0x700000039</code></td>
+<td>오른쪽 Ctrl</td>
+<td><code>0x7000000E4</code></td>
+</tr>
+<tr>
+<td>왼쪽 Ctrl</td>
+<td><code>0x7000000E0</code></td>
+<td>오른쪽 Shift</td>
+<td><code>0x7000000E5</code></td>
+</tr>
+<tr>
+<td>왼쪽 Shift</td>
+<td><code>0x7000000E1</code></td>
+<td>오른쪽 Option</td>
+<td><code>0x7000000E6</code></td>
+</tr>
+<tr>
+<td>왼쪽 Option</td>
+<td><code>0x7000000E2</code></td>
+<td>오른쪽 Cmd</td>
+<td><code>0x7000000E7</code></td>
+</tr>
+<tr>
+<td>왼쪽 Cmd</td>
+<td><code>0x7000000E3</code></td>
+<td>F13 · F18 · F19</td>
+<td><code>0x700000068</code> · <code>0x70000006D</code> · <code>0x70000006E</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>F13 ~ F20 은 맥 키보드에 없는 키라 다른 단축키와 겹치지 않는다. 남는 키를 여기로 바꾸고, Hammerspoon 에서 그 키에 기능을 연결한다</li>
+</ul>
+<h2 id="hammerspoon-에서-걸기">Hammerspoon 에서 걸기</h2>
+<p><a href="https://github.com/hetima/hammerspoon-foundation_remapping">foundation_remapping</a> 은 키 이름을 HID 코드로 바꿔 <code>hidutil</code> 을 불러 준다. <code>foundation_remapping.lua</code> 를 <code>~/.hammerspoon/</code> 에 받아 둔다.</p>
+<pre class="language-lua" data-language="lua"><code class="language-lua"><span class="token keyword">local</span> FRemap <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'foundation_remapping'</span><span class="token punctuation">)</span>
+<span class="token keyword">local</span> remapper <span class="token operator">=</span> FRemap<span class="token punctuation">.</span><span class="token function">new</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+remapper<span class="token punctuation">:</span><span class="token function">remap</span><span class="token punctuation">(</span><span class="token string">'lctrl'</span><span class="token punctuation">,</span> <span class="token string">'capslock'</span><span class="token punctuation">)</span>
+remapper<span class="token punctuation">:</span><span class="token function">remap</span><span class="token punctuation">(</span><span class="token string">'capslock'</span><span class="token punctuation">,</span> <span class="token string">'lctrl'</span><span class="token punctuation">)</span>
+remapper<span class="token punctuation">:</span><span class="token function">remap</span><span class="token punctuation">(</span><span class="token string">'rcmd'</span><span class="token punctuation">,</span> <span class="token string">'f18'</span><span class="token punctuation">)</span>
+remapper<span class="token punctuation">:</span><span class="token function">register</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code></pre>
+<ul>
+<li><code>init.lua</code> 에 두면 Hammerspoon 이 시작하거나 다시 불러올 때마다 다시 걸린다</li>
+<li><code>remapper:unregister()</code> 는 건 것을 모두 푼다</li>
+<li><code>FRemap.new({vendorID = …, productID = …})</code> 로 키보드 하나에만 걸 수 있다</li>
+<li>Hammerspoon 을 끝내도 바뀐 키는 재부팅할 때까지 남는다</li>
+</ul>
+<h2 id="시스템-설정으로-되는-것">시스템 설정으로 되는 것</h2>
+<p>Caps Lock · Ctrl · Option · Cmd · Globe 끼리 바꾸는 것은 「시스템 설정 › 키보드 › 키보드 단축키 › 보조 키」 에서도 된다. 재부팅해도 남고, 키보드마다 따로 정한다. 왼쪽 · 오른쪽을 가리지 못하고, F18 처럼 보조 키가 아닌 키로는 바꾸지 못한다.</p>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://developer.apple.com/library/archive/technotes/tn2450/_index.html">TN2450 Remapping Keys</a> — <code>hidutil</code> 과 코드 표</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">도구</a></li><li><a href="/docs/tool/Mac/">Mac</a></li><li><a href="/docs/tool/Mac/Hammerspoon/">Hammerspoon</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Hammerspoon/" rel="tag">Hammerspoon</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-07T10:57:25.000Z">2026-11-07</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

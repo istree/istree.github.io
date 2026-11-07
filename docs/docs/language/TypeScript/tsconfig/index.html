@@ -1,0 +1,218 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>tsconfig | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">TypeScript</span><span class="up"> / <a href="/docs/" title="한 단계 위로">언어</a></span></p><ul><li><a href="/docs/language/TypeScript/">개요</a></li><li><a href="/docs/language/TypeScript/시작하기/">시작하기</a></li><li><a href="/docs/language/TypeScript/tsconfig/" aria-current="page">tsconfig</a></li><li><a href="/docs/language/TypeScript/기본-타입/">기본 타입</a></li><li><a href="/docs/language/TypeScript/타입-좁히기/">타입 좁히기</a></li><li><a href="/docs/language/TypeScript/함수와-제네릭/">함수와 제네릭</a></li><li><a href="/docs/language/TypeScript/객체와-클래스/">객체와 클래스</a></li><li><a href="/docs/language/TypeScript/유틸리티-타입/">유틸리티 타입</a></li><li><a href="/docs/language/TypeScript/모듈과-선언-파일/">모듈과 선언 파일</a></li></ul></nav><article><h1 class="page-title">tsconfig</h1><details class="sidebar-m"><summary>목록 · TypeScript</summary><ul><li><a href="/docs/language/TypeScript/">개요</a></li><li><a href="/docs/language/TypeScript/시작하기/">시작하기</a></li><li><a href="/docs/language/TypeScript/tsconfig/" aria-current="page">tsconfig</a></li><li><a href="/docs/language/TypeScript/기본-타입/">기본 타입</a></li><li><a href="/docs/language/TypeScript/타입-좁히기/">타입 좁히기</a></li><li><a href="/docs/language/TypeScript/함수와-제네릭/">함수와 제네릭</a></li><li><a href="/docs/language/TypeScript/객체와-클래스/">객체와 클래스</a></li><li><a href="/docs/language/TypeScript/유틸리티-타입/">유틸리티 타입</a></li><li><a href="/docs/language/TypeScript/모듈과-선언-파일/">모듈과 선언 파일</a></li></ul></details><div class="content"><p><code>tsconfig.json</code> 은 어떤 파일을 검사할지, 얼마나 엄격하게 볼지, 어떤 JavaScript 를 만들지 정한다. <code>tsc</code> 는 지금 폴더의 <code>tsconfig.json</code> 을 읽고, 에디터도 같은 파일로 검사한다.</p>
+<h2 id="시작-설정">시작 설정</h2>
+<p><code>tsc --init</code> 이 만드는 설정에 <code>outDir</code> · <code>rootDir</code> · <code>include</code> 를 더한 것이다. Node 에서 돌리는 프로젝트의 기본으로 쓴다.</p>
+<pre class="language-json" data-language="json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"compilerOptions"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 무엇을 만들까</span>
+    <span class="token property">"module"</span><span class="token operator">:</span> <span class="token string">"nodenext"</span><span class="token punctuation">,</span>              <span class="token comment">// Node 의 ES 모듈 · CommonJS 규칙 그대로</span>
+    <span class="token property">"target"</span><span class="token operator">:</span> <span class="token string">"esnext"</span><span class="token punctuation">,</span>                <span class="token comment">// 문법을 바꾸지 않는다</span>
+    <span class="token property">"types"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"node"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>                 <span class="token comment">// 전역으로 읽을 @types — 적은 것만 읽는다</span>
+    <span class="token property">"outDir"</span><span class="token operator">:</span> <span class="token string">"dist"</span><span class="token punctuation">,</span>
+    <span class="token property">"rootDir"</span><span class="token operator">:</span> <span class="token string">"src"</span><span class="token punctuation">,</span>
+    <span class="token property">"sourceMap"</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    <span class="token property">"declaration"</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>               <span class="token comment">// .d.ts 도 만든다 (라이브러리)</span>
+
+    <span class="token comment">// 얼마나 엄격할까</span>
+    <span class="token property">"strict"</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    <span class="token property">"noUncheckedIndexedAccess"</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    <span class="token property">"exactOptionalPropertyTypes"</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+
+    <span class="token comment">// 다른 도구와 맞추기</span>
+    <span class="token property">"verbatimModuleSyntax"</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    <span class="token property">"isolatedModules"</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    <span class="token property">"moduleDetection"</span><span class="token operator">:</span> <span class="token string">"force"</span><span class="token punctuation">,</span>
+    <span class="token property">"skipLibCheck"</span><span class="token operator">:</span> <span class="token boolean">true</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"include"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"src"</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span></code></pre>
+<ul>
+<li><code>tsconfig.json</code> 은 주석 · 끝 쉼표가 되는 JSON(JSONC) 이다</li>
+<li><code>include</code> 를 빼면 폴더 아래 <code>.ts</code> 를 모두 읽는다. <code>node_modules</code> · <code>outDir</code> 은 알아서 뺀다</li>
+</ul>
+<h2 id="엄격한-옵션">엄격한 옵션</h2>
+<table>
+<thead>
+<tr>
+<th>옵션</th>
+<th>막는 것</th>
+<th>오류</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>strict</code></td>
+<td>아래 여러 옵션을 한 번에 켠다 (<code>strictNullChecks</code> · <code>noImplicitAny</code> …)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>noImplicitAny</code> (strict)</td>
+<td>타입을 알 수 없는 매개변수</td>
+<td><code>TS7006: Parameter 'x' implicitly has an 'any' type.</code></td>
+</tr>
+<tr>
+<td><code>strictNullChecks</code> (strict)</td>
+<td><code>null</code> · <code>undefined</code> 일 수 있는 값을 그대로 쓰기</td>
+<td><code>TS18048: 'user' is possibly 'undefined'.</code></td>
+</tr>
+<tr>
+<td><code>noUncheckedIndexedAccess</code></td>
+<td>배열 · 객체를 인덱스로 꺼낸 값을 있다고 믿기</td>
+<td><code>TS18048: 'n' is possibly 'undefined'.</code></td>
+</tr>
+<tr>
+<td><code>exactOptionalPropertyTypes</code></td>
+<td>선택 속성(<code>email?</code>) 에 <code>undefined</code> 를 직접 넣기</td>
+<td><code>TS2375: … with 'exactOptionalPropertyTypes: true'.</code></td>
+</tr>
+<tr>
+<td><code>noUnusedLocals</code> · <code>noUnusedParameters</code></td>
+<td>쓰지 않는 변수 · 매개변수</td>
+<td><code>TS6133: 'x' is declared but its value is never read.</code></td>
+</tr>
+<tr>
+<td><code>noImplicitReturns</code></td>
+<td>어떤 갈래에서 <code>return</code> 을 빠뜨리기</td>
+<td><code>TS7030: Not all code paths return a value.</code></td>
+</tr>
+</tbody>
+</table>
+<pre class="language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">const</span> notes<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> first <span class="token operator">=</span> notes<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>            <span class="token comment">// noUncheckedIndexedAccess — string | undefined</span>
+first<span class="token punctuation">.</span>length<span class="token punctuation">;</span>                      <span class="token comment">// TS18048: 'first' is possibly 'undefined'.</span>
+first<span class="token operator">?.</span>length<span class="token punctuation">;</span>                     <span class="token comment">// 된다</span></code></pre>
+<ul>
+<li>새 프로젝트는 처음부터 <code>strict</code> 를 켠다. 나중에 켜면 고칠 곳이 한꺼번에 쏟아진다</li>
+<li>옛 JavaScript 를 옮길 때는 <code>strict: false</code> 로 시작해 옵션을 하나씩 켠다. <code>exactOptionalPropertyTypes</code> 는 <code>strictNullChecks</code> 없이 켜면 <code>TS5052</code> 오류가 난다</li>
+</ul>
+<h2 id="module--target--lib">module · target · lib</h2>
+<table>
+<thead>
+<tr>
+<th>옵션</th>
+<th>값</th>
+<th>고르는 법</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>module</code></td>
+<td><code>nodenext</code></td>
+<td>Node 에서 돈다. <code>package.json</code> 의 <code>type</code> 을 따르고, 상대 경로 import 에 확장자를 쓴다</td>
+</tr>
+<tr>
+<td></td>
+<td><code>preserve</code></td>
+<td>번들러(Vite · esbuild) 가 묶는다. import 를 손대지 않고, 확장자 없이 쓴다</td>
+</tr>
+<tr>
+<td><code>target</code></td>
+<td><code>esnext</code> · <code>es2022</code> …</td>
+<td>이보다 새 문법을 옛 문법으로 바꾼다. 번들러 · 최신 Node 면 <code>esnext</code></td>
+</tr>
+<tr>
+<td><code>lib</code></td>
+<td><code>["esnext", "dom"]</code> …</td>
+<td>쓸 수 있는 전역 API 의 타입. 빼면 <code>target</code> 에 맞춰 DOM 까지 들어간다</td>
+</tr>
+<tr>
+<td><code>types</code></td>
+<td><code>["node"]</code> · <code>["vite/client"]</code></td>
+<td>전역으로 읽을 <code>@types</code> 패키지. 적지 않으면 아무것도 읽지 않는다</td>
+</tr>
+</tbody>
+</table>
+<pre class="language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> Note <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"./types"</span><span class="token punctuation">;</span>
+<span class="token comment">// TS2835: Relative import paths need explicit file extensions in ECMAScript imports</span>
+<span class="token comment">//         when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './types.js'?</span></code></pre>
+<ul>
+<li><code>nodenext</code> 에서는 <code>.ts</code> 파일을 가져와도 확장자를 <code>.js</code> 로 쓴다(<code>./types.js</code>). 빌드한 뒤의 파일 이름이다</li>
+<li>Node 로 바로 돌릴 때는 <code>.ts</code> 로 쓴다(<code>./types.ts</code>). 그러려면 <code>"allowImportingTsExtensions": true</code> 와 <code>"noEmit": true</code> 를, <code>tsc</code> 로 빌드도 하려면 <code>"rewriteRelativeImportExtensions": true</code> 를 준다 — 빌드하면 <code>.js</code> 로 바뀐다. 없으면 <code>TS5097: An import path can only end with a '.ts' extension when 'allowImportingTsExtensions' is enabled.</code> 가 난다</li>
+<li><code>types</code> 에 <code>node</code> 가 없으면 <code>@types/node</code> 를 설치했어도 <code>TS2591: Cannot find name 'process'. Do you need to install type definitions for node?</code> 가 난다. TypeScript 6 부터 <code>types</code> 를 적지 않으면 전역 타입을 하나도 읽지 않는다</li>
+<li>브라우저 코드에서 <code>document</code> 를 쓰는데 <code>lib</code> 에 <code>dom</code> 이 없으면 <code>TS2584: Cannot find name 'document'. … Try changing the 'lib' compiler option to include 'dom'.</code> 가 난다</li>
+</ul>
+<h2 id="다른-도구와-맞추기">다른 도구와 맞추기</h2>
+<table>
+<thead>
+<tr>
+<th>옵션</th>
+<th>하는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>verbatimModuleSyntax</code></td>
+<td>타입만 가져오는 import 에 <code>type</code> 을 쓰게 한다. 타입을 지우는 도구(Node · esbuild) 가 import 를 그대로 남겨도 안전하다</td>
+</tr>
+<tr>
+<td><code>isolatedModules</code></td>
+<td>파일 하나만 보고 바꿀 수 없는 문법(다른 파일의 <code>const enum</code> 등) 을 막는다</td>
+</tr>
+<tr>
+<td><code>erasableSyntaxOnly</code></td>
+<td>지워서 없어지지 않는 문법(<code>enum</code> · <code>namespace</code> · 생성자의 <code>private x</code>) 을 막는다. Node 로 바로 돌릴 때 켠다</td>
+</tr>
+<tr>
+<td><code>skipLibCheck</code></td>
+<td><code>node_modules</code> 의 <code>.d.ts</code> 는 검사하지 않는다. 빨라지고, 라이브러리끼리의 타입 충돌을 피한다</td>
+</tr>
+<tr>
+<td><code>moduleDetection: "force"</code></td>
+<td><code>import</code> · <code>export</code> 가 없는 파일도 모듈로 본다. 파일끼리 전역 이름이 부딪히지 않는다</td>
+</tr>
+</tbody>
+</table>
+<pre class="language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> Note <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"./types.ts"</span><span class="token punctuation">;</span>
+<span class="token comment">// TS1484: 'Note' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.</span>
+<span class="token keyword">import</span> <span class="token keyword">type</span> <span class="token punctuation">{</span> Note <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"./types.ts"</span><span class="token punctuation">;</span>      <span class="token comment">// 된다</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> <span class="token keyword">type</span> <span class="token class-name">Note</span><span class="token punctuation">,</span> <span class="token constant">VERSION</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"./types.ts"</span><span class="token punctuation">;</span>   <span class="token comment">// 값과 섞을 때</span></code></pre>
+<h2 id="설정-나누기">설정 나누기</h2>
+<p><code>extends</code> 로 공통 설정을 물려받는다. 빌드용 · 테스트용처럼 조금만 다른 설정을 둘 때 쓴다.</p>
+<pre class="language-json" data-language="json"><code class="language-json"><span class="token comment">// tsconfig.build.json — npx tsc -p tsconfig.build.json</span>
+<span class="token punctuation">{</span>
+  <span class="token property">"extends"</span><span class="token operator">:</span> <span class="token string">"./tsconfig.json"</span><span class="token punctuation">,</span>
+  <span class="token property">"compilerOptions"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token property">"noEmit"</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token property">"sourceMap"</span><span class="token operator">:</span> <span class="token boolean">false</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"exclude"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"src/**/*.test.ts"</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span></code></pre>
+<ul>
+<li>많이 쓰는 기본 설정은 패키지로도 있다: <code>npm install -D @tsconfig/node24</code> 뒤 <code>"extends": "@tsconfig/node24/tsconfig.json"</code></li>
+</ul>
+<h2 id="프로젝트-나누기">프로젝트 나누기</h2>
+<p>한 저장소에 패키지가 여럿이면(모노레포) 패키지마다 <code>tsconfig.json</code> 을 두고 <code>references</code> 로 잇는다. <code>tsc -b</code> 가 의존 순서대로 빌드하고, 바뀌지 않은 패키지는 건너뛴다.</p>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">tsconfig.json              { "files": [], "references": [{ "path": "packages/core" }, { "path": "packages/app" }] }
+packages/core/tsconfig.json  { "extends": "../../tsconfig.base.json", "compilerOptions": { "composite": true, "outDir": "dist" } }
+packages/app/tsconfig.json   { "extends": "../../tsconfig.base.json", "references": [{ "path": "../core" }] }</code></pre>
+<pre class="language-sh" data-language="sh"><code class="language-sh">npx tsc <span class="token parameter variable">-b</span>              <span class="token comment"># core → app 순서로</span>
+npx tsc <span class="token parameter variable">-b</span> <span class="token parameter variable">--verbose</span>    <span class="token comment"># 무엇을 다시 빌드하고 무엇을 건너뛰는지</span>
+npx tsc <span class="token parameter variable">-b</span> <span class="token parameter variable">--clean</span>      <span class="token comment"># 만든 것 지우기</span></code></pre>
+<ul>
+<li>가리켜지는 쪽(<code>core</code>) 은 <code>"composite": true</code> 가 있어야 한다. <code>.d.ts</code> 와 <code>tsconfig.tsbuildinfo</code> 를 만들어 다음 빌드에서 바뀐 것만 본다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://www.typescriptlang.org/tsconfig/">TSConfig Reference</a> — 옵션 전부</li>
+<li><a href="https://www.typescriptlang.org/docs/handbook/modules/guides/choosing-compiler-options.html">Modules — Choosing Compiler Options</a> — module · moduleResolution 고르기</li>
+<li><a href="https://www.typescriptlang.org/docs/handbook/project-references.html">Project References</a></li>
+<li><a href="https://github.com/tsconfig/bases">tsconfig/bases</a> — 환경별 기본 설정 패키지</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">언어</a></li><li><a href="/docs/language/TypeScript/">TypeScript</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/TypeScript/" rel="tag">TypeScript</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-07T09:16:17.000Z">2026-11-07</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

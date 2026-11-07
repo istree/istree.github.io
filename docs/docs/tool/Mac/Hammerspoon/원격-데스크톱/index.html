@@ -1,0 +1,136 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>원격 데스크톱 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">Hammerspoon</span><span class="up"> / <a href="/docs/tool/Mac/" title="한 단계 위로">Mac</a></span></p><ul><li><a href="/docs/tool/Mac/Hammerspoon/">개요</a></li><li><a href="/docs/tool/Mac/Hammerspoon/시작하기/">시작하기</a></li><li><a href="/docs/tool/Mac/Hammerspoon/키-바꾸기/">키 바꾸기</a></li><li><a href="/docs/tool/Mac/Hammerspoon/입력기-전환/">입력기 전환</a></li><li><a href="/docs/tool/Mac/Hammerspoon/원격-데스크톱/" aria-current="page">원격 데스크톱</a></li></ul></nav><article><h1 class="page-title">원격 데스크톱</h1><details class="sidebar-m"><summary>목록 · Hammerspoon</summary><ul><li><a href="/docs/tool/Mac/Hammerspoon/">개요</a></li><li><a href="/docs/tool/Mac/Hammerspoon/시작하기/">시작하기</a></li><li><a href="/docs/tool/Mac/Hammerspoon/키-바꾸기/">키 바꾸기</a></li><li><a href="/docs/tool/Mac/Hammerspoon/입력기-전환/">입력기 전환</a></li><li><a href="/docs/tool/Mac/Hammerspoon/원격-데스크톱/" aria-current="page">원격 데스크톱</a></li></ul></details><div class="content"><p>크롬 원격 데스크톱으로 다른 맥에 들어가 있을 때 한영 키를 원격 맥에 넘긴다. 두 맥 모두 Hammerspoon 으로 한영 전환을 하면, 이 맥의 Hammerspoon 이 한영 키를 먼저 잡아 버려서 원격 맥에는 아무 키도 가지 않는다. 원격 데스크톱 창이 앞에 있을 때만 키를 원격 맥이 받을 수 있는 꼴로 바꿔 넘긴다.</p>
+<h2 id="왜-안-되나">왜 안 되나</h2>
+<ul>
+<li>이 맥에서 오른쪽 Cmd 는 <code>hidutil</code> 로 F18 이 되고, Hammerspoon 의 F18 단축키(<code>hs.hotkey</code>) 가 그 키를 가져간다. 단축키로 잡힌 키는 앱에 가지 않으므로 원격 데스크톱도 받지 못한다</li>
+<li>단축키를 끄고 F18 을 원격 데스크톱에 넘기면, F18 은 원격 맥까지 간다 (원격 맥에서 <code>hs.eventtap</code> 으로 기록해 확인했다). 그런데 원격 맥의 F18 단축키가 원격으로 들어온 F18 을 잡지 못한다</li>
+<li>원격 맥의 <code>hidutil</code> 매핑은 실제 키보드에만 걸린다. 원격으로 들어온 오른쪽 Cmd 는 F18 로 바뀌지 않는다</li>
+</ul>
+<p>그래서 원격 맥이 단축키로 잡을 수 있는 흔한 조합키 Ctrl+Option+Shift+K 를 한영 키로 보낸다.</p>
+<h2 id="원격-데스크톱-가려내기">원격 데스크톱 가려내기</h2>
+<pre class="language-lua" data-language="lua"><code class="language-lua"><span class="token keyword">local</span> remoteDesktopApps <span class="token operator">=</span> <span class="token punctuation">{</span>
+	<span class="token punctuation">[</span><span class="token string">'com.google.Chrome.app.cmkncekebbebpfilplodngbpllndjkfo'</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token keyword">true</span><span class="token punctuation">,</span> <span class="token comment">-- Chrome 원격 데스크톱</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">local</span> <span class="token keyword">function</span> <span class="token function">isRemoteDesktop</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token keyword">local</span> app <span class="token operator">=</span> hs<span class="token punctuation">.</span>application<span class="token punctuation">.</span><span class="token function">frontmostApplication</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token keyword">return</span> app <span class="token operator">~=</span> <span class="token keyword">nil</span> <span class="token keyword">and</span> remoteDesktopApps<span class="token punctuation">[</span>app<span class="token punctuation">:</span><span class="token function">bundleID</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token keyword">true</span>
+<span class="token keyword">end</span></code></pre>
+<ul>
+<li>크롬 원격 데스크톱을 크롬 앱으로 설치해 따로 된 창으로 띄우면, 크롬과 다른 번들 ID 를 가진 앱이 된다</li>
+<li>번들 ID 는 앞에 있는 앱으로 본다. 콘솔에서 바로 치면 앞에 있는 앱이 콘솔이 되므로, 3초 뒤에 찍게 하고 그사이 원격 데스크톱 창을 누른다</li>
+</ul>
+<pre class="language-lua" data-language="lua"><code class="language-lua">hs<span class="token punctuation">.</span>timer<span class="token punctuation">.</span><span class="token function">doAfter</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token function">print</span><span class="token punctuation">(</span>hs<span class="token punctuation">.</span>application<span class="token punctuation">.</span><span class="token function">frontmostApplication</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span><span class="token function">bundleID</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">end</span><span class="token punctuation">)</span></code></pre>
+<ul>
+<li>브라우저 탭으로 띄우면 앱이 크롬이라 이 방법으로는 가려내지 못한다</li>
+</ul>
+<h2 id="키-넘기기">키 넘기기</h2>
+<pre class="language-lua" data-language="lua"><code class="language-lua"><span class="token keyword">local</span> <span class="token keyword">function</span> <span class="token function">passThrough</span><span class="token punctuation">(</span>hotkey<span class="token punctuation">,</span> mods<span class="token punctuation">,</span> key<span class="token punctuation">)</span>
+	<span class="token keyword">local</span> event <span class="token operator">=</span> hs<span class="token punctuation">.</span>eventtap<span class="token punctuation">.</span>event
+	hotkey<span class="token punctuation">:</span><span class="token function">disable</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token keyword">for</span> _<span class="token punctuation">,</span> mod <span class="token keyword">in</span> <span class="token function">ipairs</span><span class="token punctuation">(</span>mods<span class="token punctuation">)</span> <span class="token keyword">do</span>
+		event<span class="token punctuation">.</span><span class="token function">newKeyEvent</span><span class="token punctuation">(</span>mod<span class="token punctuation">,</span> <span class="token keyword">true</span><span class="token punctuation">)</span><span class="token punctuation">:</span><span class="token function">post</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token keyword">end</span>
+	event<span class="token punctuation">.</span><span class="token function">newKeyEvent</span><span class="token punctuation">(</span>mods<span class="token punctuation">,</span> key<span class="token punctuation">,</span> <span class="token keyword">true</span><span class="token punctuation">)</span><span class="token punctuation">:</span><span class="token function">post</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	hs<span class="token punctuation">.</span>timer<span class="token punctuation">.</span><span class="token function">usleep</span><span class="token punctuation">(</span><span class="token number">20000</span><span class="token punctuation">)</span>
+	event<span class="token punctuation">.</span><span class="token function">newKeyEvent</span><span class="token punctuation">(</span>mods<span class="token punctuation">,</span> key<span class="token punctuation">,</span> <span class="token keyword">false</span><span class="token punctuation">)</span><span class="token punctuation">:</span><span class="token function">post</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token keyword">for</span> i <span class="token operator">=</span> <span class="token operator">#</span>mods<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">1</span> <span class="token keyword">do</span>
+		event<span class="token punctuation">.</span><span class="token function">newKeyEvent</span><span class="token punctuation">(</span>mods<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token keyword">false</span><span class="token punctuation">)</span><span class="token punctuation">:</span><span class="token function">post</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token keyword">end</span>
+	hotkey<span class="token punctuation">:</span><span class="token function">enable</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">end</span></code></pre>
+<ul>
+<li>보낼 키와 같은 이 맥의 단축키를 끄고 보낸다. 켜 둔 채 보내면 이 맥이 자기가 보낸 키를 다시 잡는다</li>
+<li><code>hs.eventtap.keyStroke({'ctrl', 'alt', 'shift'}, 'k')</code> 로 보내면 원격 맥에 <code>k</code> 만 입력된다. <code>keyStroke</code> 는 K 이벤트에 보조 키 표시(flags) 만 붙이는데, 원격 데스크톱은 그 표시를 보지 않고 보조 키를 누르고 떼는 이벤트를 따로 센다</li>
+<li><code>newKeyEvent('ctrl', true)</code> 처럼 보조 키 이름만 주면 그 보조 키를 누르는 이벤트가 된다. 보조 키를 누르고, 키를 누르고 떼고, 보조 키를 거꾸로 뗀다</li>
+</ul>
+<h2 id="한영-키">한영 키</h2>
+<pre class="language-lua" data-language="lua"><code class="language-lua"><span class="token keyword">local</span> remoteABCMods <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">'ctrl'</span><span class="token punctuation">,</span> <span class="token string">'alt'</span><span class="token punctuation">,</span> <span class="token string">'shift'</span><span class="token punctuation">}</span>
+<span class="token keyword">local</span> remoteABCKey <span class="token operator">=</span> <span class="token string">'k'</span>
+
+<span class="token keyword">local</span> inputSourceHotkey
+<span class="token keyword">local</span> remoteABCHotkey
+
+<span class="token comment">-- 이 맥의 입력기만 바꾼다</span>
+<span class="token keyword">local</span> <span class="token keyword">function</span> <span class="token function">switchABC</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token keyword">local</span> current <span class="token operator">=</span> hs<span class="token punctuation">.</span>keycodes<span class="token punctuation">.</span><span class="token function">currentSourceID</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span>current <span class="token operator">==</span> inputEnglish<span class="token punctuation">)</span> <span class="token keyword">then</span>
+		hs<span class="token punctuation">.</span>keycodes<span class="token punctuation">.</span><span class="token function">currentSourceID</span><span class="token punctuation">(</span>lastSource<span class="token punctuation">)</span>
+	<span class="token keyword">else</span>
+		lastSource <span class="token operator">=</span> current
+		hs<span class="token punctuation">.</span>keycodes<span class="token punctuation">.</span><span class="token function">currentSourceID</span><span class="token punctuation">(</span>inputEnglish<span class="token punctuation">)</span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+<span class="token comment">-- F18(오른쪽 Cmd) — 원격 데스크톱이면 조합키로 바꿔 넘긴다</span>
+<span class="token keyword">local</span> <span class="token keyword">function</span> <span class="token function">toggleABC</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token keyword">if</span> <span class="token function">isRemoteDesktop</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">then</span>
+		<span class="token function">passThrough</span><span class="token punctuation">(</span>remoteABCHotkey<span class="token punctuation">,</span> remoteABCMods<span class="token punctuation">,</span> remoteABCKey<span class="token punctuation">)</span>
+		<span class="token keyword">return</span>
+	<span class="token keyword">end</span>
+	<span class="token function">switchABC</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">end</span>
+
+<span class="token comment">-- Ctrl+Space — 원격 데스크톱이면 그대로 넘긴다</span>
+<span class="token keyword">local</span> <span class="token keyword">function</span> <span class="token function">toggleInputSource</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token keyword">if</span> <span class="token function">isRemoteDesktop</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">then</span>
+		<span class="token function">passThrough</span><span class="token punctuation">(</span>inputSourceHotkey<span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token string">'ctrl'</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token string">'space'</span><span class="token punctuation">)</span>
+		<span class="token keyword">return</span>
+	<span class="token keyword">end</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span>lastSource <span class="token operator">==</span> inputKorean<span class="token punctuation">)</span> <span class="token keyword">then</span>
+		lastSource <span class="token operator">=</span> inputJapanese
+	<span class="token keyword">else</span>
+		lastSource <span class="token operator">=</span> inputKorean
+	<span class="token keyword">end</span>
+	hs<span class="token punctuation">.</span>keycodes<span class="token punctuation">.</span><span class="token function">currentSourceID</span><span class="token punctuation">(</span>lastSource<span class="token punctuation">)</span>
+<span class="token keyword">end</span>
+
+inputSourceHotkey <span class="token operator">=</span> hs<span class="token punctuation">.</span>hotkey<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token string">'control'</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token string">'space'</span><span class="token punctuation">,</span> toggleInputSource<span class="token punctuation">)</span>
+hs<span class="token punctuation">.</span>hotkey<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token string">'f18'</span><span class="token punctuation">,</span> toggleABC<span class="token punctuation">)</span>
+<span class="token comment">-- 이 맥이 원격 맥일 때 받는 한영 키</span>
+remoteABCHotkey <span class="token operator">=</span> hs<span class="token punctuation">.</span>hotkey<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span>remoteABCMods<span class="token punctuation">,</span> remoteABCKey<span class="token punctuation">,</span> switchABC<span class="token punctuation">)</span></code></pre>
+<ul>
+<li>두 맥에 같은 <code>init.lua</code> 를 둔다. 들어가는 쪽은 F18 을 조합키로 바꿔 보내고, 들어온 쪽은 그 조합키로 입력기를 바꾼다</li>
+<li>조합키에는 <code>toggleABC</code> 가 아니라 <code>switchABC</code> 를 건다. <code>toggleABC</code> 를 걸면 원격 데스크톱 창이 앞일 때 자기가 보낸 조합키를 받아 다시 조합키를 보내기를 끝없이 되풀이한다</li>
+<li>Ctrl+Space 는 원격 맥의 단축키가 그대로 잡으므로 바꾸지 않고 넘긴다</li>
+</ul>
+<h2 id="원격-데스크톱이-앞에-오면-영어로">원격 데스크톱이 앞에 오면 영어로</h2>
+<pre class="language-lua" data-language="lua"><code class="language-lua">remoteDesktopWatcher <span class="token operator">=</span> hs<span class="token punctuation">.</span>application<span class="token punctuation">.</span>watcher<span class="token punctuation">.</span><span class="token function">new</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>_<span class="token punctuation">,</span> event<span class="token punctuation">,</span> app<span class="token punctuation">)</span>
+	<span class="token keyword">if</span> event <span class="token operator">==</span> hs<span class="token punctuation">.</span>application<span class="token punctuation">.</span>watcher<span class="token punctuation">.</span>activated <span class="token keyword">and</span> app <span class="token keyword">and</span> remoteDesktopApps<span class="token punctuation">[</span>app<span class="token punctuation">:</span><span class="token function">bundleID</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token keyword">then</span>
+		<span class="token keyword">local</span> current <span class="token operator">=</span> hs<span class="token punctuation">.</span>keycodes<span class="token punctuation">.</span><span class="token function">currentSourceID</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+		<span class="token keyword">if</span> current <span class="token operator">~=</span> inputEnglish <span class="token keyword">then</span>
+			lastSource <span class="token operator">=</span> current
+			hs<span class="token punctuation">.</span>keycodes<span class="token punctuation">.</span><span class="token function">currentSourceID</span><span class="token punctuation">(</span>inputEnglish<span class="token punctuation">)</span>
+		<span class="token keyword">end</span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span><span class="token punctuation">)</span><span class="token punctuation">:</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code></pre>
+<ul>
+<li>한글을 치는 것은 원격 맥의 입력기다. 이 맥이 한글 입력 중이면 조합 중인 키가 원격 데스크톱에 제대로 가지 않을 수 있어, 이 맥은 영어로 둔다</li>
+<li>원격 데스크톱에서 나와 오른쪽 Cmd 를 누르면 <code>lastSource</code> 로 돌아간다</li>
+<li><code>remoteDesktopWatcher</code> 는 전역이다. <code>local</code> 이면 가비지 컬렉션으로 언젠가 멈춘다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://www.hammerspoon.org/docs/hs.application.watcher.html">hs.application.watcher</a> · <a href="https://www.hammerspoon.org/docs/hs.eventtap.event.html">hs.eventtap.event</a> — 앱 전환 감시 · 키 이벤트 만들기</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">도구</a></li><li><a href="/docs/tool/Mac/">Mac</a></li><li><a href="/docs/tool/Mac/Hammerspoon/">Hammerspoon</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Hammerspoon/" rel="tag">Hammerspoon</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-07T13:25:16.000Z">2026-11-07</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

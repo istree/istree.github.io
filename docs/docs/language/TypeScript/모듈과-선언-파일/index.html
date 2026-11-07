@@ -1,0 +1,119 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>모듈과 선언 파일 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">TypeScript</span><span class="up"> / <a href="/docs/" title="한 단계 위로">언어</a></span></p><ul><li><a href="/docs/language/TypeScript/">개요</a></li><li><a href="/docs/language/TypeScript/시작하기/">시작하기</a></li><li><a href="/docs/language/TypeScript/tsconfig/">tsconfig</a></li><li><a href="/docs/language/TypeScript/기본-타입/">기본 타입</a></li><li><a href="/docs/language/TypeScript/타입-좁히기/">타입 좁히기</a></li><li><a href="/docs/language/TypeScript/함수와-제네릭/">함수와 제네릭</a></li><li><a href="/docs/language/TypeScript/객체와-클래스/">객체와 클래스</a></li><li><a href="/docs/language/TypeScript/유틸리티-타입/">유틸리티 타입</a></li><li><a href="/docs/language/TypeScript/모듈과-선언-파일/" aria-current="page">모듈과 선언 파일</a></li></ul></nav><article><h1 class="page-title">모듈과 선언 파일</h1><details class="sidebar-m"><summary>목록 · TypeScript</summary><ul><li><a href="/docs/language/TypeScript/">개요</a></li><li><a href="/docs/language/TypeScript/시작하기/">시작하기</a></li><li><a href="/docs/language/TypeScript/tsconfig/">tsconfig</a></li><li><a href="/docs/language/TypeScript/기본-타입/">기본 타입</a></li><li><a href="/docs/language/TypeScript/타입-좁히기/">타입 좁히기</a></li><li><a href="/docs/language/TypeScript/함수와-제네릭/">함수와 제네릭</a></li><li><a href="/docs/language/TypeScript/객체와-클래스/">객체와 클래스</a></li><li><a href="/docs/language/TypeScript/유틸리티-타입/">유틸리티 타입</a></li><li><a href="/docs/language/TypeScript/모듈과-선언-파일/" aria-current="page">모듈과 선언 파일</a></li></ul></details><div class="content"><p>TypeScript 의 모듈은 JavaScript 의 ES 모듈 그대로이고, 타입도 <code>import</code> · <code>export</code> 로 주고받는다. JavaScript 로 된 패키지의 타입은 선언 파일(<code>.d.ts</code>) 에 따로 적는다. 선언 파일에는 타입만 있고 코드는 없다.</p>
+<h2 id="타입-주고받기">타입 주고받기</h2>
+<pre class="language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// types.ts</span>
+<span class="token keyword">export</span> <span class="token keyword">type</span> <span class="token class-name">Note</span> <span class="token operator">=</span> <span class="token punctuation">{</span> id<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span> text<span class="token operator">:</span> <span class="token builtin">string</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token keyword">export</span> <span class="token keyword">const</span> <span class="token constant">MAX_LENGTH</span> <span class="token operator">=</span> <span class="token number">500</span><span class="token punctuation">;</span>
+
+<span class="token comment">// app.ts</span>
+<span class="token keyword">import</span> <span class="token keyword">type</span> <span class="token punctuation">{</span> Note <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"./types.js"</span><span class="token punctuation">;</span>             <span class="token comment">// 타입만 — 빌드하면 이 줄은 사라진다</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> <span class="token constant">MAX_LENGTH</span><span class="token punctuation">,</span> <span class="token keyword">type</span> <span class="token class-name">Note</span> <span class="token keyword">as</span> <span class="token constant">N</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"./types.js"</span><span class="token punctuation">;</span>   <span class="token comment">// 값과 섞을 때는 그 이름에만 type</span>
+<span class="token class-name"><span class="token keyword">export</span></span> <span class="token keyword">type</span> <span class="token punctuation">{</span> Note <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"./types.js"</span><span class="token punctuation">;</span>              <span class="token comment">// 타입 다시 내보내기</span></code></pre>
+<ul>
+<li><code>verbatimModuleSyntax</code> 를 켜면 타입을 <code>type</code> 없이 가져올 때 <code>TS1484</code> 오류가 난다. 무엇이 실행 중에 남는 import 인지 코드에서 보이게 하려는 것이다</li>
+<li>확장자는 <code>module</code> 설정을 따른다. <code>nodenext</code> 는 <code>./types.js</code>, Node 로 <code>.ts</code> 를 바로 돌리면 <code>./types.ts</code>, 번들러(<code>preserve</code>) 는 <code>./types</code></li>
+</ul>
+<h2 id="types">@types</h2>
+<p>타입을 들고 있지 않은 JavaScript 패키지는 DefinitelyTyped 저장소에서 따로 낸 <code>@types/패키지이름</code> 을 설치한다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">npm</span> <span class="token function">install</span> express
+<span class="token function">npm</span> <span class="token function">install</span> <span class="token parameter variable">-D</span> @types/express       <span class="token comment"># Express 는 JavaScript 로 짜여 있어 타입을 따로 받는다</span>
+<span class="token function">npm</span> <span class="token function">install</span> <span class="token parameter variable">-D</span> @types/node          <span class="token comment"># Node 의 내장 모듈 · process</span></code></pre>
+<ul>
+<li>npm 에서 패키지 이름 옆에 <code>TS</code> 표시가 있으면 타입이 들어 있고, <code>DT</code> 표시가 있으면 <code>@types</code> 로 따로 있다</li>
+<li><code>@types/node</code> 의 판은 쓰는 Node 판과 맞춘다(<code>@types/node@26</code>)</li>
+</ul>
+<h2 id="타입이-없는-패키지">타입이 없는 패키지</h2>
+<p><code>@types</code> 도 없는 패키지를 가져오면 오류가 난다.</p>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">error TS7016: Could not find a declaration file for module 'slugger'.
+  '…/node_modules/slugger/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/slugger` if it exists or add a new declaration (.d.ts) file containing `declare module 'slugger';`</code></pre>
+<p>쓰는 만큼만 선언 파일에 적는다. <code>tsconfig.json</code> 의 <code>include</code> 안이면 어느 이름이든 읽는다.</p>
+<pre class="language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// src/types/slugger.d.ts</span>
+<span class="token keyword">declare</span> <span class="token keyword">module</span> <span class="token string">"slugger"</span> <span class="token punctuation">{</span>
+  <span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">slug</span><span class="token punctuation">(</span>input<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<pre class="language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> slug <span class="token keyword">from</span> <span class="token string">"slugger"</span><span class="token punctuation">;</span>
+<span class="token function">slug</span><span class="token punctuation">(</span><span class="token string">"A B"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>      <span class="token comment">// string</span>
+<span class="token function">slug</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>          <span class="token comment">// TS2345: Argument of type 'number' is not assignable to parameter of type 'string'.</span></code></pre>
+<ul>
+<li>급하면 <code>declare module "slugger";</code> 한 줄만 둔다. 그 패키지의 모든 것이 <code>any</code> 가 된다</li>
+</ul>
+<h2 id="이미지--css-같은-파일">이미지 · CSS 같은 파일</h2>
+<p>번들러가 처리하는 <code>import logo from "./logo.svg"</code> 는 TypeScript 가 모르는 파일이라 <code>TS2307: Cannot find module './logo.svg' or its corresponding type declarations.</code> 가 난다. 확장자마다 모양을 선언한다.</p>
+<pre class="language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// src/types/assets.d.ts</span>
+<span class="token keyword">declare</span> <span class="token keyword">module</span> <span class="token string">"*.svg"</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> url<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+  <span class="token keyword">export</span> <span class="token keyword">default</span> url<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">declare</span> <span class="token keyword">module</span> <span class="token string">"*.module.css"</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> classes<span class="token operator">:</span> Record<span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token punctuation">,</span> <span class="token builtin">string</span><span class="token operator">&gt;</span><span class="token punctuation">;</span>
+  <span class="token keyword">export</span> <span class="token keyword">default</span> classes<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<ul>
+<li>Vite 는 이것들을 <code>vite/client</code> 에 갖고 있다. <code>tsconfig.json</code> 의 <code>types</code> 에 <code>"vite/client"</code> 를 넣으면 따로 적지 않는다</li>
+</ul>
+<h2 id="전역에-더하기">전역에 더하기</h2>
+<p><code>window</code> · 전역 변수에 속성을 더하면 <code>TS2339: Property '__APP_VERSION__' does not exist on type 'Window &amp; typeof globalThis'.</code> 가 난다. <code>declare global</code> 로 넓힌다.</p>
+<pre class="language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// src/types/global.d.ts</span>
+<span class="token keyword">export</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>                          <span class="token comment">// 이 파일을 모듈로 만든다 — declare global 은 모듈 안에서 쓴다</span>
+
+<span class="token keyword">declare</span> global <span class="token punctuation">{</span>
+  <span class="token keyword">interface</span> <span class="token class-name">Window</span> <span class="token punctuation">{</span>
+    __APP_VERSION__<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>        <span class="token comment">// 같은 이름의 interface 는 합쳐진다</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">const</span> __BUILD_TIME__<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>     <span class="token comment">// 번들러가 define 으로 넣는 값</span>
+<span class="token punctuation">}</span></code></pre>
+<h2 id="라이브러리-내기">라이브러리 내기</h2>
+<p><code>declaration: true</code> 로 빌드하면 <code>.js</code> 옆에 <code>.d.ts</code> 가 나온다. 주석(JSDoc) 도 그대로 옮겨져 쓰는 쪽 에디터에 보인다.</p>
+<pre class="language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// src/index.ts</span>
+<span class="token keyword">export</span> <span class="token keyword">type</span> <span class="token class-name">Options</span> <span class="token operator">=</span> <span class="token punctuation">{</span> separator<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token comment">/** 글자를 주소에 쓸 꼴로 바꾼다 */</span>
+<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">slugify</span><span class="token punctuation">(</span>text<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span> options<span class="token operator">:</span> Options <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">string</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> text<span class="token punctuation">.</span><span class="token function">trim</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">\s+</span><span class="token regex-delimiter">/</span><span class="token regex-flags">g</span></span><span class="token punctuation">,</span> options<span class="token punctuation">.</span>separator <span class="token operator">??</span> <span class="token string">"-"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<pre class="language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// dist/index.d.ts — tsc 가 만든 것</span>
+<span class="token keyword">export</span> <span class="token keyword">type</span> <span class="token class-name">Options</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+    separator<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token comment">/** 글자를 주소에 쓸 꼴로 바꾼다 */</span>
+<span class="token keyword">export</span> <span class="token keyword">declare</span> <span class="token keyword">function</span> <span class="token function">slugify</span><span class="token punctuation">(</span>text<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span> options<span class="token operator">?</span><span class="token operator">:</span> Options<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span></code></pre>
+<pre class="language-json" data-language="json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"my-lib"</span><span class="token punctuation">,</span>
+  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"module"</span><span class="token punctuation">,</span>
+  <span class="token property">"exports"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"."</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token property">"types"</span><span class="token operator">:</span> <span class="token string">"./dist/index.d.ts"</span><span class="token punctuation">,</span> <span class="token property">"default"</span><span class="token operator">:</span> <span class="token string">"./dist/index.js"</span> <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"files"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"dist"</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span></code></pre>
+<ul>
+<li><code>exports</code> 의 <code>types</code> 조건이 선언 파일 자리를 알려 준다. <code>.d.ts</code> 가 <code>.js</code> 바로 옆에 같은 이름으로 있으면 조건 없이도 찾는다</li>
+<li><code>declarationMap: true</code> 를 주면 쓰는 쪽에서 "정의로 가기" 가 <code>.d.ts</code> 가 아니라 원래 <code>.ts</code> 로 간다(소스를 같이 낸 경우)</li>
+<li>번들러로 묶는 라이브러리도 <code>.d.ts</code> 는 <code>tsc --emitDeclarationOnly</code> 로 따로 만든다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://www.typescriptlang.org/docs/handbook/2/modules.html">Modules</a> · <a href="https://www.typescriptlang.org/docs/handbook/declaration-files/introduction.html">Declaration Files</a> — Handbook</li>
+<li><a href="https://github.com/DefinitelyTyped/DefinitelyTyped">DefinitelyTyped</a> — <code>@types</code> 패키지 저장소</li>
+<li><a href="https://www.typescriptlang.org/docs/handbook/declaration-files/publishing.html">Publishing</a> — 타입을 담아 패키지 내기</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">언어</a></li><li><a href="/docs/language/TypeScript/">TypeScript</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/TypeScript/" rel="tag">TypeScript</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-07T09:16:17.000Z">2026-11-07</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

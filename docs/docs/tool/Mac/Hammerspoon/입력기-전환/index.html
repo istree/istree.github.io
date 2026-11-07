@@ -1,0 +1,169 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>입력기 전환 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">Hammerspoon</span><span class="up"> / <a href="/docs/tool/Mac/" title="한 단계 위로">Mac</a></span></p><ul><li><a href="/docs/tool/Mac/Hammerspoon/">개요</a></li><li><a href="/docs/tool/Mac/Hammerspoon/시작하기/">시작하기</a></li><li><a href="/docs/tool/Mac/Hammerspoon/키-바꾸기/">키 바꾸기</a></li><li><a href="/docs/tool/Mac/Hammerspoon/입력기-전환/" aria-current="page">입력기 전환</a></li><li><a href="/docs/tool/Mac/Hammerspoon/원격-데스크톱/">원격 데스크톱</a></li></ul></nav><article><h1 class="page-title">입력기 전환</h1><details class="sidebar-m"><summary>목록 · Hammerspoon</summary><ul><li><a href="/docs/tool/Mac/Hammerspoon/">개요</a></li><li><a href="/docs/tool/Mac/Hammerspoon/시작하기/">시작하기</a></li><li><a href="/docs/tool/Mac/Hammerspoon/키-바꾸기/">키 바꾸기</a></li><li><a href="/docs/tool/Mac/Hammerspoon/입력기-전환/" aria-current="page">입력기 전환</a></li><li><a href="/docs/tool/Mac/Hammerspoon/원격-데스크톱/">원격 데스크톱</a></li></ul></details><div class="content"><p>한영 전환을 Hammerspoon 으로 직접 한다. 오른쪽 Cmd 로 영어와 한국어를 오가고, Ctrl+Space 로 영어와 짝지을 언어를 한국어 · 일본어 중에 바꾸고, Esc 를 누르면 영어로 돌아간다. macOS 기본 단축키로 바꾸면 바뀌기까지 틈이 있어 첫 글자가 이전 언어로 들어가는 일이 있는데, <code>hs.keycodes.currentSourceID</code> 로 바꾸면 바로 바뀐다.</p>
+<h2 id="준비">준비</h2>
+<ul>
+<li>「시스템 설정 › 키보드 › 텍스트 입력 › 입력 소스」 에 ABC · 2벌식 · 일본어(로마자 입력) 를 넣는다</li>
+<li>같은 곳에서 Caps Lock 으로 ABC 와 오가는 설정을 끄고, 「키보드 단축키 › 입력 소스」 의 「이전 입력 소스 선택」(Ctrl+Space) 도 끈다. 켜 두면 Hammerspoon 의 단축키와 겹친다</li>
+<li>오른쪽 Cmd 는 <code>hidutil</code> 로 F18 로 바꿔 둔다 (<code>remapper:remap('rcmd', 'f18')</code>)</li>
+</ul>
+<h2 id="입력기-id">입력기 ID</h2>
+<pre class="language-lua" data-language="lua"><code class="language-lua">hs<span class="token punctuation">.</span>keycodes<span class="token punctuation">.</span><span class="token function">currentSourceID</span><span class="token punctuation">(</span><span class="token punctuation">)</span>     <span class="token comment">-- "com.apple.inputmethod.Korean.2SetKorean"</span>
+hs<span class="token punctuation">.</span>keycodes<span class="token punctuation">.</span><span class="token function">layouts</span><span class="token punctuation">(</span><span class="token keyword">true</span><span class="token punctuation">)</span>         <span class="token comment">-- { "com.apple.keylayout.ABC" }</span>
+hs<span class="token punctuation">.</span>keycodes<span class="token punctuation">.</span><span class="token function">methods</span><span class="token punctuation">(</span><span class="token keyword">true</span><span class="token punctuation">)</span>         <span class="token comment">-- { "com.apple.inputmethod.Korean.2SetKorean",</span>
+                                  <span class="token comment">--   "com.apple.inputmethod.Kotoeri.RomajiTyping.Japanese", … }</span>
+hs<span class="token punctuation">.</span>keycodes<span class="token punctuation">.</span><span class="token function">currentSourceID</span><span class="token punctuation">(</span><span class="token string">"com.apple.keylayout.ABC"</span><span class="token punctuation">)</span>   <span class="token comment">-- 바꾼다. 되면 true</span></code></pre>
+<ul>
+<li>영어처럼 글자를 그대로 내는 것은 자판(layout), 한국어 · 일본어처럼 글자를 조합하는 것은 입력기(method) 로 따로 나온다</li>
+<li><code>true</code> 를 빼면 「ABC」 · 「2-Set Korean」 같은 이름이 나온다. 바꿀 때는 ID 를 쓴다</li>
+</ul>
+<h2 id="한영--한일">한영 · 한일</h2>
+<pre class="language-lua" data-language="lua"><code class="language-lua"><span class="token keyword">local</span> inputEnglish <span class="token operator">=</span> <span class="token string">"com.apple.keylayout.ABC"</span>
+<span class="token keyword">local</span> inputKorean <span class="token operator">=</span> <span class="token string">"com.apple.inputmethod.Korean.2SetKorean"</span>
+<span class="token keyword">local</span> inputJapanese <span class="token operator">=</span> <span class="token string">"com.apple.inputmethod.Kotoeri.RomajiTyping.Japanese"</span>
+
+<span class="token keyword">local</span> lastSource <span class="token operator">=</span> inputKorean
+
+<span class="token comment">-- F18(오른쪽 Cmd) — 영어 ↔ 마지막 언어</span>
+<span class="token keyword">local</span> <span class="token keyword">function</span> <span class="token function">toggleABC</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token keyword">local</span> current <span class="token operator">=</span> hs<span class="token punctuation">.</span>keycodes<span class="token punctuation">.</span><span class="token function">currentSourceID</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span>current <span class="token operator">==</span> inputEnglish<span class="token punctuation">)</span> <span class="token keyword">then</span>
+		hs<span class="token punctuation">.</span>keycodes<span class="token punctuation">.</span><span class="token function">currentSourceID</span><span class="token punctuation">(</span>lastSource<span class="token punctuation">)</span>
+	<span class="token keyword">else</span>
+		lastSource <span class="token operator">=</span> current
+		hs<span class="token punctuation">.</span>keycodes<span class="token punctuation">.</span><span class="token function">currentSourceID</span><span class="token punctuation">(</span>inputEnglish<span class="token punctuation">)</span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+<span class="token comment">-- Ctrl+Space — 짝지을 언어를 한국어 ↔ 일본어로 바꾸고 그 언어로</span>
+<span class="token keyword">local</span> <span class="token keyword">function</span> <span class="token function">toggleInputSource</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span>lastSource <span class="token operator">==</span> inputKorean<span class="token punctuation">)</span> <span class="token keyword">then</span>
+		lastSource <span class="token operator">=</span> inputJapanese
+	<span class="token keyword">else</span>
+		lastSource <span class="token operator">=</span> inputKorean
+	<span class="token keyword">end</span>
+	hs<span class="token punctuation">.</span>keycodes<span class="token punctuation">.</span><span class="token function">currentSourceID</span><span class="token punctuation">(</span>lastSource<span class="token punctuation">)</span>
+<span class="token keyword">end</span>
+
+hs<span class="token punctuation">.</span>hotkey<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token string">'f18'</span><span class="token punctuation">,</span> toggleABC<span class="token punctuation">)</span>
+hs<span class="token punctuation">.</span>hotkey<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token string">'control'</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token string">'space'</span><span class="token punctuation">,</span> toggleInputSource<span class="token punctuation">)</span></code></pre>
+<ul>
+<li>영어로 바꿀 때 지금 언어를 <code>lastSource</code> 에 넣는다. 메뉴 막대에서 일본어로 바꾼 뒤에도 F18 두 번이면 일본어로 돌아온다</li>
+<li><code>hs.hotkey</code> 는 모든 앱에서 그 키를 가로챈다. 터미널 · emacs 에서 Ctrl+Space 를 쓰는 기능은 동작하지 않는다</li>
+</ul>
+<h2 id="esc-로-영어">Esc 로 영어</h2>
+<p>vim 처럼 Esc 로 모드를 바꾸는 곳에서 한글이 그대로 남아 명령이 먹지 않는 것을 막는다.</p>
+<pre class="language-lua" data-language="lua"><code class="language-lua"><span class="token keyword">local</span> esc_bind
+
+<span class="token keyword">local</span> <span class="token keyword">function</span> <span class="token function">convert_to_eng_with_esc</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token comment">-- 단축키를 끄고 Esc 를 보낸 뒤 다시 켠다</span>
+	esc_bind<span class="token punctuation">:</span><span class="token function">disable</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	hs<span class="token punctuation">.</span>eventtap<span class="token punctuation">.</span><span class="token function">keyStroke</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token string">'escape'</span><span class="token punctuation">,</span> <span class="token number">20000</span><span class="token punctuation">)</span>
+	esc_bind<span class="token punctuation">:</span><span class="token function">enable</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+	<span class="token keyword">if</span> <span class="token punctuation">(</span>hs<span class="token punctuation">.</span>keycodes<span class="token punctuation">.</span><span class="token function">currentSourceID</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">~=</span> inputEnglish<span class="token punctuation">)</span> <span class="token keyword">then</span>
+		hs<span class="token punctuation">.</span>keycodes<span class="token punctuation">.</span><span class="token function">currentSourceID</span><span class="token punctuation">(</span>inputEnglish<span class="token punctuation">)</span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+esc_bind <span class="token operator">=</span> hs<span class="token punctuation">.</span>hotkey<span class="token punctuation">.</span><span class="token function">new</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token string">'escape'</span><span class="token punctuation">,</span> convert_to_eng_with_esc<span class="token punctuation">)</span><span class="token punctuation">:</span><span class="token function">enable</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code></pre>
+<ul>
+<li>Esc 에 단축키를 걸면 Esc 가 앱에 가지 않는다. 단축키를 잠깐 끄고 <code>keyStroke</code> 로 Esc 를 직접 보낸다</li>
+<li><code>keyStroke</code> 의 세 번째 인자는 키를 누르고 뗄 때까지의 지연(µs) 이다. 기본값 200ms 로 두면 Esc 가 느리게 먹는다. 0 으로 하면 보낸 Esc 가 처리되기 전에 단축키가 다시 켜져 자기가 보낸 Esc 를 또 잡을 수 있어, 20ms 로 둔다</li>
+<li>Esc 를 보내면 조합 중인 한글이 확정된 뒤 영어로 바뀐다</li>
+</ul>
+<h2 id="전체-initlua">전체 init.lua</h2>
+<pre class="language-lua" data-language="lua"><code class="language-lua"><span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'hs.ipc'</span><span class="token punctuation">)</span>
+
+<span class="token comment">-- .lua 를 저장하면 다시 불러온다</span>
+<span class="token keyword">local</span> <span class="token keyword">function</span> <span class="token function">reloadOnLua</span><span class="token punctuation">(</span>paths<span class="token punctuation">)</span>
+	<span class="token keyword">for</span> _<span class="token punctuation">,</span> path <span class="token keyword">in</span> <span class="token function">ipairs</span><span class="token punctuation">(</span>paths<span class="token punctuation">)</span> <span class="token keyword">do</span>
+		<span class="token keyword">if</span> path<span class="token punctuation">:</span><span class="token function">sub</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">4</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token string">'.lua'</span> <span class="token keyword">then</span>
+			hs<span class="token punctuation">.</span><span class="token function">reload</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+			<span class="token keyword">return</span>
+		<span class="token keyword">end</span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+<span class="token keyword">local</span> realConfigDir <span class="token operator">=</span> hs<span class="token punctuation">.</span>fs<span class="token punctuation">.</span><span class="token function">pathToAbsolute</span><span class="token punctuation">(</span>hs<span class="token punctuation">.</span>configdir <span class="token operator">..</span> <span class="token string">'/init.lua'</span><span class="token punctuation">)</span><span class="token punctuation">:</span><span class="token function">match</span><span class="token punctuation">(</span><span class="token string">'(.*)/'</span><span class="token punctuation">)</span>
+configWatchers <span class="token operator">=</span> <span class="token punctuation">{</span> hs<span class="token punctuation">.</span>pathwatcher<span class="token punctuation">.</span><span class="token function">new</span><span class="token punctuation">(</span>hs<span class="token punctuation">.</span>configdir<span class="token punctuation">,</span> reloadOnLua<span class="token punctuation">)</span><span class="token punctuation">:</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
+<span class="token keyword">if</span> realConfigDir <span class="token operator">~=</span> hs<span class="token punctuation">.</span>configdir <span class="token keyword">then</span>
+	table<span class="token punctuation">.</span><span class="token function">insert</span><span class="token punctuation">(</span>configWatchers<span class="token punctuation">,</span> hs<span class="token punctuation">.</span>pathwatcher<span class="token punctuation">.</span><span class="token function">new</span><span class="token punctuation">(</span>realConfigDir<span class="token punctuation">,</span> reloadOnLua<span class="token punctuation">)</span><span class="token punctuation">:</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token keyword">end</span>
+
+<span class="token comment">-- 키 바꾸기 — Caps Lock ↔ 왼쪽 Ctrl, 오른쪽 Cmd → F18</span>
+<span class="token keyword">local</span> FRemap <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'foundation_remapping'</span><span class="token punctuation">)</span>
+<span class="token keyword">local</span> remapper <span class="token operator">=</span> FRemap<span class="token punctuation">.</span><span class="token function">new</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+remapper<span class="token punctuation">:</span><span class="token function">remap</span><span class="token punctuation">(</span><span class="token string">'lctrl'</span><span class="token punctuation">,</span> <span class="token string">'capslock'</span><span class="token punctuation">)</span>
+remapper<span class="token punctuation">:</span><span class="token function">remap</span><span class="token punctuation">(</span><span class="token string">'capslock'</span><span class="token punctuation">,</span> <span class="token string">'lctrl'</span><span class="token punctuation">)</span>
+remapper<span class="token punctuation">:</span><span class="token function">remap</span><span class="token punctuation">(</span><span class="token string">'rcmd'</span><span class="token punctuation">,</span> <span class="token string">'f18'</span><span class="token punctuation">)</span>
+remapper<span class="token punctuation">:</span><span class="token function">register</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token keyword">local</span> inputEnglish <span class="token operator">=</span> <span class="token string">"com.apple.keylayout.ABC"</span>
+<span class="token keyword">local</span> inputKorean <span class="token operator">=</span> <span class="token string">"com.apple.inputmethod.Korean.2SetKorean"</span>
+<span class="token keyword">local</span> inputJapanese <span class="token operator">=</span> <span class="token string">"com.apple.inputmethod.Kotoeri.RomajiTyping.Japanese"</span>
+
+<span class="token comment">-- 불러올 때 한국어로 맞춘다</span>
+hs<span class="token punctuation">.</span>keycodes<span class="token punctuation">.</span><span class="token function">currentSourceID</span><span class="token punctuation">(</span>inputKorean<span class="token punctuation">)</span>
+<span class="token keyword">local</span> lastSource <span class="token operator">=</span> inputKorean
+
+<span class="token keyword">local</span> <span class="token keyword">function</span> <span class="token function">toggleInputSource</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span>lastSource <span class="token operator">==</span> inputKorean<span class="token punctuation">)</span> <span class="token keyword">then</span>
+		lastSource <span class="token operator">=</span> inputJapanese
+	<span class="token keyword">else</span>
+		lastSource <span class="token operator">=</span> inputKorean
+	<span class="token keyword">end</span>
+	hs<span class="token punctuation">.</span>keycodes<span class="token punctuation">.</span><span class="token function">currentSourceID</span><span class="token punctuation">(</span>lastSource<span class="token punctuation">)</span>
+<span class="token keyword">end</span>
+
+<span class="token keyword">local</span> <span class="token keyword">function</span> <span class="token function">toggleABC</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token keyword">local</span> current <span class="token operator">=</span> hs<span class="token punctuation">.</span>keycodes<span class="token punctuation">.</span><span class="token function">currentSourceID</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span>current <span class="token operator">==</span> inputEnglish<span class="token punctuation">)</span> <span class="token keyword">then</span>
+		hs<span class="token punctuation">.</span>keycodes<span class="token punctuation">.</span><span class="token function">currentSourceID</span><span class="token punctuation">(</span>lastSource<span class="token punctuation">)</span>
+	<span class="token keyword">else</span>
+		lastSource <span class="token operator">=</span> current
+		hs<span class="token punctuation">.</span>keycodes<span class="token punctuation">.</span><span class="token function">currentSourceID</span><span class="token punctuation">(</span>inputEnglish<span class="token punctuation">)</span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+hs<span class="token punctuation">.</span>hotkey<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token string">'control'</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token string">'space'</span><span class="token punctuation">,</span> toggleInputSource<span class="token punctuation">)</span>
+hs<span class="token punctuation">.</span>hotkey<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token string">'f18'</span><span class="token punctuation">,</span> toggleABC<span class="token punctuation">)</span>
+
+<span class="token keyword">local</span> esc_bind
+
+<span class="token keyword">local</span> <span class="token keyword">function</span> <span class="token function">convert_to_eng_with_esc</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	esc_bind<span class="token punctuation">:</span><span class="token function">disable</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	hs<span class="token punctuation">.</span>eventtap<span class="token punctuation">.</span><span class="token function">keyStroke</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token string">'escape'</span><span class="token punctuation">,</span> <span class="token number">20000</span><span class="token punctuation">)</span>
+	esc_bind<span class="token punctuation">:</span><span class="token function">enable</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+	<span class="token keyword">if</span> <span class="token punctuation">(</span>hs<span class="token punctuation">.</span>keycodes<span class="token punctuation">.</span><span class="token function">currentSourceID</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">~=</span> inputEnglish<span class="token punctuation">)</span> <span class="token keyword">then</span>
+		hs<span class="token punctuation">.</span>keycodes<span class="token punctuation">.</span><span class="token function">currentSourceID</span><span class="token punctuation">(</span>inputEnglish<span class="token punctuation">)</span>
+	<span class="token keyword">end</span>
+<span class="token keyword">end</span>
+
+esc_bind <span class="token operator">=</span> hs<span class="token punctuation">.</span>hotkey<span class="token punctuation">.</span><span class="token function">new</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token string">'escape'</span><span class="token punctuation">,</span> convert_to_eng_with_esc<span class="token punctuation">)</span><span class="token punctuation">:</span><span class="token function">enable</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code></pre>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://www.hammerspoon.org/docs/hs.keycodes.html">hs.keycodes</a> · <a href="https://www.hammerspoon.org/docs/hs.hotkey.html">hs.hotkey</a> · <a href="https://www.hammerspoon.org/docs/hs.eventtap.html">hs.eventtap</a> — 입력기 · 단축키 · 키 이벤트</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">도구</a></li><li><a href="/docs/tool/Mac/">Mac</a></li><li><a href="/docs/tool/Mac/Hammerspoon/">Hammerspoon</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Hammerspoon/" rel="tag">Hammerspoon</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-07T10:57:25.000Z">2026-11-07</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

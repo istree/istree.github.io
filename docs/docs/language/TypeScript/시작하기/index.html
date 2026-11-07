@@ -1,0 +1,142 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>시작하기 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">TypeScript</span><span class="up"> / <a href="/docs/" title="한 단계 위로">언어</a></span></p><ul><li><a href="/docs/language/TypeScript/">개요</a></li><li><a href="/docs/language/TypeScript/시작하기/" aria-current="page">시작하기</a></li><li><a href="/docs/language/TypeScript/tsconfig/">tsconfig</a></li><li><a href="/docs/language/TypeScript/기본-타입/">기본 타입</a></li><li><a href="/docs/language/TypeScript/타입-좁히기/">타입 좁히기</a></li><li><a href="/docs/language/TypeScript/함수와-제네릭/">함수와 제네릭</a></li><li><a href="/docs/language/TypeScript/객체와-클래스/">객체와 클래스</a></li><li><a href="/docs/language/TypeScript/유틸리티-타입/">유틸리티 타입</a></li><li><a href="/docs/language/TypeScript/모듈과-선언-파일/">모듈과 선언 파일</a></li></ul></nav><article><h1 class="page-title">시작하기</h1><details class="sidebar-m"><summary>목록 · TypeScript</summary><ul><li><a href="/docs/language/TypeScript/">개요</a></li><li><a href="/docs/language/TypeScript/시작하기/" aria-current="page">시작하기</a></li><li><a href="/docs/language/TypeScript/tsconfig/">tsconfig</a></li><li><a href="/docs/language/TypeScript/기본-타입/">기본 타입</a></li><li><a href="/docs/language/TypeScript/타입-좁히기/">타입 좁히기</a></li><li><a href="/docs/language/TypeScript/함수와-제네릭/">함수와 제네릭</a></li><li><a href="/docs/language/TypeScript/객체와-클래스/">객체와 클래스</a></li><li><a href="/docs/language/TypeScript/유틸리티-타입/">유틸리티 타입</a></li><li><a href="/docs/language/TypeScript/모듈과-선언-파일/">모듈과 선언 파일</a></li></ul></details><div class="content"><p>TypeScript 는 npm 패키지 <code>typescript</code> 로 설치하고, 그 안의 <code>tsc</code> 가 타입을 검사하고 <code>.ts</code> 를 <code>.js</code> 로 바꾼다. 프로젝트마다 <code>tsconfig.json</code> 에 설정을 둔다.</p>
+<h2 id="설치">설치</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">npm</span> init <span class="token parameter variable">-y</span>
+<span class="token function">npm</span> <span class="token function">install</span> <span class="token parameter variable">-D</span> typescript @types/node      <span class="token comment"># @types/node — Node 의 타입 (fs · process …)</span>
+npx tsc <span class="token parameter variable">-v</span>                                 <span class="token comment"># Version 7.0.2</span>
+npx tsc <span class="token parameter variable">--init</span>                             <span class="token comment"># tsconfig.json 만들기</span></code></pre>
+<ul>
+<li>프로젝트마다 <code>-D</code> 로 설치한다. 전역 설치(<code>-g</code>) 는 프로젝트마다 판이 달라 쓰지 않는다</li>
+<li><code>tsc --init</code> 이 만드는 <code>tsconfig.json</code> 은 <code>strict</code> · <code>noUncheckedIndexedAccess</code> 같은 엄격한 옵션을 켠 채로 나온다</li>
+</ul>
+<h2 id="검사와-빌드">검사와 빌드</h2>
+<pre class="language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// src/greet.ts</span>
+<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">greet</span><span class="token punctuation">(</span>name<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">string</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Hello, </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>name<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">!</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">greet</span><span class="token punctuation">(</span><span class="token string">"geon"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<pre class="language-sh" data-language="sh"><code class="language-sh">npx tsc                     <span class="token comment"># tsconfig.json 대로 검사하고 outDir 에 .js 를 쓴다</span>
+npx tsc <span class="token parameter variable">--noEmit</span>            <span class="token comment"># 검사만 — 파일을 쓰지 않는다</span>
+npx tsc <span class="token parameter variable">--watch</span>             <span class="token comment"># 고칠 때마다 다시 검사</span>
+npx tsc <span class="token parameter variable">-p</span> tsconfig.build.json   <span class="token comment"># 다른 설정 파일로</span></code></pre>
+<pre class="language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// dist/greet.js — 타입만 지워진다</span>
+<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">greet</span><span class="token punctuation">(</span><span class="token parameter">name</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Hello, </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>name<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">!</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">greet</span><span class="token punctuation">(</span><span class="token string">"geon"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<ul>
+<li>오류가 있어도 기본으로는 <code>.js</code> 를 쓴다. 오류가 있으면 쓰지 않으려면 <code>"noEmitOnError": true</code> 를 준다</li>
+<li>오류는 <code>src/greet.ts(3,1): error TS2322: Type 'string' is not assignable to type 'number'.</code> 꼴로 나온다(터미널에서는 그 줄의 코드도 같이 보여 준다). <code>TS2322</code> 같은 번호로 찾으면 같은 오류의 설명이 많이 나온다</li>
+</ul>
+<h2 id="어디서-돌리나">어디서 돌리나</h2>
+<p>타입 검사와 실행을 나눠서 생각한다. 검사는 늘 <code>tsc</code> 가 하고, 실행은 상황마다 다르다.</p>
+<table>
+<thead>
+<tr>
+<th>상황</th>
+<th>실행</th>
+<th>검사</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Node 스크립트 · 서버</td>
+<td><code>node app.ts</code> — Node 가 타입을 지우고 돈다</td>
+<td><code>tsc --noEmit</code></td>
+</tr>
+<tr>
+<td>브라우저 앱</td>
+<td>Vite · esbuild 가 <code>.ts</code> 를 바꿔 묶는다</td>
+<td><code>tsc --noEmit</code> (Vite 템플릿의 <code>npm run build</code> 에 들어 있다)</td>
+</tr>
+<tr>
+<td>npm 라이브러리</td>
+<td><code>tsc</code> 가 <code>.js</code> · <code>.d.ts</code> 를 만든다</td>
+<td><code>tsc</code></td>
+</tr>
+<tr>
+<td>Deno · Bun</td>
+<td>그대로 돈다</td>
+<td><code>deno check</code> · <code>tsc --noEmit</code></td>
+</tr>
+</tbody>
+</table>
+<pre class="language-json" data-language="json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"scripts"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"dev"</span><span class="token operator">:</span> <span class="token string">"node --watch src/app.ts"</span><span class="token punctuation">,</span>
+    <span class="token property">"typecheck"</span><span class="token operator">:</span> <span class="token string">"tsc --noEmit"</span><span class="token punctuation">,</span>
+    <span class="token property">"build"</span><span class="token operator">:</span> <span class="token string">"tsc"</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<ul>
+<li>타입을 지우기만 하는 실행기(Node · esbuild · Vite) 는 타입 오류가 있어도 돈다. CI 에서 <code>tsc --noEmit</code> 을 따로 돌려 막는다</li>
+<li>Node 로 바로 돌릴 때는 지워서 없어지는 문법만 쓴다. <code>enum</code> · <code>namespace</code> 는 쓰지 않는다 (<code>"erasableSyntaxOnly": true</code> 로 막는다)</li>
+</ul>
+<h2 id="typescript-6-과-7">TypeScript 6 과 7</h2>
+<p>TypeScript 7 은 컴파일러를 Go 로 새로 짠 판이다. 문법 · 검사 결과는 6 과 같고, 큰 프로젝트일수록 빌드 · 에디터가 훨씬 빠르다. 다만 컴파일러를 JavaScript 에서 부르는 API(<code>ts.createProgram</code> 같은 것) 가 없다.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>TypeScript 6</th>
+<th>TypeScript 7</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>컴파일러</td>
+<td>JavaScript</td>
+<td>Go (네이티브 실행 파일)</td>
+</tr>
+<tr>
+<td><code>tsc</code> 명령 · tsconfig</td>
+<td>같다</td>
+<td>같다</td>
+</tr>
+<tr>
+<td>JavaScript API</td>
+<td>있다</td>
+<td>없다</td>
+</tr>
+<tr>
+<td>쓸 곳</td>
+<td>API 를 쓰는 도구가 있을 때</td>
+<td>그 밖 모두</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>@rollup/plugin-typescript</code> · 일부 ESLint 플러그인 · 문서 생성기처럼 API 로 컴파일러를 부르는 도구는 TypeScript 7 에서 <code>Cannot read properties of undefined</code> 같은 오류로 멈춘다. 그 프로젝트는 <code>npm install -D typescript@6</code> 으로 6 을 쓴다</li>
+<li>6 은 JavaScript 로 짠 마지막 판이고, 7 에서 빠질 옵션을 미리 경고한다. 6 에서 경고 없이 빌드되면 7 로 옮기기 쉽다</li>
+</ul>
+<h2 id="예전에는">예전에는</h2>
+<ul>
+<li><code>ts-node</code> · <code>tsx</code> 로 <code>.ts</code> 를 바로 실행했다. 지금은 Node(22.18 이상) 가 직접 돌린다</li>
+<li><code>tsc --init</code> 이 거의 모든 옵션을 주석으로 단 긴 파일을 만들었다. 지금은 권하는 옵션만 담은 짧은 파일을 만든다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://www.typescriptlang.org/download/">Download</a> · <a href="https://www.typescriptlang.org/docs/handbook/compiler-options.html">tsc CLI Options</a> — 공식 문서</li>
+<li><a href="https://nodejs.org/learn/typescript/run-natively">Running TypeScript Natively</a> — Node 에서 바로 실행</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">언어</a></li><li><a href="/docs/language/TypeScript/">TypeScript</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/TypeScript/" rel="tag">TypeScript</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-07T09:16:17.000Z">2026-11-07</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>
