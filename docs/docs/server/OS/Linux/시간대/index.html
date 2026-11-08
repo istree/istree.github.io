@@ -1,0 +1,80 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>시간대 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">Linux</span><span class="up"> / <a href="/docs/server/OS/" title="한 단계 위로">OS</a></span></p><ul><li><a href="/docs/server/OS/Linux/">개요</a></li><li><a href="/docs/server/OS/Linux/셸/">셸</a></li><li><a href="/docs/server/OS/Linux/파일-찾기/">파일 찾기</a></li><li><a href="/docs/server/OS/Linux/복사와-동기화/">복사와 동기화</a></li><li><a href="/docs/server/OS/Linux/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/OS/Linux/패키지/">패키지</a></li><li><a href="/docs/server/OS/Linux/프로세스와-포트/">프로세스와 포트</a></li><li><a href="/docs/server/OS/Linux/디스크/">디스크</a></li><li><a href="/docs/server/OS/Linux/서비스/">서비스</a></li><li><a href="/docs/server/OS/Linux/예약-작업/">예약 작업</a></li><li><a href="/docs/server/OS/Linux/네트워크/">네트워크</a></li><li><a href="/docs/server/OS/Linux/방화벽/">방화벽</a></li><li><a href="/docs/server/OS/Linux/SSH/">SSH</a></li><li><a href="/docs/server/OS/Linux/시간대/" aria-current="page">시간대</a></li></ul></nav><article><h1 class="page-title">시간대</h1><details class="sidebar-m"><summary>목록 · Linux</summary><ul><li><a href="/docs/server/OS/Linux/">개요</a></li><li><a href="/docs/server/OS/Linux/셸/">셸</a></li><li><a href="/docs/server/OS/Linux/파일-찾기/">파일 찾기</a></li><li><a href="/docs/server/OS/Linux/복사와-동기화/">복사와 동기화</a></li><li><a href="/docs/server/OS/Linux/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/OS/Linux/패키지/">패키지</a></li><li><a href="/docs/server/OS/Linux/프로세스와-포트/">프로세스와 포트</a></li><li><a href="/docs/server/OS/Linux/디스크/">디스크</a></li><li><a href="/docs/server/OS/Linux/서비스/">서비스</a></li><li><a href="/docs/server/OS/Linux/예약-작업/">예약 작업</a></li><li><a href="/docs/server/OS/Linux/네트워크/">네트워크</a></li><li><a href="/docs/server/OS/Linux/방화벽/">방화벽</a></li><li><a href="/docs/server/OS/Linux/SSH/">SSH</a></li><li><a href="/docs/server/OS/Linux/시간대/" aria-current="page">시간대</a></li></ul></details><div class="content"><p>리눅스는 시계를 UTC 로 두고 시간대 설정에 따라 지역 시각으로 바꿔 보인다. 서버 · 컨테이너는 대개 UTC 로 시작해서, 로그 시각이 9 시간 어긋나 보이면 시간대를 맞춘다. 시계 자체가 틀어지지 않게 NTP 로 맞추는 일은 systemd-timesyncd 가 한다. 아래 예제는 colima 의 Ubuntu 24.04 가상 머신과 <code>ubuntu:24.04</code> 컨테이너에서 돌렸다.</p>
+<h2 id="보기와-바꾸기">보기와 바꾸기</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh">timedatectl</code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">               Local time: Sun 2026-11-08 18:57:30 KST
+           Universal time: Sun 2026-11-08 09:57:30 UTC
+                 RTC time: Sun 2026-11-08 09:57:30
+                Time zone: Asia/Seoul (KST, +0900)
+System clock synchronized: yes
+              NTP service: active
+          RTC in local TZ: no</code></pre>
+<pre class="language-sh" data-language="sh"><code class="language-sh">timedatectl list-timezones <span class="token operator">|</span> <span class="token function">grep</span> Seoul      <span class="token comment"># Asia/Seoul — 이름은 497 개</span>
+<span class="token function">sudo</span> timedatectl set-timezone Asia/Seoul
+<span class="token function">ls</span> <span class="token parameter variable">-l</span> /etc/localtime
+<span class="token comment"># /etc/localtime -&gt; /usr/share/zoneinfo/Asia/Seoul</span></code></pre>
+<ul>
+<li><code>set-timezone</code> 은 <code>/etc/localtime</code> 링크를 바꾼다. 바꾸면 바로 <code>date</code> 에 반영된다</li>
+<li>이미 떠 있는 프로그램(DB · Java 앱) 은 시작할 때의 시간대를 쥐고 있어 다시 띄워야 바뀐다</li>
+<li>서버를 UTC 로 두고 앱에서 시간대를 다루는 곳도 많다. 여러 지역의 서버 로그를 맞춰 볼 때 편하다</li>
+</ul>
+<h2 id="시계-맞추기-ntp">시계 맞추기 (NTP)</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh">timedatectl timesync-status</code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">       Server: 185.125.190.58 (ntp.ubuntu.com)
+Poll interval: 34min 8s (min: 32s; max 34min 8s)
+         Leap: normal
+      Version: 4
+      Stratum: 2
+    Reference: 1D586304
+    Precision: 1us (-25)
+Root distance: 3.776ms (max: 5s)</code></pre>
+<ul>
+<li>Ubuntu 는 systemd-timesyncd 가 <code>ntp.ubuntu.com</code> 에 맞춘다. <code>System clock synchronized: yes</code> 면 맞춰진 것이다</li>
+<li>회사 안의 NTP 서버를 쓰려면 <code>/etc/systemd/timesyncd.conf</code> 의 <code>[Time]</code> 에 <code>NTP=ntp.회사.lan</code> 을 적고 <code>sudo systemctl restart systemd-timesyncd</code> 한다</li>
+<li>꺼져 있으면 <code>sudo timedatectl set-ntp true</code> 로 켠다</li>
+</ul>
+<h2 id="컨테이너">컨테이너</h2>
+<p><code>ubuntu:24.04</code> 이미지에는 <code>/etc/localtime</code> 도 시간대 자료도 없다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">docker</span> run <span class="token parameter variable">--rm</span> ubuntu:24.04 <span class="token function">date</span>                      <span class="token comment"># Sun Nov  8 09:57:30 UTC 2026</span>
+<span class="token function">docker</span> run <span class="token parameter variable">--rm</span> <span class="token parameter variable">-e</span> <span class="token assign-left variable">TZ</span><span class="token operator">=</span>Asia/Seoul ubuntu:24.04 <span class="token function">date</span>     <span class="token comment"># Sun Nov  8 09:57:31 Asia 2026 — 자료가 없어 UTC 시각 그대로</span></code></pre>
+<p><code>tzdata</code> 를 깔면 <code>TZ</code> 가 먹는다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">apt-get</span> <span class="token function">install</span> <span class="token parameter variable">-y</span> tzdata
+<span class="token assign-left variable">TZ</span><span class="token operator">=</span>Asia/Seoul <span class="token function">date</span>                                      <span class="token comment"># Sun Nov  8 18:57:43 KST 2026</span>
+<span class="token function">ln</span> <span class="token parameter variable">-sf</span> /usr/share/zoneinfo/Asia/Seoul /etc/localtime    <span class="token comment"># TZ 없이 늘 — Sun Nov  8 18:57:43 KST 2026</span></code></pre>
+<ul>
+<li><code>tzdata</code> 없이 <code>/etc/localtime</code> 링크만 만들면 가리킬 파일(<code>/usr/share/zoneinfo</code>) 이 없어 그대로 UTC 다</li>
+<li>Dockerfile 에서는 <code>RUN apt-get install -y tzdata</code> 와 <code>ENV TZ=Asia/Seoul</code> 을 함께 둔다. 설치가 시간대를 물어 멈추지 않게 <code>DEBIAN_FRONTEND=noninteractive</code> 를 붙인다</li>
+<li>호스트의 시간대를 그대로 쓰려면 <code>-v /etc/localtime:/etc/localtime:ro</code> 로 연결한다. 맥의 Docker 에서는 호스트가 가상 머신이라, 가상 머신의 시간대를 따른다</li>
+<li>이미지마다 다르다. <code>nginx:alpine</code> · <code>mysql</code> 처럼 <code>tzdata</code> 가 든 이미지는 <code>TZ</code> 만 주면 된다</li>
+</ul>
+<h2 id="예전에는">예전에는</h2>
+<ul>
+<li><code>/etc/timezone</code> 파일을 고치고 <code>dpkg-reconfigure tzdata</code> 를 돌렸다. 지금은 <code>timedatectl set-timezone</code> 하나다</li>
+<li>NTP 는 <code>ntpdate</code> 를 cron 으로 돌리거나 <code>ntpd</code> 를 깔았다. 지금은 기본으로 깔린 systemd-timesyncd 가 한다 (정밀한 서버는 chrony)</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://man7.org/linux/man-pages/man1/timedatectl.1.html">timedatectl(1)</a> · <a href="https://man7.org/linux/man-pages/man5/timesyncd.conf.5.html">timesyncd.conf(5)</a> — man7.org</li>
+<li><a href="https://documentation.ubuntu.com/server/explanation/networking/about-time-synchronisation/">Ubuntu Server — Time synchronisation</a> — Ubuntu 문서</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/OS/">OS</a></li><li><a href="/docs/server/OS/Linux/">Linux</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Linux/" rel="tag">Linux</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-08T10:25:59.000Z">2026-11-08</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

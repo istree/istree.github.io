@@ -1,0 +1,133 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>정적 파일 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">Nginx</span><span class="up"> / <a href="/docs/server/HTTP/" title="한 단계 위로">HTTP</a></span></p><ul><li><a href="/docs/server/HTTP/Nginx/">개요</a></li><li><a href="/docs/server/HTTP/Nginx/설정-구조/">설정 구조</a></li><li><a href="/docs/server/HTTP/Nginx/정적-파일/" aria-current="page">정적 파일</a></li><li><a href="/docs/server/HTTP/Nginx/리버스-프록시/">리버스 프록시</a></li><li><a href="/docs/server/HTTP/Nginx/HTTPS/">HTTPS</a></li><li><a href="/docs/server/HTTP/Nginx/오류-모음/">오류 모음</a></li></ul></nav><article><h1 class="page-title">정적 파일</h1><details class="sidebar-m"><summary>목록 · Nginx</summary><ul><li><a href="/docs/server/HTTP/Nginx/">개요</a></li><li><a href="/docs/server/HTTP/Nginx/설정-구조/">설정 구조</a></li><li><a href="/docs/server/HTTP/Nginx/정적-파일/" aria-current="page">정적 파일</a></li><li><a href="/docs/server/HTTP/Nginx/리버스-프록시/">리버스 프록시</a></li><li><a href="/docs/server/HTTP/Nginx/HTTPS/">HTTPS</a></li><li><a href="/docs/server/HTTP/Nginx/오류-모음/">오류 모음</a></li></ul></details><div class="content"><p>Nginx 는 HTML · CSS · JS · 그림 같은 정적 파일을 디스크에서 바로 내보내는 데 빠르다. 요청 경로를 디스크 경로로 바꾸는 <code>root</code> · <code>alias</code>, 파일이 없을 때 다음 후보를 정하는 <code>try_files</code>, 압축과 캐시 헤더만 알면 정적 사이트 · 빌드한 SPA · 내려받기 폴더를 내보낼 수 있다. 아래 예제는 Ubuntu 24.04 의 nginx 1.24 에서 돌렸다.</p>
+<h2 id="설정">설정</h2>
+<pre class="language-nginx" data-language="nginx"><code class="language-nginx"><span class="token directive"><span class="token keyword">server</span></span> <span class="token punctuation">{</span>
+    <span class="token directive"><span class="token keyword">listen</span> <span class="token number">80</span></span><span class="token punctuation">;</span>
+    <span class="token directive"><span class="token keyword">server_name</span> site.test</span><span class="token punctuation">;</span>
+    <span class="token directive"><span class="token keyword">root</span> /var/www/site</span><span class="token punctuation">;</span>
+    <span class="token directive"><span class="token keyword">index</span> index.html</span><span class="token punctuation">;</span>
+
+    <span class="token directive"><span class="token keyword">location</span> /</span> <span class="token punctuation">{</span>
+        <span class="token directive"><span class="token keyword">try_files</span> <span class="token variable">$uri</span> <span class="token variable">$uri</span>.html <span class="token variable">$uri</span>/ =404</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token directive"><span class="token keyword">location</span> /assets/</span> <span class="token punctuation">{</span>
+        <span class="token directive"><span class="token keyword">expires</span> <span class="token number">30d</span></span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token directive"><span class="token keyword">location</span> /files/</span> <span class="token punctuation">{</span>
+        <span class="token directive"><span class="token keyword">alias</span> /srv/files/docs/</span><span class="token punctuation">;</span>
+        <span class="token directive"><span class="token keyword">autoindex</span> <span class="token boolean">on</span></span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token directive"><span class="token keyword">error_page</span> <span class="token number">404</span> /404.html</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<table>
+<thead>
+<tr>
+<th>요청</th>
+<th>결과</th>
+<th>까닭</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/</code></td>
+<td>200 <code>home</code></td>
+<td><code>root</code> + <code>/</code> → <code>index.html</code></td>
+</tr>
+<tr>
+<td><code>/about</code></td>
+<td>200 <code>about page</code></td>
+<td><code>$uri</code> 가 없어 <code>$uri.html</code> → <code>about.html</code></td>
+</tr>
+<tr>
+<td><code>/about/</code></td>
+<td>200 <code>about dir</code></td>
+<td><code>$uri/</code> → <code>about/index.html</code></td>
+</tr>
+<tr>
+<td><code>/nope</code></td>
+<td>404 <code>not found page</code></td>
+<td>후보가 다 없어 <code>=404</code> → <code>error_page</code> 의 <code>/404.html</code></td>
+</tr>
+<tr>
+<td><code>/files/a.txt</code></td>
+<td>200 <code>a</code></td>
+<td><code>alias</code> → <code>/srv/files/docs/a.txt</code></td>
+</tr>
+<tr>
+<td><code>/files/</code></td>
+<td>200 <code>Index of /files/</code></td>
+<td><code>autoindex on</code> — 파일 목록</td>
+</tr>
+</tbody>
+</table>
+<h2 id="root-와-alias">root 와 alias</h2>
+<ul>
+<li><code>root</code> 는 경로 전체를 뒤에 붙인다. <code>root /var/www/site;</code> 에서 <code>/about.html</code> 은 <code>/var/www/site/about.html</code> 이다</li>
+<li><code>alias</code> 는 <code>location</code> 에 맞은 부분을 바꾼다. <code>location /files/ { alias /srv/files/docs/; }</code> 에서 <code>/files/a.txt</code> 는 <code>/srv/files/docs/a.txt</code> 다</li>
+<li><code>location /wrong/ { root /srv/files/docs/; }</code> 처럼 <code>alias</code> 자리에 <code>root</code> 를 쓰면 <code>/srv/files/docs/wrong/a.txt</code> 를 찾아 404 다. 오류 로그에 찾은 경로가 남는다
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">[error] 14#14: *7 open() "/srv/files/docs/wrong/a.txt" failed (2: No such file or directory)</code></pre>
+</li>
+<li><code>alias</code> 는 <code>location</code> 과 끝 <code>/</code> 를 맞춘다(<code>/files/</code> ↔ <code>…/docs/</code>). 한쪽만 붙이면 탈이 난다
+<ul>
+<li><code>location /one/ { alias /srv/files/docs; }</code> — <code>/one/a.txt</code> 가 <code>/srv/files/docs</code> + <code>a.txt</code> 로 붙어 <code>"/srv/files/docsa.txt"</code> 를 찾아 404</li>
+<li><code>location /two { alias /srv/files/docs/; }</code> — <code>/two../secret.txt</code> 가 <code>/srv/files/docs/../secret.txt</code> 가 되어 위 폴더의 <code>secret</code> 이 200 으로 나갔다. 폴더 밖 파일이 새는 구멍이다</li>
+</ul>
+</li>
+</ul>
+<h2 id="try_files">try_files</h2>
+<pre class="language-nginx" data-language="nginx"><code class="language-nginx"><span class="token directive"><span class="token keyword">try_files</span> <span class="token variable">$uri</span> <span class="token variable">$uri</span>.html <span class="token variable">$uri</span>/ =404</span><span class="token punctuation">;</span>    <span class="token comment"># 확장자 없는 주소 — /about → about.html</span>
+<span class="token directive"><span class="token keyword">try_files</span> <span class="token variable">$uri</span> /index.html</span><span class="token punctuation">;</span>             <span class="token comment"># SPA — 없는 경로는 모두 index.html 로</span></code></pre>
+<ul>
+<li>앞에서부터 있는 파일을 찾고, 마지막 것은 없을 때의 처리다. <code>=404</code> 처럼 코드를 쓰거나 <code>/index.html</code> 처럼 다른 경로로 넘긴다</li>
+<li>SPA(React · Vue 의 브라우저 라우팅) 는 <code>/users/42</code> 같은 주소를 서버에 파일로 두지 않는다. 마지막 후보를 <code>/index.html</code> 로 두면 <code>200 spa index</code> 가 나와 앱이 경로를 처리한다</li>
+</ul>
+<h2 id="폴더-목록과-403">폴더 목록과 403</h2>
+<ul>
+<li>폴더에 <code>index</code> 파일이 없고 <code>autoindex</code> 도 꺼져 있으면 403 이다. 로그에는 <code>directory index of "/srv/files/" is forbidden</code> 이 남는다</li>
+<li><code>autoindex on</code> 은 목록을 보인다. 공개할 폴더에만 켠다</li>
+<li>파일이 있는데 403 이면 권한을 본다. nginx 는 <code>www-data</code> 로 돌아 경로의 모든 폴더에 <code>x</code>, 파일에 <code>r</code> 이 있어야 한다</li>
+</ul>
+<h2 id="캐시-헤더">캐시 헤더</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">curl</span> <span class="token parameter variable">-sI</span> <span class="token parameter variable">-H</span> <span class="token string">"Host: site.test"</span> <span class="token number">127.0</span>.0.1/assets/app.css
+<span class="token comment"># Content-Type: text/css</span>
+<span class="token comment"># Expires: Tue, 08 Dec 2026 10:02:26 GMT</span>
+<span class="token comment"># Cache-Control: max-age=2592000</span></code></pre>
+<ul>
+<li><code>expires 30d</code> 는 <code>Expires</code> 와 <code>Cache-Control: max-age</code> 를 함께 붙인다. 빌드할 때 이름에 해시가 붙는 파일(<code>app.3f9a.js</code>) 은 길게, <code>index.html</code> 은 <code>expires -1;</code>(캐시하지 않음) 로 둔다</li>
+</ul>
+<h2 id="압축">압축</h2>
+<p>Ubuntu 의 <code>nginx.conf</code> 는 <code>gzip on;</code> 이지만 <code>gzip_types</code> 줄이 주석이라 HTML 만 압축한다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">curl</span> <span class="token parameter variable">-s</span> <span class="token parameter variable">-o</span> /dev/null <span class="token parameter variable">-w</span> <span class="token string">"%{size_download}B<span class="token entity" title="\n">\n</span>"</span> <span class="token parameter variable">-H</span> <span class="token string">"Accept-Encoding: gzip"</span> <span class="token parameter variable">-H</span> <span class="token string">"Host: site.test"</span> <span class="token number">127.0</span>.0.1/assets/app.css
+<span class="token comment"># 3001B — 압축하지 않았다</span></code></pre>
+<p><code>nginx.conf</code> 의 <code>gzip_types</code> 주석을 풀고 <code>reload</code> 하면 같은 CSS 가 69B 로 온다.</p>
+<pre class="language-nginx" data-language="nginx"><code class="language-nginx"><span class="token directive"><span class="token keyword">gzip_types</span> text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript</span><span class="token punctuation">;</span></code></pre>
+<ul>
+<li>아주 작은 응답(기본 20 바이트 미만) 은 압축하지 않는다</li>
+<li>그림(<code>png</code> · <code>jpg</code> · <code>webp</code>) 은 이미 압축되어 있어 넣지 않는다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://docs.nginx.com/nginx/admin-guide/web-server/serving-static-content/">Serving Static Content</a> — NGINX 문서</li>
+<li><a href="https://nginx.org/en/docs/http/ngx_http_core_module.html#try_files">try_files</a> · <a href="https://nginx.org/en/docs/http/ngx_http_core_module.html#alias">alias</a> · <a href="https://nginx.org/en/docs/http/ngx_http_gzip_module.html">gzip</a> — nginx.org</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/HTTP/">HTTP</a></li><li><a href="/docs/server/HTTP/Nginx/">Nginx</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Nginx/" rel="tag">Nginx</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-08T10:25:59.000Z">2026-11-08</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

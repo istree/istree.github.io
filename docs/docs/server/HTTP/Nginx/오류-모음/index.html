@@ -1,0 +1,96 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>오류 모음 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">Nginx</span><span class="up"> / <a href="/docs/server/HTTP/" title="한 단계 위로">HTTP</a></span></p><ul><li><a href="/docs/server/HTTP/Nginx/">개요</a></li><li><a href="/docs/server/HTTP/Nginx/설정-구조/">설정 구조</a></li><li><a href="/docs/server/HTTP/Nginx/정적-파일/">정적 파일</a></li><li><a href="/docs/server/HTTP/Nginx/리버스-프록시/">리버스 프록시</a></li><li><a href="/docs/server/HTTP/Nginx/HTTPS/">HTTPS</a></li><li><a href="/docs/server/HTTP/Nginx/오류-모음/" aria-current="page">오류 모음</a></li></ul></nav><article><h1 class="page-title">오류 모음</h1><details class="sidebar-m"><summary>목록 · Nginx</summary><ul><li><a href="/docs/server/HTTP/Nginx/">개요</a></li><li><a href="/docs/server/HTTP/Nginx/설정-구조/">설정 구조</a></li><li><a href="/docs/server/HTTP/Nginx/정적-파일/">정적 파일</a></li><li><a href="/docs/server/HTTP/Nginx/리버스-프록시/">리버스 프록시</a></li><li><a href="/docs/server/HTTP/Nginx/HTTPS/">HTTPS</a></li><li><a href="/docs/server/HTTP/Nginx/오류-모음/" aria-current="page">오류 모음</a></li></ul></details><div class="content"><p>Nginx 를 쓰다 자주 만나는 오류와 해결을 모았다. 오류 문구는 Ubuntu 24.04 의 nginx 1.24 에서 직접 낸 것이다. 원인은 대개 <code>/var/log/nginx/error.log</code> 에 적혀 있으므로, 화면의 상태 코드만 보지 말고 먼저 <code>sudo tail -f /var/log/nginx/error.log</code> 를 띄워 놓고 다시 요청한다.</p>
+<h2 id="unexpected-">unexpected "}"</h2>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">[emerg] 33#33: unexpected "}" in /etc/nginx/sites-enabled/a.conf:5</code></pre>
+<ul>
+<li>지시어 끝의 <code>;</code> 를 빠뜨렸다. 알려 준 줄의 바로 앞 줄을 본다</li>
+<li><code>reload</code> 는 실패하고 옛 설정으로 계속 돈다. 고친 뒤 <code>sudo nginx -t</code> 로 검사하고 다시 <code>reload</code> 한다</li>
+</ul>
+<h2 id="413-request-entity-too-large">413 Request Entity Too Large</h2>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">[error] 17#17: *27 client intended to send too large body: 2000000 bytes</code></pre>
+<ul>
+<li>올린 본문이 <code>client_max_body_size</code>(기본 1 MB) 보다 크다. 파일을 올리는 사이트의 <code>server</code> 나 <code>location</code> 에 늘린다
+<pre class="language-nginx" data-language="nginx"><code class="language-nginx"><span class="token directive"><span class="token keyword">server</span></span> <span class="token punctuation">{</span>
+    <span class="token directive"><span class="token keyword">client_max_body_size</span> <span class="token number">20M</span></span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+</li>
+<li>앞에 프록시가 또 있으면(로드 밸런서 · 다른 Nginx) 그쪽 제한도 늘린다</li>
+</ul>
+<h2 id="502-bad-gateway">502 Bad Gateway</h2>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">[error] 17#17: *23 connect() failed (111: Connection refused) while connecting to upstream, … upstream: "http://127.0.0.1:3999/"</code></pre>
+<ul>
+<li>넘길 앱이 꺼져 있거나 포트가 틀렸다. <code>curl -I 127.0.0.1:3999</code> 로 앱을 직접 불러 보고, <code>ss -tlnp</code> 로 앱이 어느 주소 · 포트에서 듣는지 본다</li>
+<li>앱이 <code>127.0.0.1</code> 이 아니라 컨테이너 안에서만 듣고 있으면(Docker 의 포트를 열지 않음) 닿지 않는다</li>
+</ul>
+<h2 id="504-gateway-time-out">504 Gateway Time-out</h2>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">[error] 17#17: *25 upstream timed out (110: Connection timed out) while reading response header from upstream</code></pre>
+<ul>
+<li>앱은 살아 있지만 <code>proxy_read_timeout</code>(기본 60 초) 안에 답하지 않았다. 앱이 왜 늦는지 먼저 보고, 원래 오래 걸리는 요청(보고서 · 내보내기) 이면 그 <code>location</code> 만 늘린다</li>
+</ul>
+<h2 id="403-forbidden">403 Forbidden</h2>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">[error] 14#14: *8 directory index of "/srv/files/" is forbidden
+[error] 17#17: *1 open() "/var/www/p/index.html" failed (13: Permission denied)</code></pre>
+<ul>
+<li>앞의 것은 폴더에 <code>index</code> 파일이 없고 <code>autoindex</code> 도 꺼져 있다. <code>index</code> 파일을 두거나 <code>try_files</code> 로 다른 곳에 넘긴다</li>
+<li>뒤의 것은 nginx(<code>www-data</code>) 가 파일을 읽지 못한다. 파일은 <code>644</code>, 경로의 폴더는 모두 <code>755</code> 인지 본다 (<code>namei -l /var/www/p/index.html</code> 이 경로의 권한을 한 번에 보인다)</li>
+<li>홈 폴더(<code>/home/사용자</code>, 기본 <code>750</code>) 아래의 파일을 내보내면 이 오류가 난다. 사이트 파일은 <code>/var/www</code> 아래에 둔다</li>
+</ul>
+<h2 id="404-인데-파일은-있다">404 인데 파일은 있다</h2>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">[error] 14#14: *7 open() "/srv/files/docs/wrong/a.txt" failed (2: No such file or directory)</code></pre>
+<ul>
+<li>로그의 경로가 nginx 가 실제로 찾은 곳이다. <code>root</code> 와 <code>alias</code> 를 바꿔 썼거나 끝 <code>/</code> 가 어긋난 것이다</li>
+<li><code>root</code> 는 요청 경로 전체를 붙이고, <code>alias</code> 는 <code>location</code> 에 맞은 부분을 바꾼다</li>
+</ul>
+<h2 id="bind--address-already-in-use">bind() … Address already in use</h2>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)</code></pre>
+<ul>
+<li>다른 프로그램(Apache · 다른 nginx · Docker 컨테이너) 이 80 을 잡고 있다. <code>sudo ss -tlnp | grep :80</code> 으로 찾는다</li>
+<li>Apache 와 함께 깔았으면 하나를 끄거나 포트를 나눈다</li>
+</ul>
+<h2 id="conflicting-server-name">conflicting server name</h2>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">[warn] 39#39: conflicting server name "b.test" on 0.0.0.0:80, ignored</code></pre>
+<ul>
+<li>같은 <code>server_name</code> 이 두 파일에 있다. 경고라 뜨기는 하지만 뒤에 읽은 쪽은 무시된다. <code>sudo nginx -T | grep server_name</code> 으로 겹친 곳을 찾는다</li>
+<li><code>sites-available</code> 의 파일을 복사해 고치고 옛 링크를 그대로 둔 경우가 많다</li>
+</ul>
+<h2 id="다른-사이트가-나온다">다른 사이트가 나온다</h2>
+<ul>
+<li>요청한 이름의 <code>server</code> 가 없으면 그 포트의 <code>default_server</code>, 없으면 처음 읽은 <code>server</code> 가 받는다</li>
+<li>IPv4 만 듣는 사이트(<code>listen 80;</code>) 에 <code>localhost</code> 로 붙으면 IPv6(<code>::1</code>) 로 가서 <code>listen [::]:80</code> 을 가진 다른 <code>server</code>(Ubuntu 의 <code>default</code>) 가 받는다. 사이트마다 <code>listen [::]:80;</code> 을 함께 적는다</li>
+</ul>
+<h2 id="could-not-build-server_names_hash">could not build server_names_hash</h2>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">[emerg] 24#24: could not build server_names_hash, you should increase server_names_hash_bucket_size: 64</code></pre>
+<ul>
+<li>긴 도메인(60 자가 넘는 이름) 이 있다. <code>nginx.conf</code> 의 <code>http</code> 안에 주석으로 있는 <code>server_names_hash_bucket_size 64;</code> 를 풀고 <code>128</code> 로 올린다</li>
+</ul>
+<h2 id="key-values-mismatch">key values mismatch</h2>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">[emerg] 36#36: SSL_CTX_use_PrivateKey("/etc/nginx/ssl/other.key") failed (SSL: error:05800074:x509 certificate routines::key values mismatch)</code></pre>
+<ul>
+<li><code>ssl_certificate</code> 와 <code>ssl_certificate_key</code> 가 짝이 아니다. 같은 때 받은 <code>fullchain.pem</code> · <code>privkey.pem</code> 을 함께 쓴다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://docs.nginx.com/nginx/admin-guide/monitoring/debugging/">Debugging NGINX</a> — NGINX 문서</li>
+<li><a href="https://www.nginx.com/resources/wiki/start/topics/tutorials/config_pitfalls/">Pitfalls and Common Mistakes</a> — NGINX Wiki</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/HTTP/">HTTP</a></li><li><a href="/docs/server/HTTP/Nginx/">Nginx</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Nginx/" rel="tag">Nginx</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-08T10:25:59.000Z">2026-11-08</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

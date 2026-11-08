@@ -1,0 +1,91 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>오류 모음 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">Docker</span><span class="up"> / <a href="/docs/server/OS/" title="한 단계 위로">OS</a></span></p><ul><li><a href="/docs/server/OS/Docker/">개요</a></li><li><a href="/docs/server/OS/Docker/설치/">설치</a></li><li><a href="/docs/server/OS/Docker/이미지와-컨테이너/">이미지와 컨테이너</a></li><li><a href="/docs/server/OS/Docker/Dockerfile/">Dockerfile</a></li><li><a href="/docs/server/OS/Docker/볼륨과-네트워크/">볼륨과 네트워크</a></li><li><a href="/docs/server/OS/Docker/Compose/">Compose</a></li><li><a href="/docs/server/OS/Docker/백업/">백업</a></li><li><a href="/docs/server/OS/Docker/Portainer/">Portainer</a></li><li><a href="/docs/server/OS/Docker/오류-모음/" aria-current="page">오류 모음</a></li></ul></nav><article><h1 class="page-title">오류 모음</h1><details class="sidebar-m"><summary>목록 · Docker</summary><ul><li><a href="/docs/server/OS/Docker/">개요</a></li><li><a href="/docs/server/OS/Docker/설치/">설치</a></li><li><a href="/docs/server/OS/Docker/이미지와-컨테이너/">이미지와 컨테이너</a></li><li><a href="/docs/server/OS/Docker/Dockerfile/">Dockerfile</a></li><li><a href="/docs/server/OS/Docker/볼륨과-네트워크/">볼륨과 네트워크</a></li><li><a href="/docs/server/OS/Docker/Compose/">Compose</a></li><li><a href="/docs/server/OS/Docker/백업/">백업</a></li><li><a href="/docs/server/OS/Docker/Portainer/">Portainer</a></li><li><a href="/docs/server/OS/Docker/오류-모음/" aria-current="page">오류 모음</a></li></ul></details><div class="content"><p>Docker 를 쓰다 자주 만나는 오류와 해결을 모았다. 오류 문구는 Docker 29(맥 colima) 에서 직접 낸 것이다. 문구로 찾기 쉽게 제목에 오류의 앞부분을 적었다.</p>
+<h2 id="failed-to-connect-to-the-docker-api">failed to connect to the docker API</h2>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">failed to connect to the docker API at unix:///var/run/docker.sock; check if the path is correct and if the daemon is running: dial unix /var/run/docker.sock: connect: no such file or directory</code></pre>
+<ul>
+<li>엔진이 꺼져 있거나, <code>docker</code> 가 엔진이 없는 소켓을 보고 있다</li>
+<li>맥: <code>colima start</code> 로 켠다. 켜져 있는데도 나면 <code>docker context ls</code> 로 <code>*</code> 가 <code>colima</code> 에 있는지 보고, 아니면 <code>docker context use colima</code> 로 바꾼다</li>
+<li>리눅스: <code>sudo systemctl start docker</code>, 부팅 때 켜려면 <code>sudo systemctl enable docker</code></li>
+</ul>
+<h2 id="permission-denied-while-trying-to-connect-to-the-docker-api">permission denied while trying to connect to the docker API</h2>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">permission denied while trying to connect to the docker API at unix:///var/run/docker.sock</code></pre>
+<ul>
+<li>리눅스에서 <code>docker</code> 그룹이 아닌 사용자가 소켓에 닿았다</li>
+<li><code>sudo usermod -aG docker $USER</code> 뒤 다시 로그인한다. 지금 셸에서 바로 쓰려면 <code>newgrp docker</code></li>
+<li><code>docker</code> 그룹은 root 와 같은 권한이다. 믿을 수 있는 사용자만 넣는다</li>
+</ul>
+<h2 id="port-is-already-allocated">port is already allocated</h2>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">docker: Error response from daemon: failed to set up container networking: driver failed programming external connectivity on endpoint web2 (347be2ba…): Bind for 0.0.0.0:8080 failed: port is already allocated</code></pre>
+<ul>
+<li>다른 컨테이너가 그 포트를 쓰고 있다. <code>docker ps --filter publish=8080</code> 으로 찾는다</li>
+<li>컨테이너가 아닌 프로그램이 쓰고 있으면 <code>lsof -nP -iTCP:8080 -sTCP:LISTEN</code>(맥 · 리눅스) 으로 찾는다. 맥의 colima 는 포트를 <code>ssh</code> 프로세스로 넘기므로, 컨테이너가 연 포트는 <code>ssh</code> 로 나온다</li>
+<li>윈도우는 <code>netstat -ano | findstr :8080</code> 으로 PID 를 찾고 <code>taskkill /F /PID 번호</code> 로 끝낸다. 재부팅 뒤 포트가 남아 컨테이너가 뜨지 않을 때도 이렇게 한다</li>
+</ul>
+<h2 id="the-container-name-web-is-already-in-use">The container name "/web" is already in use</h2>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">docker: Error response from daemon: Conflict. The container name "/web" is already in use by container "9163705c7f9c…". You have to remove (or rename) that container to be able to reuse that name.</code></pre>
+<ul>
+<li>멈춘 컨테이너도 이름을 차지한다. <code>docker ps -a</code> 로 보고 <code>docker rm web</code> 하거나 <code>docker rename web web-old</code> 한다</li>
+<li>한 번 돌리고 버릴 컨테이너는 처음부터 <code>--rm</code> 을 붙인다</li>
+</ul>
+<h2 id="no-matching-manifest-for-linuxarm64v8">no matching manifest for linux/arm64/v8</h2>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">Error response from daemon: no matching manifest for linux/arm64/v8 in the manifest list entries: no match for platform in manifest: not found</code></pre>
+<ul>
+<li>M1 맥 같은 arm64 에서 amd64 용으로만 나온 이미지를 받았다. <code>mysql:5.7</code> 이 그렇다</li>
+<li>새 버전(<code>mysql:8.4</code>) 에 arm64 판이 있으면 그것을 쓴다</li>
+<li>꼭 그 이미지여야 하면 <code>--platform linux/amd64</code> 로 받아 에뮬레이션으로 돌린다. <code>docker run --rm --platform linux/amd64 mysql:5.7 mysqld --version</code> → <code>Ver 5.7.44 for Linux on x86_64</code>. 느리다</li>
+<li>거꾸로 맥에서 만든 이미지를 amd64 서버에서 돌리면 <code>exec format error</code> 로 멈춘다. 빌드할 때 <code>--platform linux/amd64</code> 를 준다</li>
+</ul>
+<h2 id="연결한-폴더가-비어-있다-맥-colima">연결한 폴더가 비어 있다 (맥 colima)</h2>
+<p><code>-v</code> 로 연결한 폴더가 컨테이너 안에서 비어 있고, Nginx 라면 <code>403 Forbidden</code> 이 나며 로그에 이렇게 남는다.</p>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">[error] 30#30: *1 directory index of "/usr/share/nginx/html/" is forbidden</code></pre>
+<ul>
+<li>colima 는 맥의 홈 폴더(<code>/Users/이름</code>) 만 가상 머신에 연결한다. <code>/tmp</code> 같은 홈 밖의 경로를 주면 가상 머신 안에 같은 이름의 빈 폴더가 만들어져 연결된다</li>
+<li>프로젝트를 홈 폴더 아래에 둔다. 다른 곳이 필요하면 <code>colima start --edit</code> 로 <code>mounts</code> 에 경로를 더한다</li>
+<li>리눅스에서도 경로를 잘못 적으면 같은 일이 생긴다. Docker 는 없는 경로를 빈 폴더로 만들고 오류를 내지 않는다</li>
+</ul>
+<h2 id="컨테이너가-뜨자마자-멈춘다">컨테이너가 뜨자마자 멈춘다</h2>
+<ul>
+<li>컨테이너는 PID 1 이 끝나면 멈춘다. 서버 프로그램이 스스로 뒤로 빠지면(데몬) PID 1 이 바로 끝난다</li>
+<li>앞에서 돌게 띄운다: Apache 는 <code>apachectl -D FOREGROUND</code>, Nginx 는 <code>nginx -g 'daemon off;'</code></li>
+<li><code>docker logs 이름</code> 으로 멈추기 전의 출력을 본다. 설정 오류 · 빠진 환경 변수가 여기에 나온다</li>
+</ul>
+<h2 id="docker-stop-이-10-초-걸린다">docker stop 이 10 초 걸린다</h2>
+<ul>
+<li>PID 1 이 SIGTERM 을 처리하지 않아, 10 초 기다린 뒤 SIGKILL 로 끝난 것이다. 종료 코드가 137 로 남는다</li>
+<li><code>--init</code> 을 붙이거나, Dockerfile 의 <code>CMD</code> 를 <code>["…"]</code> 꼴로 써서 프로그램이 직접 PID 1 이 되게 한다</li>
+</ul>
+<h2 id="unable-to-delete--must-be-forced">unable to delete … (must be forced)</h2>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">Error response from daemon: conflict: unable to delete ubuntu:24.04 (must be forced) - container c3dbdf3b3669 is using its referenced image fe81560990fa</code></pre>
+<ul>
+<li>멈춘 컨테이너가 그 이미지를 쓰고 있다. <code>docker ps -a --filter ancestor=ubuntu:24.04</code> 로 찾아 먼저 지운다</li>
+</ul>
+<h2 id="예전에는">예전에는</h2>
+<ul>
+<li><code>docker login</code> 에서 <code>unauthorized: incorrect username or password.</code> 가 나면 이메일 대신 hub.docker.com 에서 확인한 사용자 이름으로 로그인해 풀었다 (옛 기록)</li>
+<li>Docker Toolbox · Hyper-V 시절 윈도우에서는 볼륨 연결이 끊기는 일이 있었고, SMB v1 을 끄고 재부팅하면 된다는 이야기가 있었다(<a href="https://github.com/docker/for-win/issues/2677">docker/for-win#2677</a>). 지금의 WSL 2 백엔드에서는 이 방법을 쓰지 않는다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://docs.docker.com/engine/daemon/troubleshoot/">Troubleshooting the Docker daemon</a> — Docker Docs</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/OS/">OS</a></li><li><a href="/docs/server/OS/Docker/">Docker</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Docker/" rel="tag">Docker</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-08T09:34:08.000Z">2026-11-08</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

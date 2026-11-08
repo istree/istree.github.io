@@ -1,0 +1,164 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>예약 작업 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">Linux</span><span class="up"> / <a href="/docs/server/OS/" title="한 단계 위로">OS</a></span></p><ul><li><a href="/docs/server/OS/Linux/">개요</a></li><li><a href="/docs/server/OS/Linux/셸/">셸</a></li><li><a href="/docs/server/OS/Linux/파일-찾기/">파일 찾기</a></li><li><a href="/docs/server/OS/Linux/복사와-동기화/">복사와 동기화</a></li><li><a href="/docs/server/OS/Linux/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/OS/Linux/패키지/">패키지</a></li><li><a href="/docs/server/OS/Linux/프로세스와-포트/">프로세스와 포트</a></li><li><a href="/docs/server/OS/Linux/디스크/">디스크</a></li><li><a href="/docs/server/OS/Linux/서비스/">서비스</a></li><li><a href="/docs/server/OS/Linux/예약-작업/" aria-current="page">예약 작업</a></li><li><a href="/docs/server/OS/Linux/네트워크/">네트워크</a></li><li><a href="/docs/server/OS/Linux/방화벽/">방화벽</a></li><li><a href="/docs/server/OS/Linux/SSH/">SSH</a></li><li><a href="/docs/server/OS/Linux/시간대/">시간대</a></li></ul></nav><article><h1 class="page-title">예약 작업</h1><details class="sidebar-m"><summary>목록 · Linux</summary><ul><li><a href="/docs/server/OS/Linux/">개요</a></li><li><a href="/docs/server/OS/Linux/셸/">셸</a></li><li><a href="/docs/server/OS/Linux/파일-찾기/">파일 찾기</a></li><li><a href="/docs/server/OS/Linux/복사와-동기화/">복사와 동기화</a></li><li><a href="/docs/server/OS/Linux/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/OS/Linux/패키지/">패키지</a></li><li><a href="/docs/server/OS/Linux/프로세스와-포트/">프로세스와 포트</a></li><li><a href="/docs/server/OS/Linux/디스크/">디스크</a></li><li><a href="/docs/server/OS/Linux/서비스/">서비스</a></li><li><a href="/docs/server/OS/Linux/예약-작업/" aria-current="page">예약 작업</a></li><li><a href="/docs/server/OS/Linux/네트워크/">네트워크</a></li><li><a href="/docs/server/OS/Linux/방화벽/">방화벽</a></li><li><a href="/docs/server/OS/Linux/SSH/">SSH</a></li><li><a href="/docs/server/OS/Linux/시간대/">시간대</a></li></ul></details><div class="content"><p>정해진 때에 명령을 돌리는 방법은 둘이다. 오래 써 온 cron 은 한 줄에 주기와 명령을 적어 간단하고, systemd 타이머는 파일 두 개가 들지만 로그가 journal 에 남고 꺼져 있던 동안 놓친 실행을 챙긴다. 백업 · 로그 정리 · 인증서 갱신 같은 서버 일에 쓴다. 아래 예제는 colima 의 Ubuntu 24.04 가상 머신에 cron 을 깔고 실제로 1 분을 기다려 결과를 봤다.</p>
+<h2 id="crontab">crontab</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">crontab</span> <span class="token parameter variable">-e</span>        <span class="token comment"># 내 작업을 고친다 (처음이면 편집기를 선택)</span>
+<span class="token function">crontab</span> <span class="token parameter variable">-l</span>        <span class="token comment"># 목록</span>
+<span class="token function">crontab</span> <span class="token parameter variable">-r</span>        <span class="token comment"># 모두 지운다 — 되돌릴 수 없다</span>
+<span class="token function">crontab</span> 파일      <span class="token comment"># 파일 내용으로 통째로 바꾼다</span>
+<span class="token function">sudo</span> <span class="token function">crontab</span> <span class="token parameter variable">-u</span> deploy <span class="token parameter variable">-l</span>     <span class="token comment"># 다른 사용자의 것</span></code></pre>
+<p>한 줄은 다섯 칸의 주기(분 · 시 · 일 · 월 · 요일) 와 명령이다. 칸에 <code>*</code> 를 두면 모든 값이라, <code>* * * * *</code> 는 매분이다.</p>
+<table>
+<thead>
+<tr>
+<th>칸</th>
+<th>값</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>분</td>
+<td>0–59</td>
+</tr>
+<tr>
+<td>시</td>
+<td>0–23</td>
+</tr>
+<tr>
+<td>일</td>
+<td>1–31</td>
+</tr>
+<tr>
+<td>월</td>
+<td>1–12</td>
+</tr>
+<tr>
+<td>요일</td>
+<td>0–7 (0 · 7 은 일요일, 1–6 은 월–토)</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>적는 꼴</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0,20,40 * * * *</code></td>
+<td>매시 0 · 20 · 40 분</td>
+</tr>
+<tr>
+<td><code>0-30 * * * *</code></td>
+<td>매시 0 분부터 30 분까지 매분</td>
+</tr>
+<tr>
+<td><code>*/10 * * * *</code></td>
+<td>10 분마다</td>
+</tr>
+<tr>
+<td><code>30 3 * * *</code></td>
+<td>매일 03:30</td>
+</tr>
+<tr>
+<td><code>0 9 * * 1-5</code></td>
+<td>평일 09:00</td>
+</tr>
+<tr>
+<td><code>@reboot</code></td>
+<td>부팅할 때 한 번</td>
+</tr>
+</tbody>
+</table>
+<h2 id="로그-남기기">로그 남기기</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh">* * * * * <span class="token environment constant">$HOME</span>/cron/job.sh <span class="token operator">&gt;&gt;</span> <span class="token environment constant">$HOME</span>/cron/job.log <span class="token operator"><span class="token file-descriptor important">2</span>&gt;</span><span class="token file-descriptor important">&amp;1</span>     <span class="token comment"># 이어 쓰기</span>
+* * * * * /home/test.sh <span class="token operator">&gt;</span> /dev/null <span class="token operator"><span class="token file-descriptor important">2</span>&gt;</span><span class="token file-descriptor important">&amp;1</span>                    <span class="token comment"># 출력을 버린다</span></code></pre>
+<ul>
+<li>출력을 받지 않으면 cron 은 메일로 보내려 한다. 메일 서버가 없는 서버에서는 오류가 어디에도 남지 않으므로, 출력을 파일로 받아 두어야 실패를 알 수 있다</li>
+<li>cron 이 언제 무엇을 돌렸는지는 <code>journalctl -u cron</code> 에 남는다
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">Nov 08 18:54:01 colima CRON[23559]: (geon) CMD (docker ps &gt; $HOME/cron/which.log 2&gt;&amp;1)</code></pre>
+</li>
+</ul>
+<h2 id="cron-에서-다르게-도는-것">cron 에서 다르게 도는 것</h2>
+<p>cron 의 작업은 로그인 셸이 아니다. 매분 <code>env</code> 를 파일로 남겨 보면 변수가 이것뿐이다.</p>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">HOME=/home/geon.guest
+LOGNAME=geon
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+LANG=C.UTF-8
+SHELL=/bin/sh
+PWD=/home/geon.guest</code></pre>
+<ul>
+<li>셸은 <code>/bin/sh</code> 이고 <code>.bashrc</code> · <code>.profile</code> 을 읽지 않는다. nvm · rbenv · pyenv 로 깐 명령, <code>.bashrc</code> 의 변수는 없다. 명령은 전체 경로로 쓰거나 crontab 위에 <code>PATH=…</code> 줄을 둔다</li>
+<li>현재 폴더는 홈이다. 스크립트 안에서 <code>cd</code> 하거나 전체 경로를 쓴다</li>
+<li><code>%</code> 는 cron 에서 줄바꿈이라 <code>\%</code> 로 적는다. <code>date +%F &gt;&gt; pct.log</code> 는 파일조차 생기지 않았고, <code>date +\%F &gt;&gt; pct2.log</code> 에만 <code>2026-11-08</code> 이 남았다</li>
+</ul>
+<h2 id="crontab-백업">crontab 백업</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">crontab</span> <span class="token parameter variable">-l</span> <span class="token operator">&gt;</span> ~/crontab.txt                         <span class="token comment"># 지금 것을 파일로</span>
+<span class="token number">50</span> <span class="token number">23</span> * * * <span class="token function">crontab</span> <span class="token parameter variable">-l</span> <span class="token operator">&gt;</span> /home/deploy/crontab.txt  <span class="token comment"># 매일 23:50 에 스스로 저장</span></code></pre>
+<ul>
+<li><code>crontab -e</code> 대신 저장소의 파일을 <code>crontab 파일</code> 로 넣으면 서버마다 같은 작업을 유지할 수 있다</li>
+</ul>
+<h2 id="systemd-타이머">systemd 타이머</h2>
+<p>같은 일을 서비스 하나와 타이머 하나로 적는다.</p>
+<p><code>/etc/systemd/system/backup.service</code></p>
+<pre class="language-ini" data-language="ini"><code class="language-ini"><span class="token section"><span class="token punctuation">[</span><span class="token section-name selector">Unit</span><span class="token punctuation">]</span></span>
+<span class="token key attr-name">Description</span><span class="token punctuation">=</span><span class="token value attr-value">Backup home</span>
+
+<span class="token section"><span class="token punctuation">[</span><span class="token section-name selector">Service</span><span class="token punctuation">]</span></span>
+<span class="token key attr-name">Type</span><span class="token punctuation">=</span><span class="token value attr-value">oneshot</span>
+<span class="token key attr-name">ExecStart</span><span class="token punctuation">=</span><span class="token value attr-value">/usr/bin/tar czf /tmp/home-backup.tgz -C /home .</span></code></pre>
+<p><code>/etc/systemd/system/backup.timer</code></p>
+<pre class="language-ini" data-language="ini"><code class="language-ini"><span class="token section"><span class="token punctuation">[</span><span class="token section-name selector">Unit</span><span class="token punctuation">]</span></span>
+<span class="token key attr-name">Description</span><span class="token punctuation">=</span><span class="token value attr-value">Daily backup</span>
+
+<span class="token section"><span class="token punctuation">[</span><span class="token section-name selector">Timer</span><span class="token punctuation">]</span></span>
+<span class="token key attr-name">OnCalendar</span><span class="token punctuation">=</span><span class="token value attr-value">*-*-* 03:30:00</span>
+<span class="token key attr-name">Persistent</span><span class="token punctuation">=</span><span class="token value attr-value">true</span>
+
+<span class="token section"><span class="token punctuation">[</span><span class="token section-name selector">Install</span><span class="token punctuation">]</span></span>
+<span class="token key attr-name">WantedBy</span><span class="token punctuation">=</span><span class="token value attr-value">timers.target</span></code></pre>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> systemctl daemon-reload
+<span class="token function">sudo</span> systemctl <span class="token builtin class-name">enable</span> <span class="token parameter variable">--now</span> backup.timer
+systemctl list-timers backup.timer
+<span class="token comment"># NEXT                        LEFT LAST PASSED UNIT         ACTIVATES</span>
+<span class="token comment"># Mon 2026-11-09 03:30:00 KST   8h -         - backup.timer backup.service</span>
+<span class="token function">sudo</span> systemctl start backup.service      <span class="token comment"># 기다리지 않고 지금 한 번</span>
+journalctl <span class="token parameter variable">-u</span> backup.service             <span class="token comment"># 결과</span></code></pre>
+<ul>
+<li><code>Persistent=true</code> 는 꺼져 있어 놓친 실행을 켜질 때 한 번 돌린다. cron 은 놓친 것을 챙기지 않는다</li>
+<li><code>OnCalendar</code> 꼴은 <code>systemd-analyze calendar</code> 로 다음 실행 때를 확인한다
+<pre class="language-sh" data-language="sh"><code class="language-sh">systemd-analyze calendar <span class="token string">"Mon..Fri *-*-* 09:00"</span>
+<span class="token comment">#   Original form: Mon..Fri *-*-* 09:00</span>
+<span class="token comment"># Normalized form: Mon..Fri *-*-* 09:00:00</span>
+<span class="token comment">#     Next elapse: Mon 2026-11-09 09:00:00 KST</span></code></pre>
+</li>
+<li><code>hourly</code> · <code>daily</code> · <code>weekly</code> 같은 줄임말과 <code>*:0/10</code>(10 분마다) 도 쓴다</li>
+<li>시스템이 이미 쓰는 타이머(<code>apt-daily</code> · <code>fstrim</code> · <code>logrotate</code> …) 도 <code>systemctl list-timers</code> 에 함께 나온다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://man7.org/linux/man-pages/man5/crontab.5.html">crontab(5)</a> · <a href="https://man7.org/linux/man-pages/man5/systemd.timer.5.html">systemd.timer(5)</a> — man7.org</li>
+<li><a href="https://crontab.guru/">crontab guru</a> — 주기를 넣으면 뜻을 풀어 보인다</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/OS/">OS</a></li><li><a href="/docs/server/OS/Linux/">Linux</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Linux/" rel="tag">Linux</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-08T10:25:59.000Z">2026-11-08</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

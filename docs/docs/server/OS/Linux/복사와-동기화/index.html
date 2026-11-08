@@ -1,0 +1,97 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>복사와 동기화 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">Linux</span><span class="up"> / <a href="/docs/server/OS/" title="한 단계 위로">OS</a></span></p><ul><li><a href="/docs/server/OS/Linux/">개요</a></li><li><a href="/docs/server/OS/Linux/셸/">셸</a></li><li><a href="/docs/server/OS/Linux/파일-찾기/">파일 찾기</a></li><li><a href="/docs/server/OS/Linux/복사와-동기화/" aria-current="page">복사와 동기화</a></li><li><a href="/docs/server/OS/Linux/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/OS/Linux/패키지/">패키지</a></li><li><a href="/docs/server/OS/Linux/프로세스와-포트/">프로세스와 포트</a></li><li><a href="/docs/server/OS/Linux/디스크/">디스크</a></li><li><a href="/docs/server/OS/Linux/서비스/">서비스</a></li><li><a href="/docs/server/OS/Linux/예약-작업/">예약 작업</a></li><li><a href="/docs/server/OS/Linux/네트워크/">네트워크</a></li><li><a href="/docs/server/OS/Linux/방화벽/">방화벽</a></li><li><a href="/docs/server/OS/Linux/SSH/">SSH</a></li><li><a href="/docs/server/OS/Linux/시간대/">시간대</a></li></ul></nav><article><h1 class="page-title">복사와 동기화</h1><details class="sidebar-m"><summary>목록 · Linux</summary><ul><li><a href="/docs/server/OS/Linux/">개요</a></li><li><a href="/docs/server/OS/Linux/셸/">셸</a></li><li><a href="/docs/server/OS/Linux/파일-찾기/">파일 찾기</a></li><li><a href="/docs/server/OS/Linux/복사와-동기화/" aria-current="page">복사와 동기화</a></li><li><a href="/docs/server/OS/Linux/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/OS/Linux/패키지/">패키지</a></li><li><a href="/docs/server/OS/Linux/프로세스와-포트/">프로세스와 포트</a></li><li><a href="/docs/server/OS/Linux/디스크/">디스크</a></li><li><a href="/docs/server/OS/Linux/서비스/">서비스</a></li><li><a href="/docs/server/OS/Linux/예약-작업/">예약 작업</a></li><li><a href="/docs/server/OS/Linux/네트워크/">네트워크</a></li><li><a href="/docs/server/OS/Linux/방화벽/">방화벽</a></li><li><a href="/docs/server/OS/Linux/SSH/">SSH</a></li><li><a href="/docs/server/OS/Linux/시간대/">시간대</a></li></ul></details><div class="content"><p>폴더를 복사할 때는 대상 폴더가 이미 있는지, 원본 경로 끝에 <code>/</code> 가 붙었는지에 따라 결과가 달라진다. 빌드 결과를 배포 폴더로 옮기는 일처럼 "대상을 원본과 똑같이" 만들려면 <code>cp</code> 보다 <code>rsync --delete</code> 가 맞고, 다른 서버로 보낼 때도 <code>rsync</code> 가 바뀐 파일만 보낸다. 아래 예제는 Ubuntu 24.04 컨테이너(GNU coreutils · rsync 3.2.7) 에서, 원본 <code>new/</code> 와 이미 있는 대상 <code>dest/</code> 로 돌렸다.</p>
+<table>
+<thead>
+<tr>
+<th>폴더</th>
+<th>파일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>new/</code> (원본)</td>
+<td><code>a.txt</code> · <code>sub/b.txt</code></td>
+</tr>
+<tr>
+<td><code>dest/</code> (대상, 이미 있음)</td>
+<td><code>a.txt</code> · <code>old/x.txt</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="cp-로-폴더-복사">cp 로 폴더 복사</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">cp</span> <span class="token parameter variable">-r</span> new dest          <span class="token comment"># dest 가 있으면 그 안에 new 가 들어간다</span>
+<span class="token comment"># dest/a.txt  dest/new/a.txt  dest/new/sub/b.txt  dest/old/x.txt</span>
+<span class="token function">cp</span> <span class="token parameter variable">-r</span> new/. dest        <span class="token comment"># new 의 안쪽을 dest 에 — 덮어쓴다</span>
+<span class="token function">cp</span> <span class="token parameter variable">-rT</span> new dest         <span class="token comment"># 같은 결과 — 대상을 폴더가 아닌 "이 이름" 으로 본다(-T)</span>
+<span class="token comment"># dest/a.txt  dest/old/x.txt  dest/sub/b.txt</span></code></pre>
+<ul>
+<li>대상이 없으면 <code>cp -r new dest</code> 는 <code>dest</code> 를 새로 만들어 복사한다. 같은 명령이 대상이 있을 때와 없을 때 다르게 동작하는 것이 실수의 원인이다</li>
+<li>덮어쓰기는 원본에 없는 파일(<code>old/x.txt</code>) 을 지우지 않는다. 똑같이 만들려면 대상을 지우고 복사하거나 <code>rsync --delete</code> 를 쓴다</li>
+<li><code>-T</code> 는 GNU 판에만 있다. 맥의 <code>cp</code> 에는 없다</li>
+</ul>
+<p><code>cp -a</code> 는 권한 · 소유자 · 시각을 그대로 옮긴다. 백업 · 이전에는 <code>-a</code> 를 쓴다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">cp</span> new/a.txt c1         <span class="token comment"># -rw------- 2026-11-08 — 시각이 지금으로 바뀐다</span>
+<span class="token function">cp</span> <span class="token parameter variable">-a</span> new/a.txt c2      <span class="token comment"># -rw------- 2020-01-02 — 원본과 같다</span></code></pre>
+<h2 id="rsync">rsync</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">rsync</span> <span class="token parameter variable">-a</span> new dest       <span class="token comment"># 끝에 / 가 없으면 폴더째 — dest/new/… (cp -r 과 같다)</span>
+<span class="token function">rsync</span> <span class="token parameter variable">-a</span> new/ dest/     <span class="token comment"># 끝에 / 가 있으면 안쪽을 — dest/a.txt dest/sub/b.txt dest/old/x.txt</span>
+<span class="token function">rsync</span> <span class="token parameter variable">-a</span> <span class="token parameter variable">--delete</span> new/ dest/    <span class="token comment"># 원본에 없는 것은 지운다 — dest/a.txt dest/sub/b.txt</span></code></pre>
+<p><code>--delete</code> 는 먼저 <code>-n</code>(해 보기) 와 <code>-v</code> 로 무엇을 지울지 본다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">rsync</span> <span class="token parameter variable">-a</span> <span class="token parameter variable">--delete</span> <span class="token parameter variable">-n</span> <span class="token parameter variable">-v</span> new/ dest/</code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">sending incremental file list
+deleting old/x.txt
+deleting old/
+sub/
+sub/b.txt
+
+sent 124 bytes  received 47 bytes  342.00 bytes/sec
+total size is 4  speedup is 0.02 (DRY RUN)</code></pre>
+<ul>
+<li><code>-a</code> 는 하위 폴더 · 권한 · 시각 · 링크를 모두 옮기는 묶음이다. 거의 늘 붙인다</li>
+<li>끝 <code>/</code> 하나로 결과가 바뀐다. 원본은 <code>new/</code>, 대상은 <code>dest/</code> 처럼 둘 다 붙이는 버릇을 들인다</li>
+<li>다시 돌리면 바뀐 파일만 보낸다. 같은 폴더를 두 번째 보내면 목록이 비고, <code>a.txt</code> 하나를 고치면 <code>a.txt</code> 만 나온다</li>
+<li>크기와 고친 시각이 같으면 내용이 달라도 건너뛴다. 시각을 맞춰 둔 다른 내용의 <code>a.txt</code> 는 그대로 남았고, <code>-c</code>(체크섬으로 비교) 를 붙여야 바뀌었다</li>
+</ul>
+<h2 id="다른-서버로">다른 서버로</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">rsync</span> <span class="token parameter variable">-av</span> site/ user@server:/var/www/site/      <span class="token comment"># ssh 로 보낸다 — 양쪽에 rsync 가 있어야 한다</span>
+<span class="token function">rsync</span> <span class="token parameter variable">-av</span> <span class="token parameter variable">-e</span> <span class="token string">"ssh -p 2222"</span> site/ user@server:/var/www/site/    <span class="token comment"># 포트 · 키 같은 ssh 옵션</span>
+<span class="token function">scp</span> site/index.html user@server:/tmp/           <span class="token comment"># 파일 하나 · 몇 개는 scp 로</span></code></pre>
+<ul>
+<li>받는 서버에 rsync 가 없으면 연결 뒤 바로 끊긴다. 맥에서 보냈을 때는 <code>rsync(23275): error: io_read_nonblocking</code> 과 <code>child … exited with status 127</code>(명령 없음) 이 났다. <code>apt install rsync</code> 로 깐다</li>
+<li>큰 파일을 느린 망으로 보낼 때는 <code>-z</code>(압축) · <code>--partial --progress</code>(끊기면 이어서, 진행 표시) 를 붙인다</li>
+</ul>
+<h2 id="맥과-다른-점">맥과 다른 점</h2>
+<ul>
+<li>macOS 15 의 <code>rsync</code> 는 GNU rsync 가 아니라 openrsync(protocol 29) 다. 기본 옵션은 같지만 드물게 쓰는 옵션은 없을 수 있다. 같은 것을 쓰려면 <code>brew install rsync</code> 로 깐다</li>
+<li>맥의 <code>cp</code> 에는 <code>-T</code> 가 없다. <code>cp -R new/ dest</code> 처럼 원본 끝에 <code>/</code> 를 붙이면 안쪽을 복사한다</li>
+</ul>
+<h2 id="예전에는">예전에는</h2>
+<ul>
+<li>옛 글의 「두 단계로 처리」 는 <code>rm -rf a/</code> 뒤에 <code>cp -rf a/ b/</code> 를 적어, 원본을 지우고 복사하는 순서가 되어 있었다. 지울 것은 대상이다 — <code>rm -rf dest &amp;&amp; cp -r new dest</code></li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://download.samba.org/pub/rsync/rsync.1">rsync(1)</a> — rsync 설명서</li>
+<li><a href="https://www.gnu.org/software/coreutils/manual/html_node/cp-invocation.html">cp invocation</a> — GNU coreutils</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/OS/">OS</a></li><li><a href="/docs/server/OS/Linux/">Linux</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Linux/" rel="tag">Linux</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-08T09:46:50.000Z">2026-11-08</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

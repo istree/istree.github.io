@@ -1,0 +1,183 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Dockerfile | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">Docker</span><span class="up"> / <a href="/docs/server/OS/" title="한 단계 위로">OS</a></span></p><ul><li><a href="/docs/server/OS/Docker/">개요</a></li><li><a href="/docs/server/OS/Docker/설치/">설치</a></li><li><a href="/docs/server/OS/Docker/이미지와-컨테이너/">이미지와 컨테이너</a></li><li><a href="/docs/server/OS/Docker/Dockerfile/" aria-current="page">Dockerfile</a></li><li><a href="/docs/server/OS/Docker/볼륨과-네트워크/">볼륨과 네트워크</a></li><li><a href="/docs/server/OS/Docker/Compose/">Compose</a></li><li><a href="/docs/server/OS/Docker/백업/">백업</a></li><li><a href="/docs/server/OS/Docker/Portainer/">Portainer</a></li><li><a href="/docs/server/OS/Docker/오류-모음/">오류 모음</a></li></ul></nav><article><h1 class="page-title">Dockerfile</h1><details class="sidebar-m"><summary>목록 · Docker</summary><ul><li><a href="/docs/server/OS/Docker/">개요</a></li><li><a href="/docs/server/OS/Docker/설치/">설치</a></li><li><a href="/docs/server/OS/Docker/이미지와-컨테이너/">이미지와 컨테이너</a></li><li><a href="/docs/server/OS/Docker/Dockerfile/" aria-current="page">Dockerfile</a></li><li><a href="/docs/server/OS/Docker/볼륨과-네트워크/">볼륨과 네트워크</a></li><li><a href="/docs/server/OS/Docker/Compose/">Compose</a></li><li><a href="/docs/server/OS/Docker/백업/">백업</a></li><li><a href="/docs/server/OS/Docker/Portainer/">Portainer</a></li><li><a href="/docs/server/OS/Docker/오류-모음/">오류 모음</a></li></ul></details><div class="content"><p>Dockerfile 은 이미지를 만드는 순서를 적은 글자 파일이다. 바탕 이미지(<code>FROM</code>) 위에 파일을 넣고(<code>COPY</code>) 명령을 돌려(<code>RUN</code>) 층을 하나씩 쌓으며, 마지막에 컨테이너가 뜰 때 돌릴 명령(<code>CMD</code>) 을 정한다. 같은 Dockerfile 이면 어느 컴퓨터에서 만들어도 같은 이미지가 나오므로, 서버에 손으로 깔던 일을 파일로 남기는 셈이다. 아래 예제는 정적 HTML 을 Nginx 이미지에 넣는 것부터 시작한다.</p>
+<h2 id="기본">기본</h2>
+<pre class="language-dockerfile" data-language="dockerfile"><code class="language-dockerfile"><span class="token instruction"><span class="token keyword">FROM</span> nginx:1.28-alpine</span>
+<span class="token instruction"><span class="token keyword">ENV</span> TZ=Asia/Seoul</span>
+<span class="token instruction"><span class="token keyword">WORKDIR</span> /usr/share/nginx/html</span>
+<span class="token instruction"><span class="token keyword">COPY</span> site/ .</span>
+<span class="token instruction"><span class="token keyword">EXPOSE</span> 80</span></code></pre>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">docker</span> build <span class="token parameter variable">-t</span> my-site:1.0 <span class="token builtin class-name">.</span>         <span class="token comment"># . 은 빌드 컨텍스트 — 이 폴더를 엔진에 보낸다</span>
+<span class="token function">docker</span> run <span class="token parameter variable">--rm</span> my-site:1.0 <span class="token function">sh</span> <span class="token parameter variable">-c</span> <span class="token string">'ls -A; echo $TZ; date'</span></code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">50x.html
+index.html
+Asia/Seoul
+Sun Nov  8 18:15:57 KST 2026</code></pre>
+<table>
+<thead>
+<tr>
+<th>명령</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FROM 이미지</code></td>
+<td>바탕 이미지. 맨 처음에 둔다</td>
+</tr>
+<tr>
+<td><code>RUN 명령</code></td>
+<td>빌드할 때 명령을 돌리고 결과를 층으로 남긴다 (패키지 설치 …)</td>
+</tr>
+<tr>
+<td><code>COPY 원본 대상</code></td>
+<td>빌드 컨텍스트의 파일을 이미지에 넣는다</td>
+</tr>
+<tr>
+<td><code>WORKDIR 경로</code></td>
+<td>이후 명령과 컨테이너의 현재 폴더. 없으면 만든다</td>
+</tr>
+<tr>
+<td><code>ENV 이름=값</code></td>
+<td>환경 변수. 빌드에도, 실행한 컨테이너에도 남는다</td>
+</tr>
+<tr>
+<td><code>ARG 이름</code></td>
+<td>빌드할 때만 쓰는 값 (<code>--build-arg 이름=값</code>)</td>
+</tr>
+<tr>
+<td><code>EXPOSE 80</code></td>
+<td>이 포트를 쓴다는 표시. 포트를 열지는 않는다 — 여는 것은 <code>run -p</code> 다</td>
+</tr>
+<tr>
+<td><code>USER 이름</code></td>
+<td>이후 명령과 컨테이너를 이 사용자로 돌린다</td>
+</tr>
+<tr>
+<td><code>CMD [...]</code> · <code>ENTRYPOINT [...]</code></td>
+<td>컨테이너가 뜰 때 돌릴 명령</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>시간대는 <code>TZ</code> 만 주면 된다. 이 이미지에는 시간대 자료(<code>tzdata</code>) 가 들어 있어 <code>date</code> 가 KST 로 나온다. 자료가 없는 이미지는 <code>TZ</code> 를 줘도 UTC 시각 그대로라(<code>ubuntu:24.04</code> 는 <code>09:26:16 Asia</code>, <code>alpine:3.22</code> 는 <code>09:26:17 UTC</code>) <code>tzdata</code> 를 깔아야 한다</li>
+<li>태그를 <code>-t 이름:버전</code> 으로 붙인다. 빼면 이름 없는 <code>&lt;none&gt;</code> 이미지가 된다</li>
+</ul>
+<h2 id="층과-캐시">층과 캐시</h2>
+<p>명령 한 줄이 층 하나가 되고, 바뀌지 않은 층은 다시 만들지 않는다. 같은 파일로 다시 빌드하면 모두 캐시에서 온다.</p>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">#6 [2/3] WORKDIR /usr/share/nginx/html
+#6 CACHED
+#7 [3/3] COPY site/ .
+#7 CACHED</code></pre>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">docker</span> <span class="token function">history</span> <span class="token parameter variable">--format</span> <span class="token string">'{{.CreatedBy}}\t{{.Size}}'</span> my-site:1.0 <span class="token operator">|</span> <span class="token function">head</span> <span class="token parameter variable">-4</span></code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">EXPOSE [80/tcp]	0B
+COPY site/ . # buildkit	24.6kB
+WORKDIR /usr/share/nginx/html	4.1kB
+ENV TZ=Asia/Seoul	0B</code></pre>
+<ul>
+<li>한 층이 바뀌면 그 아래 층은 모두 다시 만든다. 잘 바뀌지 않는 것(패키지 설치) 을 위에, 자주 바뀌는 것(소스 <code>COPY</code>) 을 아래에 둔다</li>
+<li>앱은 의존성 목록만 먼저 넣어 설치하고 소스를 나중에 넣는다. 소스만 고쳤을 때 설치 층을 다시 쓴다
+<pre class="language-dockerfile" data-language="dockerfile"><code class="language-dockerfile"><span class="token instruction"><span class="token keyword">COPY</span> package.json package-lock.json ./</span>
+<span class="token instruction"><span class="token keyword">RUN</span> npm ci</span>
+<span class="token instruction"><span class="token keyword">COPY</span> . .</span></code></pre>
+</li>
+<li><code>apt-get update</code> 와 <code>install</code> 은 한 <code>RUN</code> 에 함께 쓰고, 끝에 <code>rm -rf /var/lib/apt/lists/*</code> 로 목록을 지워 층을 줄인다. 따로 쓰면 오래된 목록이 캐시에 남는다</li>
+</ul>
+<h2 id="dockerignore">.dockerignore</h2>
+<p><code>docker build .</code> 은 폴더 전체를 엔진에 보낸다. 보내지 않을 것은 <code>.dockerignore</code> 에 적는다.</p>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">.env
+node_modules
+.git</code></pre>
+<p><code>.env</code> · <code>node_modules</code> 가 있는 폴더에서 <code>COPY . /ctx</code> 로 넣어 보면 이 둘이 빠진다.</p>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">.dockerignore
+Dockerfile
+site</code></pre>
+<ul>
+<li>비밀번호가 든 <code>.env</code> 가 이미지에 들어가면 이미지를 받은 누구나 꺼내 본다. 꼭 적는다</li>
+</ul>
+<h2 id="cmd-와-entrypoint">CMD 와 ENTRYPOINT</h2>
+<pre class="language-dockerfile" data-language="dockerfile"><code class="language-dockerfile"><span class="token instruction"><span class="token keyword">FROM</span> alpine:3.22</span>
+<span class="token instruction"><span class="token keyword">ENTRYPOINT</span> [<span class="token string">"echo"</span>, <span class="token string">"hello"</span>]</span>
+<span class="token instruction"><span class="token keyword">CMD</span> [<span class="token string">"world"</span>]</span></code></pre>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">docker</span> run <span class="token parameter variable">--rm</span> ep                       <span class="token comment"># hello world</span>
+<span class="token function">docker</span> run <span class="token parameter variable">--rm</span> ep <span class="token function">docker</span>                <span class="token comment"># hello docker — 뒤에 준 인자가 CMD 를 바꾼다</span>
+<span class="token function">docker</span> run <span class="token parameter variable">--rm</span> <span class="token parameter variable">--entrypoint</span> <span class="token function">date</span> ep <span class="token parameter variable">-u</span> +%Y   <span class="token comment"># 2026 — ENTRYPOINT 도 바꿀 수 있다</span></code></pre>
+<ul>
+<li><code>CMD</code> 만 두면 <code>docker run 이미지 다른명령</code> 으로 통째로 바뀐다. 명령은 고정하고 인자만 바꾸게 하려면 <code>ENTRYPOINT</code> 에 명령, <code>CMD</code> 에 기본 인자를 둔다</li>
+<li><code>["…", "…"]</code> 꼴로 쓴다. <code>CMD sleep 1000</code> 처럼 글자로 쓰면 <code>/bin/sh -c</code> 로 돌아, Ubuntu 에서는 셸이 PID 1 이 되고(<code>1 /bin/sh -c sleep 1000</code>) <code>docker stop</code> 의 SIGTERM 이 프로그램에 가지 않는다</li>
+<li>서버 프로그램은 앞(foreground) 에서 돌아야 한다. 뒤로 빠지는(데몬) 명령이면 PID 1 이 바로 끝나 컨테이너도 멈춘다. Nginx 는 <code>daemon off;</code>, Apache 는 <code>apachectl -D FOREGROUND</code> 로 띄운다</li>
+</ul>
+<h2 id="여러-단계-빌드">여러 단계 빌드</h2>
+<p>빌드 도구가 필요한 단계와 실행 단계를 나눠, 결과물만 작은 이미지에 옮긴다.</p>
+<pre class="language-dockerfile" data-language="dockerfile"><code class="language-dockerfile"><span class="token instruction"><span class="token keyword">FROM</span> node:24-alpine <span class="token keyword">AS</span> build</span>
+<span class="token instruction"><span class="token keyword">WORKDIR</span> /app</span>
+<span class="token instruction"><span class="token keyword">COPY</span> app/ .</span>
+<span class="token instruction"><span class="token keyword">RUN</span> node build.js            # dist/index.html 을 만든다</span>
+
+<span class="token instruction"><span class="token keyword">FROM</span> nginx:1.28-alpine</span>
+<span class="token instruction"><span class="token keyword">COPY</span> <span class="token options"><span class="token property">--from</span><span class="token punctuation">=</span><span class="token string">build</span></span> /app/dist/ /usr/share/nginx/html/</span></code></pre>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">docker</span> build <span class="token parameter variable">-t</span> my-site:multi <span class="token builtin class-name">.</span>
+<span class="token function">docker</span> run <span class="token parameter variable">--rm</span> my-site:multi <span class="token function">cat</span> /usr/share/nginx/html/index.html   <span class="token comment"># &lt;h1&gt;built 2026-11-08&lt;/h1&gt;</span></code></pre>
+<ul>
+<li>마지막 <code>FROM</code> 부터가 결과 이미지다. Node 는 빌드에만 쓰이고 결과 이미지(91.6MB) 에는 들어가지 않는다</li>
+<li>Java · Go · C++ 처럼 컴파일하는 프로그램은 컴파일러가 든 이미지에서 빌드하고, 실행 파일만 작은 이미지로 옮긴다</li>
+</ul>
+<h2 id="다른-cpu-용으로">다른 CPU 용으로</h2>
+<p>M1 맥에서 만든 이미지는 <code>arm64</code> 다. <code>amd64</code>(인텔 · AMD) 서버에 올릴 이미지는 플랫폼을 정해 만든다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">docker</span> build <span class="token parameter variable">--platform</span> linux/amd64 <span class="token parameter variable">-t</span> my-site:amd64 <span class="token builtin class-name">.</span>
+<span class="token function">docker</span> image inspect <span class="token parameter variable">-f</span> <span class="token string">'{{.Os}}/{{.Architecture}}'</span> my-site:amd64 my-site:1.0
+<span class="token comment"># linux/amd64</span>
+<span class="token comment"># linux/arm64</span></code></pre>
+<ul>
+<li>둘 다 담으려면 <code>docker buildx build --platform linux/amd64,linux/arm64 --push …</code> 로 만들어 레지스트리에 올린다</li>
+<li>다른 CPU 용 빌드 · 실행은 에뮬레이션(QEMU) 으로 돌아 느리다</li>
+</ul>
+<h2 id="예-jenkins-이미지에-rbenv-넣기">예: Jenkins 이미지에 rbenv 넣기</h2>
+<p>Jenkins 에서 Ruby 프로젝트를 빌드하려고 공식 이미지에 rbenv 를 더한다.</p>
+<pre class="language-dockerfile" data-language="dockerfile"><code class="language-dockerfile"><span class="token instruction"><span class="token keyword">FROM</span> jenkins/jenkins:lts-jdk21</span>
+<span class="token instruction"><span class="token keyword">USER</span> root</span>
+<span class="token instruction"><span class="token keyword">RUN</span> apt-get update <span class="token operator">\</span>
+ &amp;&amp; apt-get install -y --no-install-recommends build-essential libssl-dev libreadline-dev zlib1g-dev libyaml-dev libffi-dev <span class="token operator">\</span>
+ &amp;&amp; rm -rf /var/lib/apt/lists/*</span>
+<span class="token instruction"><span class="token keyword">ENV</span> RBENV_ROOT=/opt/rbenv</span>
+<span class="token instruction"><span class="token keyword">ENV</span> PATH=<span class="token string">"$RBENV_ROOT/bin:$RBENV_ROOT/shims:$PATH"</span></span>
+<span class="token instruction"><span class="token keyword">RUN</span> git clone --depth 1 https://github.com/rbenv/rbenv.git <span class="token variable">$RBENV_ROOT</span> <span class="token operator">\</span>
+ &amp;&amp; git clone --depth 1 https://github.com/rbenv/ruby-build.git <span class="token variable">$RBENV_ROOT</span>/plugins/ruby-build <span class="token operator">\</span>
+ &amp;&amp; chown -R jenkins:jenkins <span class="token variable">$RBENV_ROOT</span></span>
+<span class="token instruction"><span class="token keyword">USER</span> jenkins</span></code></pre>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">docker</span> build <span class="token parameter variable">-t</span> jenkins-rbenv <span class="token builtin class-name">.</span>
+<span class="token function">docker</span> run <span class="token parameter variable">--rm</span> <span class="token parameter variable">-v</span> ~/jenkins_home:/var/jenkins_home <span class="token parameter variable">--entrypoint</span> <span class="token function">sh</span> jenkins-rbenv <span class="token parameter variable">-c</span> <span class="token string">'whoami; rbenv --version; rbenv install -l | head -2'</span>
+<span class="token comment"># jenkins</span>
+<span class="token comment"># rbenv 1.3.2</span>
+<span class="token comment"># 3.3.13</span>
+<span class="token comment"># 3.4.12</span></code></pre>
+<ul>
+<li>패키지는 root 로 깔고, 끝에 <code>USER jenkins</code> 로 돌려놓는다. 공식 이미지가 jenkins 사용자로 돌기 때문이다</li>
+<li>rbenv 를 jenkins 의 홈(<code>/var/jenkins_home</code>) 에 깔면 안 된다. 이 경로에는 보통 호스트 폴더 · 볼륨을 연결하므로, 연결하는 순간 이미지 안의 rbenv 가 가려져 <code>rbenv: not found</code> 가 난다. <code>/opt</code> 처럼 연결하지 않는 곳에 둔다</li>
+<li>옛 글은 <code>curl … rbenv-installer | bash -; exit 0</code> 으로 깔았다. <code>exit 0</code> 이 실패를 덮어 rbenv 가 없는 이미지가 조용히 만들어지므로, <code>git clone</code> 으로 바꾸고 실패하면 빌드가 멈추게 했다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://docs.docker.com/reference/dockerfile/">Dockerfile reference</a> — 명령 전부</li>
+<li><a href="https://docs.docker.com/build/building/best-practices/">Building best practices</a> · <a href="https://docs.docker.com/build/building/multi-stage/">Multi-stage builds</a> · <a href="https://docs.docker.com/build/building/multi-platform/">Multi-platform builds</a> — Docker Docs</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/OS/">OS</a></li><li><a href="/docs/server/OS/Docker/">Docker</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Docker/" rel="tag">Docker</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-08T09:34:08.000Z">2026-11-08</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

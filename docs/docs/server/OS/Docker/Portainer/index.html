@@ -1,0 +1,64 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Portainer | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">Docker</span><span class="up"> / <a href="/docs/server/OS/" title="한 단계 위로">OS</a></span></p><ul><li><a href="/docs/server/OS/Docker/">개요</a></li><li><a href="/docs/server/OS/Docker/설치/">설치</a></li><li><a href="/docs/server/OS/Docker/이미지와-컨테이너/">이미지와 컨테이너</a></li><li><a href="/docs/server/OS/Docker/Dockerfile/">Dockerfile</a></li><li><a href="/docs/server/OS/Docker/볼륨과-네트워크/">볼륨과 네트워크</a></li><li><a href="/docs/server/OS/Docker/Compose/">Compose</a></li><li><a href="/docs/server/OS/Docker/백업/">백업</a></li><li><a href="/docs/server/OS/Docker/Portainer/" aria-current="page">Portainer</a></li><li><a href="/docs/server/OS/Docker/오류-모음/">오류 모음</a></li></ul></nav><article><h1 class="page-title">Portainer</h1><details class="sidebar-m"><summary>목록 · Docker</summary><ul><li><a href="/docs/server/OS/Docker/">개요</a></li><li><a href="/docs/server/OS/Docker/설치/">설치</a></li><li><a href="/docs/server/OS/Docker/이미지와-컨테이너/">이미지와 컨테이너</a></li><li><a href="/docs/server/OS/Docker/Dockerfile/">Dockerfile</a></li><li><a href="/docs/server/OS/Docker/볼륨과-네트워크/">볼륨과 네트워크</a></li><li><a href="/docs/server/OS/Docker/Compose/">Compose</a></li><li><a href="/docs/server/OS/Docker/백업/">백업</a></li><li><a href="/docs/server/OS/Docker/Portainer/" aria-current="page">Portainer</a></li><li><a href="/docs/server/OS/Docker/오류-모음/">오류 모음</a></li></ul></details><div class="content"><p>Portainer 는 Docker 를 웹 화면으로 다루는 도구다. 컨테이너 · 이미지 · 볼륨 · 네트워크 목록을 보고, 시작 · 멈춤 · 지우기 · 로그 · 콘솔을 단추로 하며, Compose 파일을 붙여 넣어 스택으로 띄운다. Portainer 자신도 컨테이너로 돌고, Docker 소켓을 연결받아 엔진을 다룬다. 아래 화면은 Community Edition 2.45.3 LTS 를 colima 에서 띄운 것이다.</p>
+<p><img alt="Portainer 의 컨테이너 목록 — db · portainer · web 이 running 이고 이미지 · IP · 열린 포트가 보인다" loading="lazy" decoding="async" width="1600" height="562" src="/_astro/Portainer-%ED%99%94%EB%A9%B4.ssmqv05k_Z2wzSqf.webp"></p>
+<h2 id="설치">설치</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">docker</span> volume create portainer_data
+<span class="token function">docker</span> run <span class="token parameter variable">-d</span> <span class="token parameter variable">--name</span> portainer <span class="token parameter variable">--restart</span><span class="token operator">=</span>always <span class="token punctuation">\</span>
+  <span class="token parameter variable">-p</span> <span class="token number">127.0</span>.0.1:9443:9443 <span class="token punctuation">\</span>
+  <span class="token parameter variable">-v</span> /var/run/docker.sock:/var/run/docker.sock <span class="token punctuation">\</span>
+  <span class="token parameter variable">-v</span> portainer_data:/data <span class="token punctuation">\</span>
+  portainer/portainer-ce:lts</code></pre>
+<p><code>https://localhost:9443</code> 을 열면 관리자 계정을 만드는 화면이 나온다. 이때 로그에 찍힌 설정 토큰을 넣어야 한다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">docker</span> logs portainer</code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">setup_token=1e68e71e337335a31014c0d5dde25185aed9b8d3394a4cd005c33206165e29e4
+
+Paste it into the setup screen, or send it in the X-Setup-Token header.
+Start with --no-setup-token to disable.</code></pre>
+<ul>
+<li>자기 서명 인증서라 브라우저가 경고한다. 그대로 들어가거나, 앞에 리버스 프록시를 두고 인증서를 붙인다</li>
+<li>띄우고 5 분 안에 관리자를 만들지 않으면 잠긴다. 로그에 <code>the Portainer instance timed out for security purposes</code> 가 남고, 컨테이너는 <code>Up</code> 이지만 화면이 열리지 않는다. <code>docker restart portainer</code> 로 다시 띄운다</li>
+<li>9000 포트는 옛 HTTP 화면이다. 지금은 9443(HTTPS) 을 쓴다</li>
+<li>Docker 소켓을 가진 컨테이너는 호스트의 root 와 같다. 포트를 <code>127.0.0.1</code> 에만 열거나 방화벽 안에 둔다</li>
+</ul>
+<h2 id="콘솔">콘솔</h2>
+<p>목록의 <code>&gt;_</code> 단추로 컨테이너 안에 셸을 띄운다(<code>docker exec -it … sh</code> 와 같다). Ubuntu · Debian 이미지에는 편집기가 없고 한글 설정도 없다. Alpine 이미지에는 busybox 의 <code>vi</code> 가 있다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">docker</span> run <span class="token parameter variable">--rm</span> ubuntu:24.04 <span class="token function">sh</span> <span class="token parameter variable">-c</span> <span class="token string">'command -v vi vim nano || echo "편집기 없음"'</span>   <span class="token comment"># 편집기 없음</span>
+<span class="token function">apt-get</span> update <span class="token operator">&amp;&amp;</span> <span class="token function">apt-get</span> <span class="token function">install</span> <span class="token parameter variable">-y</span> vim-tiny        <span class="token comment"># 컨테이너 안에서 — /usr/bin/vi 가 생긴다</span></code></pre>
+<p><code>LANG</code> 이 비어 있으면 셸이 한글을 바이트로 센다. Ubuntu 이미지에 들어 있는 <code>C.UTF-8</code> 을 주면 글자로 센다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">docker</span> run <span class="token parameter variable">--rm</span> ubuntu:24.04 <span class="token function">bash</span> <span class="token parameter variable">-c</span> <span class="token string">'x=한글; echo ${#x}'</span>                 <span class="token comment"># 6</span>
+<span class="token function">docker</span> run <span class="token parameter variable">--rm</span> <span class="token parameter variable">-e</span> <span class="token assign-left variable"><span class="token environment constant">LANG</span></span><span class="token operator">=</span>C.UTF-8 ubuntu:24.04 <span class="token function">bash</span> <span class="token parameter variable">-c</span> <span class="token string">'x=한글; echo ${#x}'</span>  <span class="token comment"># 2</span></code></pre>
+<ul>
+<li>컨테이너를 만들 때 환경 변수 <code>LANG=C.UTF-8</code> 을 넣거나, Dockerfile 에 <code>ENV LANG=C.UTF-8</code> 을 둔다. <code>locales-all</code> 을 깔지 않아도 된다</li>
+<li>콘솔에서 고친 파일은 컨테이너를 다시 만들면 사라진다. 설정은 볼륨 · 바인드 마운트로 두고 호스트에서 고친다</li>
+</ul>
+<h2 id="예전에는">예전에는</h2>
+<ul>
+<li>이미지 이름이 <code>portainer/portainer</code> 였고 9000 포트(HTTP) 로 열었으며, 설정 토큰 없이 바로 관리자를 만들었다. 지금은 <code>portainer/portainer-ce</code> 다</li>
+<li>옛 글에 남긴 기록: 콘솔의 vim 에서 한글을 치면 <code>WebSocket is already in CLOSING or CLOSED state.</code> 오류와 함께 콘솔이 멈췄고, vim 대신 vim-tiny 를 깔고 <code>LANG</code> · <code>LC_ALL</code> 을 <code>en_US.UTF-8</code> 로 두고 컨테이너를 「Interactive &amp; TTY (-i -t)」 로 만들어 피했다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://docs.portainer.io/start/install-ce/server/docker/linux">Install Portainer CE with Docker on Linux</a> — Portainer 문서</li>
+<li><a href="https://www.portainer.io/">Portainer</a> — 홈</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/OS/">OS</a></li><li><a href="/docs/server/OS/Docker/">Docker</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Docker/" rel="tag">Docker</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-08T09:34:08.000Z">2026-11-08</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

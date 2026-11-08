@@ -1,0 +1,171 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>방화벽 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">Linux</span><span class="up"> / <a href="/docs/server/OS/" title="한 단계 위로">OS</a></span></p><ul><li><a href="/docs/server/OS/Linux/">개요</a></li><li><a href="/docs/server/OS/Linux/셸/">셸</a></li><li><a href="/docs/server/OS/Linux/파일-찾기/">파일 찾기</a></li><li><a href="/docs/server/OS/Linux/복사와-동기화/">복사와 동기화</a></li><li><a href="/docs/server/OS/Linux/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/OS/Linux/패키지/">패키지</a></li><li><a href="/docs/server/OS/Linux/프로세스와-포트/">프로세스와 포트</a></li><li><a href="/docs/server/OS/Linux/디스크/">디스크</a></li><li><a href="/docs/server/OS/Linux/서비스/">서비스</a></li><li><a href="/docs/server/OS/Linux/예약-작업/">예약 작업</a></li><li><a href="/docs/server/OS/Linux/네트워크/">네트워크</a></li><li><a href="/docs/server/OS/Linux/방화벽/" aria-current="page">방화벽</a></li><li><a href="/docs/server/OS/Linux/SSH/">SSH</a></li><li><a href="/docs/server/OS/Linux/시간대/">시간대</a></li></ul></nav><article><h1 class="page-title">방화벽</h1><details class="sidebar-m"><summary>목록 · Linux</summary><ul><li><a href="/docs/server/OS/Linux/">개요</a></li><li><a href="/docs/server/OS/Linux/셸/">셸</a></li><li><a href="/docs/server/OS/Linux/파일-찾기/">파일 찾기</a></li><li><a href="/docs/server/OS/Linux/복사와-동기화/">복사와 동기화</a></li><li><a href="/docs/server/OS/Linux/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/OS/Linux/패키지/">패키지</a></li><li><a href="/docs/server/OS/Linux/프로세스와-포트/">프로세스와 포트</a></li><li><a href="/docs/server/OS/Linux/디스크/">디스크</a></li><li><a href="/docs/server/OS/Linux/서비스/">서비스</a></li><li><a href="/docs/server/OS/Linux/예약-작업/">예약 작업</a></li><li><a href="/docs/server/OS/Linux/네트워크/">네트워크</a></li><li><a href="/docs/server/OS/Linux/방화벽/" aria-current="page">방화벽</a></li><li><a href="/docs/server/OS/Linux/SSH/">SSH</a></li><li><a href="/docs/server/OS/Linux/시간대/">시간대</a></li></ul></details><div class="content"><p>서버의 방화벽은 바깥에서 들어오는 연결 가운데 열어 둔 포트만 받고 나머지는 막는다. 리눅스 커널의 netfilter 가 실제로 걸러 내고, Ubuntu 에서는 그 규칙을 <code>ufw</code> 로 짧게 적는다. 처음에는 "들어오는 것은 모두 막고, SSH · 웹만 연다" 로 두고, DB 같은 포트는 그것을 쓰는 서버의 IP 에만 연다. 아래 예제는 Docker 컨테이너 안에서(ufw 0.36.2, 컨테이너마다 따로인 네트워크) ufw 를 켜고, 같은 네트워크의 다른 컨테이너에서 붙어 확인했다. 「Docker 와 함께」 는 그 컨테이너 안에 Ubuntu 의 Docker(29.1.3) 를 깔아 돌렸다.</p>
+<h2 id="켜기">켜기</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> ufw default deny incoming
+<span class="token function">sudo</span> ufw default allow outgoing
+<span class="token function">sudo</span> ufw allow <span class="token number">22</span>/tcp         <span class="token comment"># SSH 를 먼저 연다</span>
+<span class="token function">sudo</span> ufw allow <span class="token number">80</span>/tcp
+<span class="token function">sudo</span> ufw allow from <span class="token number">172.18</span>.0.3 to any port <span class="token number">3306</span> proto tcp
+<span class="token function">sudo</span> ufw <span class="token builtin class-name">enable</span>
+<span class="token function">sudo</span> ufw status verbose</code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">Status: active
+Logging: on (low)
+Default: deny (incoming), allow (outgoing), deny (routed)
+New profiles: skip
+
+To                         Action      From
+--                         ------      ----
+22/tcp                     ALLOW IN    Anywhere
+80/tcp                     ALLOW IN    Anywhere
+3306/tcp                   ALLOW IN    172.18.0.3
+22/tcp (v6)                ALLOW IN    Anywhere (v6)
+80/tcp (v6)                ALLOW IN    Anywhere (v6)</code></pre>
+<p>다른 서버에서 붙어 본 결과다.</p>
+<table>
+<thead>
+<tr>
+<th>포트</th>
+<th>172.18.0.3 (허용한 IP)</th>
+<th>172.18.0.4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>80 (허용)</td>
+<td>열림</td>
+<td>열림</td>
+</tr>
+<tr>
+<td>8080 (규칙 없음)</td>
+<td>막힘</td>
+<td>막힘</td>
+</tr>
+<tr>
+<td>3306 (IP 만 허용)</td>
+<td>열림</td>
+<td>막힘</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>SSH 로 들어가 있는 서버에서는 <code>enable</code> 전에 반드시 <code>allow 22/tcp</code>(또는 <code>allow OpenSSH</code>) 를 한다. 빼먹으면 SSH 로 다시 들어갈 수 없다</li>
+<li>규칙은 IPv4 · IPv6 에 함께 들어간다(<code>(v6)</code> 줄). IP 를 정한 규칙은 그 IP 의 판에만 들어간다</li>
+<li><code>enable</code> 하면 부팅 때도 켜진다(<code>Firewall is active and enabled on system startup</code>)</li>
+</ul>
+<h2 id="규칙-적기">규칙 적기</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> ufw allow <span class="token number">443</span>/tcp
+<span class="token function">sudo</span> ufw allow <span class="token number">6000</span>:6010/tcp                   <span class="token comment"># 포트 범위</span>
+<span class="token function">sudo</span> ufw allow from <span class="token number">10.0</span>.0.0/24                <span class="token comment"># 그 대역에서 오는 것 모두</span>
+<span class="token function">sudo</span> ufw allow from <span class="token number">10.0</span>.0.0/24 to any port <span class="token number">5432</span> proto tcp
+<span class="token function">sudo</span> ufw deny <span class="token number">8080</span>/tcp
+<span class="token function">sudo</span> ufw reject <span class="token number">8081</span>/tcp
+<span class="token function">sudo</span> ufw limit <span class="token number">22</span>/tcp                          <span class="token comment"># 30 초에 6 번째 연결부터 막는다</span>
+<span class="token function">sudo</span> ufw insert <span class="token number">1</span> deny from <span class="token number">203.0</span>.113.7        <span class="token comment"># 맨 앞에 넣는다</span></code></pre>
+<ul>
+<li>규칙은 위에서부터 보고 처음 맞는 것을 따른다. 특정 IP 를 막는 규칙은 <code>insert 1</code> 로 허용 규칙보다 앞에 둔다</li>
+<li><code>deny</code> 는 응답 없이 버리고 <code>reject</code> 는 거절을 돌려준다. curl 로 붙으면 <code>deny</code> 는 5 초를 기다리다 시간 초과(종료 코드 28), <code>reject</code> 는 바로 <code>Connection refused</code>(종료 코드 7) 였다</li>
+<li><code>limit</code> 을 건 22 번에 잇달아 붙어 보니 다섯 번은 열리고 여섯 번째부터 막혔다. 비밀번호를 마구 넣어 보는 공격을 늦춘다</li>
+</ul>
+<h2 id="앱-이름으로">앱 이름으로</h2>
+<p>패키지가 <code>/etc/ufw/applications.d/</code> 에 포트 묶음을 두면 이름으로 열 수 있다. nginx 를 깔면 셋이 생긴다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> ufw app list            <span class="token comment"># Nginx Full · Nginx HTTP · Nginx HTTPS</span>
+<span class="token function">sudo</span> ufw app info <span class="token string">"Nginx Full"</span>
+<span class="token comment">#   Ports:</span>
+<span class="token comment">#     80,443/tcp</span>
+<span class="token function">sudo</span> ufw allow <span class="token string">"Nginx Full"</span></code></pre>
+<h2 id="지우기">지우기</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> ufw status numbered
+<span class="token function">sudo</span> ufw delete <span class="token number">3</span>                 <span class="token comment"># 번호로 — 묻는다 (스크립트에서는 --force)</span>
+<span class="token function">sudo</span> ufw delete allow <span class="token number">80</span>/tcp      <span class="token comment"># 적은 그대로 앞에 delete 를 붙인다</span>
+<span class="token function">sudo</span> ufw disable                  <span class="token comment"># 끈다 (규칙은 남는다)</span>
+<span class="token function">sudo</span> ufw reset                    <span class="token comment"># 규칙까지 모두 지운다</span></code></pre>
+<ul>
+<li>번호로 지우면 IPv4 줄만 지워지고 <code>(v6)</code> 줄은 남는다. 규칙 그대로 지우면 둘 다 지워진다</li>
+<li>하나를 지우면 뒤의 번호가 당겨진다. 여럿을 지울 때는 매번 <code>status numbered</code> 로 다시 본다</li>
+</ul>
+<h2 id="로그">로그</h2>
+<p>막힌 연결은 커널 로그에 <code>[UFW BLOCK]</code> 으로 남는다. ufw 패키지가 넣은 rsyslog 설정(<code>/etc/rsyslog.d/20-ufw.conf</code>) 이 이 줄을 <code>/var/log/ufw.log</code> 로도 모은다.</p>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">[UFW BLOCK] IN=eth0 OUT= … SRC=172.18.0.3 DST=172.18.0.2 … PROTO=TCP SPT=54024 DPT=5432 … SYN</code></pre>
+<ul>
+<li><code>sudo journalctl -k | grep UFW</code> 로 본다. <code>SRC</code> 가 누가, <code>DPT</code> 가 어느 포트로 왔는지다</li>
+<li>열었어야 할 포트가 막혔는지 볼 때 쓴다. 너무 많으면 <code>sudo ufw logging off</code> 로 끈다</li>
+</ul>
+<h2 id="docker-와-함께">Docker 와 함께</h2>
+<p>Docker 가 <code>-p</code> 로 연 포트는 ufw 규칙을 지나친다. Docker 가 연 포트로 온 연결은 컨테이너로 넘겨지는 길(FORWARD) 을 타는데, ufw 의 허용 · 거부 규칙은 서버로 들어오는 길(INPUT) 에 걸려 있기 때문이다. Docker 를 깐 서버에서 ufw 로 모두 막고 22 번만 연 뒤 다른 서버에서 붙어 본 결과다.</p>
+<table>
+<thead>
+<tr>
+<th>띄운 것</th>
+<th>결과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>docker run -p 8000:80 nginx:alpine</code></td>
+<td>열림 (200)</td>
+</tr>
+<tr>
+<td><code>docker run -p 127.0.0.1:8001:80 nginx:alpine</code></td>
+<td>막힘 — 서버 안에서만 받는다</td>
+</tr>
+<tr>
+<td>서버에 바로 띄운 프로그램 (8002)</td>
+<td>막힘 — ufw 가 막는다</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>바깥에 열 필요가 없는 포트(DB · 관리 화면) 는 <code>-p 127.0.0.1:포트:포트</code> 로 띄우고, 같은 서버의 Nginx 가 받아 넘긴다</li>
+<li>컨테이너의 포트를 IP 별로 막으려면 Docker 가 남겨 둔 <code>DOCKER-USER</code> 체인에 iptables 규칙을 넣는다. 이 체인은 포트를 컨테이너 쪽으로 바꾼 뒤에 보므로, 바깥 포트(8000) 로 걸려면 <code>--dport 8000</code> 이 아니라 원래 포트를 보는 조건을 쓴다</li>
+</ul>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> iptables <span class="token parameter variable">-I</span> DOCKER-<span class="token environment constant">USER</span> <span class="token parameter variable">-i</span> eth0 <span class="token parameter variable">-p</span> tcp <span class="token parameter variable">-m</span> conntrack <span class="token parameter variable">--ctorigdstport</span> <span class="token number">8000</span> <span class="token parameter variable">-j</span> DROP</code></pre>
+<table>
+<thead>
+<tr>
+<th>규칙</th>
+<th>8000 에 붙으면</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--dport 8000</code></td>
+<td>열림 — 이미 80 으로 바뀌어 맞지 않는다</td>
+</tr>
+<tr>
+<td><code>--dport 80</code></td>
+<td>막힘 — 그 컨테이너 포트를 쓰는 것이 모두 막힌다</td>
+</tr>
+<tr>
+<td><code>--ctorigdstport 8000</code></td>
+<td>막힘</td>
+</tr>
+</tbody>
+</table>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://documentation.ubuntu.com/server/how-to/security/firewalls/">Ubuntu Server — Firewalls</a> — ufw 안내</li>
+<li><a href="https://manpages.ubuntu.com/manpages/noble/en/man8/ufw.8.html">ufw(8)</a> — Ubuntu 설명서</li>
+<li><a href="https://help.ubuntu.com/community/UFW">UFW</a> — Ubuntu 커뮤니티 위키의 예제</li>
+<li><a href="https://docs.docker.com/engine/network/packet-filtering-firewalls/">Packet filtering and firewalls</a> — Docker 와 ufw · <code>DOCKER-USER</code></li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/OS/">OS</a></li><li><a href="/docs/server/OS/Linux/">Linux</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Linux/" rel="tag">Linux</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-08T14:00:54.000Z">2026-11-08</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

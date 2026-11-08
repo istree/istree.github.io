@@ -1,0 +1,116 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>가상 호스트 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">Apache2</span><span class="up"> / <a href="/docs/server/HTTP/" title="한 단계 위로">HTTP</a></span></p><ul><li><a href="/docs/server/HTTP/Apache2/">개요</a></li><li><a href="/docs/server/HTTP/Apache2/설정과-모듈/">설정과 모듈</a></li><li><a href="/docs/server/HTTP/Apache2/가상-호스트/" aria-current="page">가상 호스트</a></li><li><a href="/docs/server/HTTP/Apache2/리버스-프록시/">리버스 프록시</a></li></ul></nav><article><h1 class="page-title">가상 호스트</h1><details class="sidebar-m"><summary>목록 · Apache2</summary><ul><li><a href="/docs/server/HTTP/Apache2/">개요</a></li><li><a href="/docs/server/HTTP/Apache2/설정과-모듈/">설정과 모듈</a></li><li><a href="/docs/server/HTTP/Apache2/가상-호스트/" aria-current="page">가상 호스트</a></li><li><a href="/docs/server/HTTP/Apache2/리버스-프록시/">리버스 프록시</a></li></ul></details><div class="content"><p>가상 호스트는 Apache 하나로 여러 사이트를 도메인마다 나눠 내보내는 설정이다. 사이트마다 <code>sites-available/</code> 에 <code>&lt;VirtualHost&gt;</code> 블록 하나를 담은 파일을 두고 <code>a2ensite</code> 로 켠다. 요청의 <code>Host</code> 헤더를 <code>ServerName</code> · <code>ServerAlias</code> 와 견주어 사이트를 고르고, 맞는 것이 없으면 그 포트의 첫 사이트가 받는다. 아래 예제는 Ubuntu 24.04 의 Apache 2.4.58 로 돌렸다.</p>
+<h2 id="사이트-두-개">사이트 두 개</h2>
+<p><code>/etc/apache2/sites-available/a.conf</code></p>
+<pre class="language-apache" data-language="apache"><code class="language-apache">&lt;VirtualHost *:80&gt;
+    ServerName a.test
+    ServerAlias www.a.test
+    DocumentRoot /var/www/a
+    ErrorLog ${APACHE_LOG_DIR}/a-error.log
+    CustomLog ${APACHE_LOG_DIR}/a-access.log combined
+&lt;/VirtualHost&gt;</code></pre>
+<p><code>/etc/apache2/sites-available/b.conf</code></p>
+<pre class="language-apache" data-language="apache"><code class="language-apache">&lt;VirtualHost *:80&gt;
+    ServerName b.test
+    DocumentRoot /srv/b
+    &lt;Directory /srv/b&gt;
+        Require all granted
+    &lt;/Directory&gt;
+&lt;/VirtualHost&gt;</code></pre>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> a2ensite a b
+<span class="token function">sudo</span> systemctl reload apache2
+apache2ctl <span class="token parameter variable">-S</span></code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">VirtualHost configuration:
+*:80                   is a NameVirtualHost
+         default server localhost (/etc/apache2/sites-enabled/000-default.conf:1)
+         port 80 namevhost localhost (/etc/apache2/sites-enabled/000-default.conf:1)
+         port 80 namevhost a.test (/etc/apache2/sites-enabled/a.conf:1)
+                 alias www.a.test
+         port 80 namevhost b.test (/etc/apache2/sites-enabled/b.conf:1)</code></pre>
+<table>
+<thead>
+<tr>
+<th>요청 <code>Host</code></th>
+<th>결과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>a.test</code> · <code>www.a.test</code></td>
+<td>200 <code>site A</code></td>
+</tr>
+<tr>
+<td><code>b.test</code></td>
+<td>200 <code>site B</code></td>
+</tr>
+<tr>
+<td><code>unknown.test</code></td>
+<td>200 기본 쪽 (<code>000-default</code>)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>사이트별 로그를 따로 두면 사이트마다 접근 기록을 보기 쉽다. 빼면 <code>other_vhosts_access.log</code> 에 함께 쌓인다</li>
+<li>맞는 이름이 없으면 그 포트에서 처음 읽은 사이트가 받는다. 파일 이름 순서로 읽으므로 <code>000-default.conf</code> 가 맨 앞이다. <code>a2dissite 000-default</code> 로 끄자 <code>default server a.test</code> 가 되어 모르는 이름에 <code>site A</code> 가 나왔다</li>
+<li>모르는 이름을 막으려면 <code>000-default.conf</code> 를 남기고 그 <code>DocumentRoot</code> 를 빈 폴더로 두거나 <code>Require all denied</code> 를 준다</li>
+</ul>
+<h2 id="폴더-허락-directory">폴더 허락 (Directory)</h2>
+<p>Ubuntu 의 <code>apache2.conf</code> 는 <code>/</code> 를 모두 막고 <code>/var/www/</code> 와 <code>/usr/share</code> 만 허락한다. <code>/srv/b</code> 처럼 다른 곳을 <code>DocumentRoot</code> 로 두고 <code>&lt;Directory&gt;</code> 를 빠뜨리면 403 이다.</p>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">AH01630: client denied by server configuration: /srv/b/</code></pre>
+<ul>
+<li>사이트 파일 안에 <code>&lt;Directory /srv/b&gt; Require all granted &lt;/Directory&gt;</code> 를 두면 200 이 된다</li>
+<li>파일 권한 문제(<code>www-data</code> 가 못 읽음) 도 403 이지만 로그 문구가 다르다: <code>(13)Permission denied: … AH00132: file permissions deny server access: /var/www/html/secret.html</code></li>
+</ul>
+<h2 id="https">HTTPS</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> a2enmod ssl headers      <span class="token comment"># ssl 은 socache_shmcb 도 함께 켠다</span></code></pre>
+<pre class="language-apache" data-language="apache"><code class="language-apache">&lt;VirtualHost *:80&gt;
+    ServerName a.test
+    ServerAlias www.a.test
+    Redirect permanent / https://a.test/
+&lt;/VirtualHost&gt;
+&lt;VirtualHost *:443&gt;
+    ServerName a.test
+    DocumentRoot /var/www/a
+    SSLEngine on
+    SSLCertificateFile    /etc/apache2/ssl/a.crt
+    SSLCertificateKeyFile /etc/apache2/ssl/a.key
+    Header always set Strict-Transport-Security "max-age=31536000"
+&lt;/VirtualHost&gt;</code></pre>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">curl</span> <span class="token parameter variable">-sI</span> <span class="token parameter variable">-H</span> <span class="token string">"Host: a.test"</span> <span class="token string">"http://127.0.0.1/x?y=1"</span>
+<span class="token comment"># HTTP/1.1 301 Moved Permanently</span>
+<span class="token comment"># Location: https://a.test/x?y=1</span>
+<span class="token function">curl</span> <span class="token parameter variable">-skI</span> <span class="token parameter variable">--resolve</span> a.test:443:127.0.0.1 https://a.test/
+<span class="token comment"># HTTP/1.1 200 OK</span>
+<span class="token comment"># Strict-Transport-Security: max-age=31536000</span></code></pre>
+<ul>
+<li><code>Redirect permanent / https://a.test/</code> 는 뒤의 경로 · 쿼리를 붙여 보낸다 (<code>/x?y=1</code> → <code>https://a.test/x?y=1</code>)</li>
+<li><code>Header</code> 는 <code>headers</code> 모듈이 켜져 있어야 한다. 끄고 검사하면 <code>Invalid command 'Header', perhaps misspelled or defined by a module not included in the server configuration</code> 이 난다</li>
+<li><code>ssl</code> 모듈을 켜면 <code>ports.conf</code> 가 <code>Listen 443</code> 을 함께 연다</li>
+<li>Let's Encrypt 인증서는 <code>sudo apt install certbot python3-certbot-apache</code> 뒤 <code>sudo certbot --apache -d a.test</code> 로 받고 이 설정까지 고친다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://httpd.apache.org/docs/2.4/vhosts/">Virtual Host documentation</a> · <a href="https://httpd.apache.org/docs/2.4/vhosts/name-based.html">Name-based Virtual Hosts</a> — Apache 문서</li>
+<li><a href="https://httpd.apache.org/docs/2.4/ssl/ssl_howto.html">SSL/TLS Strong Encryption: How-To</a> — Apache 문서</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/HTTP/">HTTP</a></li><li><a href="/docs/server/HTTP/Apache2/">Apache2</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Apache/" rel="tag">Apache</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-08T10:25:59.000Z">2026-11-08</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

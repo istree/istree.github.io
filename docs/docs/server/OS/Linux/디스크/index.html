@@ -1,0 +1,147 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>디스크 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">Linux</span><span class="up"> / <a href="/docs/server/OS/" title="한 단계 위로">OS</a></span></p><ul><li><a href="/docs/server/OS/Linux/">개요</a></li><li><a href="/docs/server/OS/Linux/셸/">셸</a></li><li><a href="/docs/server/OS/Linux/파일-찾기/">파일 찾기</a></li><li><a href="/docs/server/OS/Linux/복사와-동기화/">복사와 동기화</a></li><li><a href="/docs/server/OS/Linux/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/OS/Linux/패키지/">패키지</a></li><li><a href="/docs/server/OS/Linux/프로세스와-포트/">프로세스와 포트</a></li><li><a href="/docs/server/OS/Linux/디스크/" aria-current="page">디스크</a></li><li><a href="/docs/server/OS/Linux/서비스/">서비스</a></li><li><a href="/docs/server/OS/Linux/예약-작업/">예약 작업</a></li><li><a href="/docs/server/OS/Linux/네트워크/">네트워크</a></li><li><a href="/docs/server/OS/Linux/방화벽/">방화벽</a></li><li><a href="/docs/server/OS/Linux/SSH/">SSH</a></li><li><a href="/docs/server/OS/Linux/시간대/">시간대</a></li></ul></nav><article><h1 class="page-title">디스크</h1><details class="sidebar-m"><summary>목록 · Linux</summary><ul><li><a href="/docs/server/OS/Linux/">개요</a></li><li><a href="/docs/server/OS/Linux/셸/">셸</a></li><li><a href="/docs/server/OS/Linux/파일-찾기/">파일 찾기</a></li><li><a href="/docs/server/OS/Linux/복사와-동기화/">복사와 동기화</a></li><li><a href="/docs/server/OS/Linux/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/OS/Linux/패키지/">패키지</a></li><li><a href="/docs/server/OS/Linux/프로세스와-포트/">프로세스와 포트</a></li><li><a href="/docs/server/OS/Linux/디스크/" aria-current="page">디스크</a></li><li><a href="/docs/server/OS/Linux/서비스/">서비스</a></li><li><a href="/docs/server/OS/Linux/예약-작업/">예약 작업</a></li><li><a href="/docs/server/OS/Linux/네트워크/">네트워크</a></li><li><a href="/docs/server/OS/Linux/방화벽/">방화벽</a></li><li><a href="/docs/server/OS/Linux/SSH/">SSH</a></li><li><a href="/docs/server/OS/Linux/시간대/">시간대</a></li></ul></details><div class="content"><p>서버가 갑자기 멈추는 흔한 까닭은 디스크가 차는 것이다. 디스크가 차면 로그 · DB 가 쓰지 못해 오류를 내고, 새 파일도 만들지 못한다. 그래서 디스크 일은 대개 "어디가 찼나" 를 찾는 것에서 시작한다 — <code>df</code> 로 어느 파일 시스템이 찼는지 보고, <code>du</code> 로 그 안에서 큰 폴더를 좁혀 간다. 디스크를 새로 붙일 때는 <code>lsblk</code> 로 장치를 찾아 파일 시스템을 만들고 <code>/etc/fstab</code> 에 적어 부팅 때 붙게 한다. 아래 예제는 colima 의 Ubuntu 24.04 가상 머신에서 돌렸고, 디스크를 채우고 붙이는 예제는 파일로 만든 디스크(루프 장치) 로 했다.</p>
+<h2 id="얼마나-찼나-df">얼마나 찼나 (df)</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">df</span> <span class="token parameter variable">-h</span></code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">Filesystem      Size  Used Avail Use% Mounted on
+/dev/root        19G  1.2G   18G   7% /
+/dev/vda16      891M   33M  796M   4% /boot
+/dev/vda15       98M  6.4M   92M   7% /boot/efi
+/dev/vdb1        20G  3.3G   16G  18% /mnt/lima-colima
+tmpfs           2.0G     0  2.0G   0% /dev/shm</code></pre>
+<ul>
+<li><code>-h</code> 는 읽기 쉬운 단위다. <code>df -h /var</code> 처럼 경로를 주면 그 경로가 있는 파일 시스템만 보인다</li>
+<li><code>Size</code> 에서 <code>Used</code> 를 빼도 <code>Avail</code> 이 되지 않는다. ext4 는 root 몫으로 5% 를 남겨 두어, 일반 사용자에게는 그만큼 일찍 찬다</li>
+<li><code>tmpfs</code> 는 메모리 위의 파일 시스템이다. 디스크 걱정과는 상관없다</li>
+</ul>
+<h2 id="어디가-큰가-du">어디가 큰가 (du)</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> <span class="token function">du</span> <span class="token parameter variable">-xh</span> --max-depth<span class="token operator">=</span><span class="token number">1</span> / <span class="token operator">|</span> <span class="token function">sort</span> <span class="token parameter variable">-h</span> <span class="token operator">|</span> <span class="token function">tail</span>
+<span class="token function">sudo</span> <span class="token function">du</span> <span class="token parameter variable">-xh</span> --max-depth<span class="token operator">=</span><span class="token number">1</span> /var <span class="token operator">|</span> <span class="token function">sort</span> <span class="token parameter variable">-h</span> <span class="token operator">|</span> <span class="token function">tail</span></code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">17M	/var/log
+122M	/var/cache
+222M	/var/lib
+360M	/var</code></pre>
+<ul>
+<li><code>-x</code> 는 다른 파일 시스템(<code>/proc</code> · 붙인 디스크) 으로 넘어가지 않는다. 빼면 엉뚱한 곳까지 세느라 오래 걸린다</li>
+<li>큰 것이 나온 폴더로 들어가 같은 명령을 되풀이한다</li>
+<li>서버에서 자주 커지는 곳은 정해져 있다</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>곳</th>
+<th>보기</th>
+<th>줄이기</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>systemd 로그</td>
+<td><code>journalctl --disk-usage</code></td>
+<td><code>sudo journalctl --vacuum-size=200M</code></td>
+</tr>
+<tr>
+<td>로그 파일</td>
+<td><code>du -sh /var/log/*</code></td>
+<td>logrotate 설정</td>
+</tr>
+<tr>
+<td>apt 가 받은 파일</td>
+<td><code>du -sh /var/cache/apt</code></td>
+<td><code>sudo apt clean</code></td>
+</tr>
+<tr>
+<td>Docker 이미지 · 볼륨</td>
+<td><code>docker system df</code></td>
+<td><code>docker image prune</code> · <code>docker volume prune</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="꽉-찼을-때">꽉 찼을 때</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">dd</span> <span class="token assign-left variable">if</span><span class="token operator">=</span>/dev/zero <span class="token assign-left variable">of</span><span class="token operator">=</span>/mnt/data/big <span class="token assign-left variable">bs</span><span class="token operator">=</span>1M <span class="token assign-left variable">count</span><span class="token operator">=</span><span class="token number">500</span>
+<span class="token comment"># dd: error writing '/mnt/data/big': No space left on device</span>
+<span class="token function">df</span> <span class="token parameter variable">-h</span> /mnt/data
+<span class="token comment"># /dev/loop0      172M  168M     0 100% /mnt/data</span>
+<span class="token builtin class-name">echo</span> hi <span class="token operator">&gt;</span> /mnt/data/x
+<span class="token comment"># bash: echo: write error: No space left on device</span></code></pre>
+<p><code>No space left on device</code> 는 자리가 없을 때 말고도, 파일 개수(inode) 가 다 찼을 때도 나온다. 작은 파일이 아주 많이 생기는 폴더(세션 · 캐시) 에서 일어난다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">touch</span> /mnt/small/f54
+<span class="token comment"># touch: cannot touch '/mnt/small/f54': No space left on device</span>
+<span class="token function">df</span> <span class="token parameter variable">-h</span> /mnt/small       <span class="token comment"># /dev/loop0   96M   24K   89M   1% /mnt/small  — 자리는 남았다</span>
+<span class="token function">df</span> <span class="token parameter variable">-i</span> /mnt/small       <span class="token comment"># /dev/loop0    64    64     0  100% /mnt/small  — inode 가 찼다</span></code></pre>
+<ul>
+<li><code>df -h</code> 에 여유가 있는데 이 오류가 나면 <code>df -i</code> 를 본다</li>
+<li>inode 개수는 파일 시스템을 만들 때 정해지고 나중에 늘릴 수 없다. 많은 파일을 지워야 풀린다</li>
+</ul>
+<h2 id="지웠는데-줄지-않을-때">지웠는데 줄지 않을 때</h2>
+<p>큰 로그 파일을 지웠는데 <code>df</code> 가 그대로면, 그 파일을 아직 열고 있는 프로세스가 있는 것이다. 파일 이름은 사라졌지만 프로세스가 닫을 때까지 자리를 돌려주지 않는다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">rm</span> /mnt/data/big
+<span class="token function">df</span> <span class="token parameter variable">-h</span> /mnt/data        <span class="token comment"># /dev/loop0      172M  168M     0 100% /mnt/data  — 그대로</span>
+<span class="token function">du</span> <span class="token parameter variable">-sh</span> /mnt/data       <span class="token comment"># 20K — 파일로는 보이지 않는다</span>
+<span class="token function">sudo</span> <span class="token function">lsof</span> +L1          <span class="token comment"># 지워졌지만 열려 있는 파일</span></code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">COMMAND   PID USER   FD   TYPE DEVICE  SIZE/OFF NLINK NODE NAME
+sleep   54014 root    3r   REG    7,0 175382528     0   12 /mnt/data/big (deleted)</code></pre>
+<ul>
+<li>그 프로세스를 다시 켜거나(<code>systemctl restart …</code>) 끄면 자리가 돌아온다</li>
+<li>쓰고 있는 로그는 지우지 말고 비운다. <code>: &gt; /mnt/data/app.log</code>(또는 <code>truncate -s 0</code>) 는 파일을 그대로 두고 크기만 0 으로 만들어, 열고 있는 프로세스가 있어도 바로 자리가 돌아왔다</li>
+<li><code>lsof</code> 는 기본으로 깔려 있지 않을 수 있다(<code>sudo apt install lsof</code>). 없으면 <code>ls -l /proc/*/fd 2&gt;/dev/null | grep deleted</code> 로도 찾는다</li>
+</ul>
+<h2 id="디스크-붙이기">디스크 붙이기</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh">lsblk <span class="token parameter variable">-f</span>                       <span class="token comment"># 장치 · 파티션 · 파일 시스템 · UUID · 붙은 곳</span>
+<span class="token function">sudo</span> mkfs.ext4 <span class="token parameter variable">-L</span> data /dev/vdc        <span class="token comment"># 파일 시스템을 만든다 — 안의 자료는 모두 지워진다</span>
+<span class="token function">sudo</span> <span class="token function">mkdir</span> <span class="token parameter variable">-p</span> /mnt/data
+<span class="token function">sudo</span> <span class="token function">mount</span> /dev/vdc /mnt/data
+<span class="token function">sudo</span> blkid /dev/vdc            <span class="token comment"># UUID="a617790e-…" TYPE="ext4"</span></code></pre>
+<p>부팅 때 붙게 하려면 <code>/etc/fstab</code> 에 적는다. 장치 이름(<code>/dev/vdc</code>) 은 디스크를 더하거나 빼면 바뀔 수 있으므로 UUID 로 적는다.</p>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">UUID=a617790e-7c97-48f1-a1fd-30f5c870ed79  /mnt/data  ext4  defaults,nofail  0  2</code></pre>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> findmnt <span class="token parameter variable">--verify</span>          <span class="token comment"># 0 parse errors, 0 errors, …</span>
+<span class="token function">sudo</span> systemctl daemon-reload
+<span class="token function">sudo</span> <span class="token function">mount</span> <span class="token parameter variable">-a</span>                  <span class="token comment"># fstab 의 것을 붙여 본다</span>
+findmnt /mnt/data</code></pre>
+<ul>
+<li>fstab 이 틀리면 부팅이 멈추고 응급 모드로 들어갈 수 있다. 고친 뒤에는 다시 켜기 전에 <code>findmnt --verify</code> 와 <code>mount -a</code> 로 확인한다. 없는 UUID 를 적었을 때 <code>[E] unreachable on boot required source: UUID=0000</code> 으로 알려 줬다</li>
+<li><code>nofail</code> 은 그 디스크가 없어도 부팅을 이어 간다. 꼭 있어야 하는 디스크가 아니면 붙인다</li>
+<li>마지막 두 숫자는 덤프(0) 와 부팅 때 검사 순서다. <code>/</code> 는 1, 나머지는 2 다</li>
+<li>fstab 을 고친 뒤 <code>daemon-reload</code> 하지 않으면 <code>findmnt --verify</code> 가 "systemd still uses the old version" 경고를 낸다</li>
+</ul>
+<h2 id="스왑-파일">스왑 파일</h2>
+<p>메모리가 작은 서버는 스왑을 두어, 메모리가 모자랄 때 프로세스가 죽는(OOM) 대신 느려지게 한다. 파티션을 따로 나누지 않고 파일로 만든다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> fallocate <span class="token parameter variable">-l</span> 1G /swapfile
+<span class="token function">sudo</span> <span class="token function">chmod</span> <span class="token number">600</span> /swapfile
+<span class="token function">sudo</span> <span class="token function">mkswap</span> /swapfile
+<span class="token function">sudo</span> <span class="token function">swapon</span> /swapfile
+<span class="token function">swapon</span> <span class="token parameter variable">--show</span>      <span class="token comment"># /swapfile file 1024M   0B   -2</span>
+<span class="token function">free</span> <span class="token parameter variable">-h</span>            <span class="token comment"># Swap:  1.0Gi  0B  1.0Gi</span></code></pre>
+<p><code>/etc/fstab</code></p>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">/swapfile  none  swap  sw  0  0</code></pre>
+<ul>
+<li>권한을 600 으로 하지 않으면 <code>swapon: /swapfile: insecure permissions 0644, 0600 suggested.</code> 경고가 나온다. 스왑에는 메모리 내용이 그대로 들어가므로 다른 사용자가 읽지 못하게 한다</li>
+<li>끌 때는 <code>sudo swapoff /swapfile</code> 뒤 파일과 fstab 줄을 지운다</li>
+<li>얼마나 일찍 스왑을 쓸지는 <code>vm.swappiness</code>(기본 60) 로 정한다. DB 서버는 낮춰(10) 두는 일이 많다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://documentation.ubuntu.com/server/how-to/storage/">Ubuntu Server — Storage</a> — 디스크 · LVM · 파일 시스템</li>
+<li><a href="https://man7.org/linux/man-pages/man1/df.1.html">df(1)</a> · <a href="https://man7.org/linux/man-pages/man1/du.1.html">du(1)</a> · <a href="https://man7.org/linux/man-pages/man8/lsblk.8.html">lsblk(8)</a> · <a href="https://man7.org/linux/man-pages/man5/fstab.5.html">fstab(5)</a> — man7.org</li>
+<li><a href="https://wiki.archlinux.org/title/Swap">Swap</a> — ArchWiki</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/OS/">OS</a></li><li><a href="/docs/server/OS/Linux/">Linux</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Linux/" rel="tag">Linux</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-08T14:00:54.000Z">2026-11-08</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Docker | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">Docker</span><span class="up"> / <a href="/docs/server/OS/" title="한 단계 위로">OS</a></span></p><ul><li><a href="/docs/server/OS/Docker/" aria-current="page">개요</a></li><li><a href="/docs/server/OS/Docker/설치/">설치</a></li><li><a href="/docs/server/OS/Docker/이미지와-컨테이너/">이미지와 컨테이너</a></li><li><a href="/docs/server/OS/Docker/Dockerfile/">Dockerfile</a></li><li><a href="/docs/server/OS/Docker/볼륨과-네트워크/">볼륨과 네트워크</a></li><li><a href="/docs/server/OS/Docker/Compose/">Compose</a></li><li><a href="/docs/server/OS/Docker/백업/">백업</a></li><li><a href="/docs/server/OS/Docker/Portainer/">Portainer</a></li><li><a href="/docs/server/OS/Docker/오류-모음/">오류 모음</a></li></ul></nav><article><h1 class="page-title">Docker</h1><details class="sidebar-m"><summary>목록 · Docker</summary><ul><li><a href="/docs/server/OS/Docker/" aria-current="page">개요</a></li><li><a href="/docs/server/OS/Docker/설치/">설치</a></li><li><a href="/docs/server/OS/Docker/이미지와-컨테이너/">이미지와 컨테이너</a></li><li><a href="/docs/server/OS/Docker/Dockerfile/">Dockerfile</a></li><li><a href="/docs/server/OS/Docker/볼륨과-네트워크/">볼륨과 네트워크</a></li><li><a href="/docs/server/OS/Docker/Compose/">Compose</a></li><li><a href="/docs/server/OS/Docker/백업/">백업</a></li><li><a href="/docs/server/OS/Docker/Portainer/">Portainer</a></li><li><a href="/docs/server/OS/Docker/오류-모음/">오류 모음</a></li></ul></details><div class="content"><p>Docker 는 프로그램과 그 프로그램이 쓰는 라이브러리 · 설정을 이미지 하나로 묶고, 그 이미지를 어느 서버에서나 같은 모습으로 실행하는 도구다. 실행한 이미지를 컨테이너라고 한다. 컨테이너는 가상 머신과 달리 호스트의 리눅스 커널을 함께 쓰는 격리된 프로세스라서, 몇 초 만에 뜨고 메모리도 프로그램이 쓰는 만큼만 든다. 이미지는 Docker Hub 같은 레지스트리에서 받거나 Dockerfile 로 직접 만들고, 컨테이너 여럿은 Compose 로 함께 띄운다.</p>
+<p>서버에 DB · 웹 서버 · 사내 도구를 깔 때 패키지를 하나씩 설치하는 대신 컨테이너로 띄우면, 버전을 바꾸거나 지울 때 서버가 더러워지지 않고 같은 구성을 다른 서버에 그대로 옮길 수 있다.</p>
+<h2 id="정보">정보</h2>
+<ul>
+<li><a href="https://www.docker.com/">Docker</a> — 만든 회사 · 제품 소개</li>
+<li><a href="https://www.docker.com/blog/">Docker Blog</a> — 새 기능 · 출시 소식</li>
+<li><a href="https://subicura.com/2017/01/19/docker-guide-for-beginners-1.html">초보를 위한 도커 안내서</a> — 개념 · <a href="https://subicura.com/2017/01/19/docker-guide-for-beginners-2.html">설치와 기본 명령</a> · <a href="https://subicura.com/2017/02/10/docker-guide-for-beginners-create-image-and-deploy.html">이미지 만들고 배포하기</a> (한국어 세 편)</li>
+<li><a href="https://www.bretfisher.com/">Bret Fisher</a> — 컨테이너 운영 글 · 강의</li>
+</ul>
+<h2 id="문서">문서</h2>
+<ul>
+<li><a href="https://docs.docker.com/">Docker Docs</a> — 설치 · 안내서 · 참조</li>
+<li><a href="https://docs.docker.com/reference/cli/docker/">Docker CLI reference</a> — 명령과 옵션 전부</li>
+<li><a href="https://docs.docker.com/reference/dockerfile/">Dockerfile reference</a> — Dockerfile 명령 전부</li>
+<li><a href="https://docs.docker.com/reference/compose-file/">Compose file reference</a> — <code>compose.yaml</code> 항목 전부</li>
+<li><a href="https://hub.docker.com/">Docker Hub</a> — 공식 이미지를 찾고 태그 · 환경 변수 · 사용법을 본다</li>
+<li><a href="https://github.com/docker/awesome-compose">awesome-compose</a> — 여러 스택의 Compose 예제 모음</li>
+</ul>
+<h2 id="도구">도구</h2>
+<ul>
+<li><a href="https://labs.play-with-docker.com/">Play with Docker</a> — 설치 없이 브라우저에서 Docker 를 써 본다</li>
+<li><a href="https://github.com/abiosoft/colima">colima</a> — 맥에서 Docker 엔진을 가상 머신으로 띄우는 명령줄 도구</li>
+<li><a href="https://orbstack.dev/">OrbStack</a> — 맥용 가벼운 Docker 실행 앱</li>
+<li><a href="https://www.portainer.io/">Portainer</a> — 컨테이너 · 이미지 · 볼륨을 웹 화면으로 다룬다</li>
+<li><a href="https://github.com/wagoodman/dive">dive</a> — 이미지의 층마다 더해진 파일과 크기를 본다</li>
+<li><a href="https://github.com/jesseduffield/lazydocker">lazydocker</a> — 터미널 한 화면에서 컨테이너 · 로그를 본다</li>
+</ul>
+<h2 id="책">책</h2>
+<ul>
+<li><a href="http://pyrasis.com/book/DockerForTheReallyImpatient">가장 빨리 만나는 Docker</a> (2014) — 이재홍.</li>
+<li><a href="https://leanpub.com/dockerdeepdive">Docker Deep Dive</a> (2025) — Nigel Poulton.</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/OS/">OS</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Docker/" rel="tag">Docker</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-08T09:34:08.000Z">2026-11-08</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

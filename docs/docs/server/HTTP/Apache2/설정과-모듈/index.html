@@ -1,0 +1,182 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>설정과 모듈 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">Apache2</span><span class="up"> / <a href="/docs/server/HTTP/" title="한 단계 위로">HTTP</a></span></p><ul><li><a href="/docs/server/HTTP/Apache2/">개요</a></li><li><a href="/docs/server/HTTP/Apache2/설정과-모듈/" aria-current="page">설정과 모듈</a></li><li><a href="/docs/server/HTTP/Apache2/가상-호스트/">가상 호스트</a></li><li><a href="/docs/server/HTTP/Apache2/리버스-프록시/">리버스 프록시</a></li></ul></nav><article><h1 class="page-title">설정과 모듈</h1><details class="sidebar-m"><summary>목록 · Apache2</summary><ul><li><a href="/docs/server/HTTP/Apache2/">개요</a></li><li><a href="/docs/server/HTTP/Apache2/설정과-모듈/" aria-current="page">설정과 모듈</a></li><li><a href="/docs/server/HTTP/Apache2/가상-호스트/">가상 호스트</a></li><li><a href="/docs/server/HTTP/Apache2/리버스-프록시/">리버스 프록시</a></li></ul></details><div class="content"><p>Apache 는 기능을 모듈로 나눠, 필요한 모듈만 켜서 쓰는 웹 서버다. Ubuntu · Debian 패키지(<code>apache2</code>) 는 모듈 · 설정 조각 · 사이트를 <code>…-available</code> 폴더에 두고, 켤 것만 <code>…-enabled</code> 폴더에 링크로 둔다. 링크는 손으로 만들지 않고 <code>a2enmod</code> · <code>a2ensite</code> · <code>a2enconf</code> 로 만든다. 아래 예제는 Ubuntu 24.04 에 apt 로 깐 Apache 2.4.58 로 돌렸다.</p>
+<h2 id="설치와-폴더">설치와 폴더</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> <span class="token function">apt</span> <span class="token function">install</span> apache2
+apache2 <span class="token parameter variable">-v</span>        <span class="token comment"># Server version: Apache/2.4.58 (Ubuntu)</span></code></pre>
+<table>
+<thead>
+<tr>
+<th>경로</th>
+<th>쓰임</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/etc/apache2/apache2.conf</code></td>
+<td>공통 설정 — 아래 폴더들을 <code>Include</code> 로 읽는다</td>
+</tr>
+<tr>
+<td><code>/etc/apache2/ports.conf</code></td>
+<td>들을 포트 (<code>Listen 80</code>, ssl 모듈이 켜지면 <code>Listen 443</code>)</td>
+</tr>
+<tr>
+<td><code>mods-available/</code> · <code>mods-enabled/</code></td>
+<td>모듈 (<code>이름.load</code> 는 불러오기, <code>이름.conf</code> 는 그 모듈의 설정)</td>
+</tr>
+<tr>
+<td><code>conf-available/</code> · <code>conf-enabled/</code></td>
+<td>서버 전체 설정 조각 (<code>security.conf</code> · <code>charset.conf</code> …)</td>
+</tr>
+<tr>
+<td><code>sites-available/</code> · <code>sites-enabled/</code></td>
+<td>사이트(가상 호스트) — 처음에는 <code>000-default.conf</code> 만 켜져 있다</td>
+</tr>
+<tr>
+<td><code>/var/www/html</code></td>
+<td>기본 사이트의 파일</td>
+</tr>
+<tr>
+<td><code>/var/log/apache2/</code></td>
+<td><code>access.log</code> · <code>error.log</code> · <code>other_vhosts_access.log</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="켜고-끄기">켜고 끄기</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> a2enmod proxy_http
+<span class="token comment"># Considering dependency proxy for proxy_http:</span>
+<span class="token comment"># Enabling module proxy.</span>
+<span class="token comment"># Enabling module proxy_http.</span>
+<span class="token comment"># To activate the new configuration, you need to run:</span>
+<span class="token comment">#   service apache2 restart</span>
+<span class="token function">ls</span> <span class="token parameter variable">-l</span> /etc/apache2/mods-enabled/ <span class="token operator">|</span> <span class="token function">grep</span> proxy
+<span class="token comment"># proxy.conf -&gt; ../mods-available/proxy.conf</span>
+<span class="token comment"># proxy.load -&gt; ../mods-available/proxy.load</span>
+<span class="token comment"># proxy_http.load -&gt; ../mods-available/proxy_http.load</span></code></pre>
+<table>
+<thead>
+<tr>
+<th>명령</th>
+<th>하는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>a2enmod</code> · <code>a2dismod</code></td>
+<td>모듈 켜기 · 끄기 (필요한 모듈까지 함께 켠다)</td>
+</tr>
+<tr>
+<td><code>a2ensite</code> · <code>a2dissite</code></td>
+<td>사이트 켜기 · 끄기 (<code>.conf</code> 를 빼고 이름만 — <code>a2ensite site</code>)</td>
+</tr>
+<tr>
+<td><code>a2enconf</code> · <code>a2disconf</code></td>
+<td>설정 조각 켜기 · 끄기</td>
+</tr>
+<tr>
+<td><code>apache2ctl configtest</code></td>
+<td>설정 검사 — <code>Syntax OK</code></td>
+</tr>
+<tr>
+<td><code>apache2ctl -M</code></td>
+<td>불러온 모듈 목록 (기본 27 개)</td>
+</tr>
+<tr>
+<td><code>apache2ctl -S</code></td>
+<td>사이트(가상 호스트) 목록과 어느 파일에서 왔는지</td>
+</tr>
+<tr>
+<td><code>sudo systemctl reload apache2</code></td>
+<td>접속을 끊지 않고 다시 읽기 (<code>apache2ctl graceful</code> 과 같다)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>모듈을 켜고 끈 뒤에는 <code>restart</code>, 사이트 · 설정 조각만 바꿨으면 <code>reload</code> 로 된다</li>
+<li>틀린 설정이면 <code>configtest</code> 가 줄을 알려 준다. 이때 <code>graceful</code> 은 다시 읽지 않고 옛 설정으로 계속 돈다
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">AH00526: Syntax error on line 1 of /etc/apache2/conf-enabled/bad.conf:
+Invalid command 'Foo', perhaps misspelled or defined by a module not included in the server configuration</code></pre>
+</li>
+<li>「Invalid command」 는 오타이거나, 그 지시어를 가진 모듈이 꺼져 있다는 뜻이다. <code>ProxyPass</code> 에서 나면 <code>a2enmod proxy_http</code> 다</li>
+</ul>
+<h2 id="ah00558-경고">AH00558 경고</h2>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.17.0.2. Set the 'ServerName' directive globally to suppress this message</code></pre>
+<ul>
+<li>서버 전체의 <code>ServerName</code> 이 없어서 나는 경고다. 동작에는 문제가 없다</li>
+<li>설정 조각으로 넣고 켠다
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token builtin class-name">echo</span> <span class="token string">"ServerName localhost"</span> <span class="token operator">|</span> <span class="token function">sudo</span> <span class="token function">tee</span> /etc/apache2/conf-available/servername.conf
+<span class="token function">sudo</span> a2enconf servername
+<span class="token function">sudo</span> apache2ctl configtest      <span class="token comment"># Syntax OK — 경고가 사라진다</span></code></pre>
+</li>
+</ul>
+<h2 id="폴더-목록-끄기">폴더 목록 끄기</h2>
+<p>Ubuntu 의 <code>apache2.conf</code> 는 <code>/var/www/</code> 에 <code>Options Indexes FollowSymLinks</code> 를 준다. <code>index.html</code> 이 없는 폴더는 파일 목록(<code>Index of /files</code>) 이 보인다.</p>
+<pre class="language-apache" data-language="apache"><code class="language-apache">&lt;Directory /var/www/&gt;
+	Options FollowSymLinks
+	AllowOverride None
+	Require all granted
+&lt;/Directory&gt;</code></pre>
+<ul>
+<li><code>Indexes</code> 를 빼면 목록 대신 403 이고, 오류 로그에 <code>AH01276: Cannot serve directory /var/www/html/files/: No matching DirectoryIndex</code> 가 남는다</li>
+<li><code>a2dismod autoindex</code> 로 모듈을 끄면 목록 대신 404 다</li>
+</ul>
+<h2 id="htaccess">.htaccess</h2>
+<p>폴더 안의 <code>.htaccess</code> 파일로 그 폴더의 설정을 바꾼다. <code>AllowOverride</code> 가 허락해야 읽는다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token builtin class-name">echo</span> <span class="token string">"Require all denied"</span> <span class="token operator">&gt;</span> /var/www/html/files/.htaccess
+<span class="token function">curl</span> <span class="token parameter variable">-s</span> <span class="token parameter variable">-o</span> /dev/null <span class="token parameter variable">-w</span> <span class="token string">"%{http_code}<span class="token entity" title="\n">\n</span>"</span> localhost/files/a.txt
+<span class="token comment"># 200 — AllowOverride None 이라 .htaccess 를 읽지 않는다</span>
+<span class="token comment"># 403 — AllowOverride All 로 바꾼 뒤</span></code></pre>
+<ul>
+<li>요청마다 폴더를 거슬러 올라가며 <code>.htaccess</code> 를 찾으므로 느려진다. 서버 설정을 고칠 수 있으면 <code>&lt;Directory&gt;</code> 에 적고 <code>AllowOverride None</code> 으로 둔다</li>
+<li>WordPress 처럼 <code>.htaccess</code> 로 주소를 바꾸는 앱은 <code>AllowOverride All</code> 과 <code>a2enmod rewrite</code> 가 있어야 한다</li>
+</ul>
+<h2 id="로그">로그</h2>
+<pre class="language-apache" data-language="apache"><code class="language-apache">ErrorLog ${APACHE_LOG_DIR}/error.log
+CustomLog ${APACHE_LOG_DIR}/access.log combined</code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">127.0.0.1 - - [08/Nov/2026:10:09:18 +0000] "GET /files/a.txt HTTP/1.1" 200 228 "-" "curl/8.5.0"</code></pre>
+<ul>
+<li>로그는 <code>/etc/logrotate.d/apache2</code> 가 매일 돌려 14 개를 남기고 압축한다. 디스크가 걱정이면 이 값을 줄인다</li>
+<li>접근 로그가 필요 없는 사이트는 <code>CustomLog</code> 줄을 빼면 된다. 오류 로그는 빼도 서버 전체의 <code>error.log</code> 에 쌓이므로, 정말 버리려면 <code>ErrorLog /dev/null</code> 로 둔다</li>
+<li>응답의 <code>Server: Apache/2.4.58 (Ubuntu)</code> 처럼 버전이 드러나는 것은 <code>conf-enabled/security.conf</code> 의 <code>ServerTokens OS</code> · <code>ServerSignature On</code> 때문이다. <code>ServerTokens Prod</code> · <code>ServerSignature Off</code> 로 바꾸면 <code>Apache</code> 만 보인다</li>
+</ul>
+<h2 id="mpm">MPM</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh">apache2ctl <span class="token parameter variable">-V</span> <span class="token operator">|</span> <span class="token function">grep</span> MPM     <span class="token comment"># Server MPM:     event</span></code></pre>
+<ul>
+<li>MPM 은 요청을 받는 방식이다. 지금 기본은 <code>event</code>(스레드) 다</li>
+<li><code>mod_php</code> 는 스레드에서 안전하지 않아 <code>prefork</code> 와 함께 쓴다. PHP 는 <code>php-fpm</code> + <code>event</code> 로 두는 것이 낫다</li>
+</ul>
+<h2 id="docker-에서">Docker 에서</h2>
+<ul>
+<li>컨테이너는 PID 1 이 앞에서 돌아야 한다. <code>apachectl start</code> 는 뒤로 빠져 컨테이너가 바로 멈추므로 <code>apachectl -D FOREGROUND</code> 로 띄운다</li>
+<li>공식 이미지 <code>httpd</code> 는 Debian 패키지가 아니라 소스 빌드라 <code>a2enmod</code> · <code>sites-available</code> 이 없다. <code>/usr/local/apache2/conf/httpd.conf</code> 의 <code>LoadModule</code> 줄을 고친다</li>
+</ul>
+<h2 id="예전에는">예전에는</h2>
+<ul>
+<li>모듈을 켤 때 <code>ln -s ../mods-available/proxy.load proxy.load</code> 처럼 링크를 손으로 만들었다. 지금도 같은 결과지만 <code>a2enmod</code> 는 필요한 모듈(<code>proxy</code>) 까지 챙긴다</li>
+<li>Apache 2.2 는 접근 허용을 <code>Order allow,deny</code> · <code>Allow from all</code> 로 썼다. 2.4 부터 <code>Require all granted</code> 다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://httpd.apache.org/docs/2.4/">Apache HTTP Server 2.4 Documentation</a> — 지시어 · 모듈 설명서</li>
+<li><a href="https://documentation.ubuntu.com/server/how-to/web-services/install-apache2/">Ubuntu Server — Apache2</a> — Ubuntu 문서</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/HTTP/">HTTP</a></li><li><a href="/docs/server/HTTP/Apache2/">Apache2</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Apache/" rel="tag">Apache</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-08T10:25:59.000Z">2026-11-08</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

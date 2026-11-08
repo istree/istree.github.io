@@ -1,69 +1,24 @@
-<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Apache2 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">HTTP</span><span class="up"> / <a href="/docs/" title="한 단계 위로">서버</a></span></p><ul><li><a href="/docs/server/HTTP/Apache2/" aria-current="page">Apache2</a></li><li><a href="/docs/server/HTTP/Nginx/">Nginx</a></li></ul></nav><article><h1 class="page-title">Apache2</h1><details class="sidebar-m"><summary>목록 · HTTP</summary><ul><li><a href="/docs/server/HTTP/Apache2/" aria-current="page">Apache2</a></li><li><a href="/docs/server/HTTP/Nginx/">Nginx</a></li></ul></details><div class="content"><h2 id="설치">설치</h2>
-<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">apt-get</span> <span class="token function">install</span> apache2</code></pre>
-<h2 id="설정-항목-24">설정 항목 (2.4)</h2>
-<p>/etc/apache2 : 설정 디렉토리</p>
-<p>apache2.conf : 공통 설정파일</p>
-<p>mods-available : 사용 가능한 모듈</p>
-<p>mods-enabled : 활성된 모듈</p>
-<p>conf-available : 사용 가능한 설정</p>
-<p>conf-enabled : 활성된 설정</p>
-<p>sites-enabled : 가상호스트 설정</p>
-<h2 id="모듈-24">모듈 (2.4)</h2>
-<p>아파치 루트 디렉토리 내에 mods-available 디렉토리와 mods-enabled 디렉토리가 있다.</p>
-<p>각 모듈들은 mods-available 디렉토리 내에 파일별로  미리 정의되어있고 원하는 모듈에 해당하는 파일을 mods-enabled 디렉토리에 복사하거나 심볼릭 링크를 생성해주면 된다.</p>
-<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token builtin class-name">cd</span> /etc/apache2/mods-enabled
-<span class="token function">ln</span> <span class="token parameter variable">-s</span> <span class="token punctuation">..</span>/mods-available/proxy.load proxy.load
-<span class="token function">ln</span> <span class="token parameter variable">-s</span> <span class="token punctuation">..</span>/mods-available/proxy_http.load proxy_http.load</code></pre>
-<h2 id="프록시-24">프록시 (2.4)</h2>
-<p>프록시 사용을 위해서 proxy_module, proxy_http_module 이 필요하다.</p>
-<pre class="language-sh" data-language="sh"><code class="language-sh">LoadModule proxy_module /usr/lib/apache2/modules/mod_proxy.so
-LoadModule proxy_http_module /usr/lib/apache2/modules/mod_proxy_http.so</code></pre>
-<p>VirtualHost 설정에 다음 내용을 추가한다.</p>
-<pre class="language-sh" data-language="sh"><code class="language-sh">ProxyRequests Off
-ProxyPreserveHost On
-ProxyPass /gitlab http://192.168.2.22/gitlab
-ProxyPassReverse /gitlab http://192.168.2.22/gitlab</code></pre>
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Apache2 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">Apache2</span><span class="up"> / <a href="/docs/server/HTTP/" title="한 단계 위로">HTTP</a></span></p><ul><li><a href="/docs/server/HTTP/Apache2/" aria-current="page">개요</a></li><li><a href="/docs/server/HTTP/Apache2/설정과-모듈/">설정과 모듈</a></li><li><a href="/docs/server/HTTP/Apache2/가상-호스트/">가상 호스트</a></li><li><a href="/docs/server/HTTP/Apache2/리버스-프록시/">리버스 프록시</a></li></ul></nav><article><h1 class="page-title">Apache2</h1><details class="sidebar-m"><summary>목록 · Apache2</summary><ul><li><a href="/docs/server/HTTP/Apache2/" aria-current="page">개요</a></li><li><a href="/docs/server/HTTP/Apache2/설정과-모듈/">설정과 모듈</a></li><li><a href="/docs/server/HTTP/Apache2/가상-호스트/">가상 호스트</a></li><li><a href="/docs/server/HTTP/Apache2/리버스-프록시/">리버스 프록시</a></li></ul></details><div class="content"><p>Apache HTTP Server 는 오래 쓰여 온 웹 서버로, 기능을 모듈로 나눠 필요한 것만 켜서 쓴다. 폴더마다 <code>.htaccess</code> 로 설정을 바꿀 수 있어 PHP 사이트 · 공유 호스팅에서 널리 쓰였고, 지금도 <code>mod_proxy</code> 로 앱 서버 앞에 두거나 사내 서버의 웹 화면을 내보내는 데 쓴다. Ubuntu · Debian 의 <code>apache2</code> 패키지는 모듈 · 사이트를 <code>…-available</code> 과 <code>…-enabled</code> 로 나눠 <code>a2enmod</code> · <code>a2ensite</code> 로 켜고 끈다.</p>
+<p>이 묶음은 Ubuntu 24.04 의 Apache 2.4.58 을 기준으로, 설정 · 모듈 · 가상 호스트 · 리버스 프록시를 모았다.</p>
+<h2 id="정보">정보</h2>
 <ul>
-<li>ProxyRequests : 포워드 프록시 사용시 On, 리버스 프록시 사용시 Off</li>
-<li>ProxyPreserveHost : 포워드 프록시 사용시 Off, 리버스 프록시 사용시 On</li>
-<li>ProxyPass : 프록시에 연결할 URL을 기술한다.</li>
-<li>ProxyPassReverse : WAS의 HTTP 응답 헤더를 수정하여 클라이언트에 전달한다. 이 과정이 없으면 클라이언트가 redirect시 제대로 연결할 수 없으므로 꼭 설정한다.</li>
+<li><a href="https://httpd.apache.org/">Apache HTTP Server Project</a> — 출시 소식 · 내려받기</li>
+<li><a href="https://httpd.apache.org/security/vulnerabilities_24.html">보안 취약점 목록 (2.4)</a> — 버전마다 고친 취약점</li>
+<li><a href="https://www.apachelounge.com/">Apache Lounge</a> — 윈도우용 빌드 · 사용자 게시판</li>
 </ul>
-<p>서비스 재시작</p>
-<pre class="language-sh" data-language="sh"><code class="language-sh">apachectl restart</code></pre>
-<h2 id="기타">기타</h2>
-<h3 id="디렉토리-리스팅-비활성화">디렉토리 리스팅 비활성화</h3>
-<p>index가 없을경우 디렉토리 목록이 나타날 경우 비활성화 하는 것이 좋다.</p>
-<p>/etc/apache2/apache2.conf 를 연다.</p>
-<p>다음과 같이 되어있다면</p>
-<pre class="language-xml" data-language="xml"><code class="language-xml">&lt;Directory /var/www/&gt;
-        Options Indexes FollowSymLinks
-        AllowOverride None
-        Require all granted
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>Directory</span><span class="token punctuation">&gt;</span></span></code></pre>
-<p>다음과 같이 Options에서 Indexes를 삭제한다.</p>
-<pre class="language-xml" data-language="xml"><code class="language-xml">&lt;Directory /var/www/&gt;
-        Options FollowSymLinks
-        AllowOverride None
-        Require all granted
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>Directory</span><span class="token punctuation">&gt;</span></span></code></pre>
-<h3 id="로그-안쌓이게-하기">로그 안쌓이게 하기</h3>
-<p>로그가 쌓여서 불필요하게 디스크 공간이 낭비되거나 로그가 필요없는 시스템은 로그를 쌓지 않는게 좋다.</p>
-<p>로그는 AccessLog ErrorLog CustomLog의 3가지가 있다.</p>
-<p>AccessLog와 CustomLog는 주석 처리를 해주면 쌓이지 않지만 ErrorLog는 주석 처리를 해도 계속 쌓인다.</p>
-<p>ErrorLog를 /dev/null 로 보내면 쌓이지 않는다.</p>
-<pre class="language-xml" data-language="xml"><code class="language-xml">ErrorLog /dev/null</code></pre>
-<h3 id="ah00558-apache2-could-not-reliably-determine-the-servers-fully-qualified-domain-name">AH00558: apache2: could not reliably determine the server's fully qualified domain name</h3>
-<p>서버 시작시 경고가 해당 경고가 발생하는 경우가 있다. 이는 서버의 도메인 이름을 확인할 수 없다는 뜻이다.</p>
-<p>apache2.conf에 ServerName 항목을 추가한다.</p>
-<pre class="language-xml" data-language="xml"><code class="language-xml">ServerName localhost</code></pre>
-<h2 id="docker">Docker</h2>
-<p>docker 컨테이너의 command는 foreground로 실행해야 제대로 동작한다.</p>
-<p>apachectl과 같은 프로그램은 apache를 background로 실행하기 때문에 제대로 동작하지 않으므로 FOREGROUND 옵션을 적용한다.</p>
-<pre class="language-sh" data-language="sh"><code class="language-sh">apachectl <span class="token parameter variable">-D</span> FOREGROUND</code></pre>
-<h2 id="참고자료">참고자료</h2>
-<p><a href="http://www.microhowto.info/howto/configure_apache_as_a_reverse_proxy.html">Configure Apache as a reverse proxy</a></p>
-</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/HTTP/">HTTP</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Apache/" rel="tag">Apache</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-10-27T06:52:42.000Z">2026-10-27</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+<h2 id="문서">문서</h2>
+<ul>
+<li><a href="https://httpd.apache.org/docs/2.4/">Apache HTTP Server 2.4 Documentation</a> — 안내서 · 설명서</li>
+<li><a href="https://httpd.apache.org/docs/2.4/mod/directives.html">지시어 목록</a> · <a href="https://httpd.apache.org/docs/2.4/mod/">모듈 목록</a> — 이름으로 찾아보는 표</li>
+<li><a href="https://httpd.apache.org/docs/2.4/upgrading.html">Upgrading to 2.4 from 2.2</a> — <code>Order</code> · <code>Allow</code> 에서 <code>Require</code> 로 바뀐 것 등</li>
+<li><a href="https://documentation.ubuntu.com/server/how-to/web-services/install-apache2/">Ubuntu Server — Apache2</a> — Ubuntu 패키지의 설치 · 설정</li>
+</ul>
+<h2 id="도구">도구</h2>
+<ul>
+<li><a href="https://ssl-config.mozilla.org/">Mozilla SSL Configuration Generator</a> — Apache 버전에 맞는 TLS 설정을 만든다</li>
+<li><a href="https://certbot.eff.org/">Certbot</a> — Let's Encrypt 인증서를 받고 Apache 설정에 붙인다</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/HTTP/">HTTP</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Apache/" rel="tag">Apache</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-08T10:25:59.000Z">2026-11-08</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
       const blocks = document.querySelectorAll("pre > code.language-mermaid");
       if (blocks.length) {
         const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");

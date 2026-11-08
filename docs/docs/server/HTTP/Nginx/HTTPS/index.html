@@ -1,0 +1,92 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>HTTPS | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">Nginx</span><span class="up"> / <a href="/docs/server/HTTP/" title="한 단계 위로">HTTP</a></span></p><ul><li><a href="/docs/server/HTTP/Nginx/">개요</a></li><li><a href="/docs/server/HTTP/Nginx/설정-구조/">설정 구조</a></li><li><a href="/docs/server/HTTP/Nginx/정적-파일/">정적 파일</a></li><li><a href="/docs/server/HTTP/Nginx/리버스-프록시/">리버스 프록시</a></li><li><a href="/docs/server/HTTP/Nginx/HTTPS/" aria-current="page">HTTPS</a></li><li><a href="/docs/server/HTTP/Nginx/오류-모음/">오류 모음</a></li></ul></nav><article><h1 class="page-title">HTTPS</h1><details class="sidebar-m"><summary>목록 · Nginx</summary><ul><li><a href="/docs/server/HTTP/Nginx/">개요</a></li><li><a href="/docs/server/HTTP/Nginx/설정-구조/">설정 구조</a></li><li><a href="/docs/server/HTTP/Nginx/정적-파일/">정적 파일</a></li><li><a href="/docs/server/HTTP/Nginx/리버스-프록시/">리버스 프록시</a></li><li><a href="/docs/server/HTTP/Nginx/HTTPS/" aria-current="page">HTTPS</a></li><li><a href="/docs/server/HTTP/Nginx/오류-모음/">오류 모음</a></li></ul></details><div class="content"><p>HTTPS 는 인증서 파일 두 개(인증서와 비밀 키) 를 Nginx 에 알려 주고 443 포트를 여는 것으로 된다. 공개 사이트의 인증서는 Let's Encrypt 에서 무료로 받고 certbot 이 90 일마다 저절로 갱신한다. 80 으로 온 요청은 443 으로 돌려보낸다. 아래 예제는 Ubuntu 24.04 의 nginx 1.24 에 스스로 서명한 인증서를 붙여 돌렸고, certbot 은 설치와 갱신 설정만 확인했다(도메인이 없어 발급은 하지 않았다).</p>
+<h2 id="설정">설정</h2>
+<pre class="language-nginx" data-language="nginx"><code class="language-nginx"><span class="token directive"><span class="token keyword">server</span></span> <span class="token punctuation">{</span>
+    <span class="token directive"><span class="token keyword">listen</span> <span class="token number">80</span></span><span class="token punctuation">;</span>
+    <span class="token directive"><span class="token keyword">server_name</span> site.test</span><span class="token punctuation">;</span>
+    <span class="token directive"><span class="token keyword">return</span> <span class="token number">301</span> https://<span class="token variable">$host</span><span class="token variable">$request_uri</span></span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token directive"><span class="token keyword">server</span></span> <span class="token punctuation">{</span>
+    <span class="token directive"><span class="token keyword">listen</span> <span class="token number">443</span> ssl http2</span><span class="token punctuation">;</span>
+    <span class="token directive"><span class="token keyword">server_name</span> site.test</span><span class="token punctuation">;</span>
+    <span class="token directive"><span class="token keyword">root</span> /var/www/site</span><span class="token punctuation">;</span>
+
+    <span class="token directive"><span class="token keyword">ssl_certificate</span>     /etc/nginx/ssl/site.crt</span><span class="token punctuation">;</span>
+    <span class="token directive"><span class="token keyword">ssl_certificate_key</span> /etc/nginx/ssl/site.key</span><span class="token punctuation">;</span>
+    <span class="token directive"><span class="token keyword">ssl_protocols</span> TLSv1.2 TLSv1.3</span><span class="token punctuation">;</span>
+
+    <span class="token directive"><span class="token keyword">add_header</span> Strict-Transport-Security <span class="token string">"max-age=31536000"</span> always</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">curl</span> <span class="token parameter variable">-sI</span> <span class="token parameter variable">-H</span> <span class="token string">"Host: site.test"</span> <span class="token string">"http://127.0.0.1/a?b=1"</span>
+<span class="token comment"># HTTP/1.1 301 Moved Permanently</span>
+<span class="token comment"># Location: https://site.test/a?b=1</span>
+<span class="token function">curl</span> <span class="token parameter variable">-s</span> <span class="token parameter variable">--resolve</span> site.test:443:127.0.0.1 <span class="token parameter variable">--cacert</span> site.crt https://site.test/    <span class="token comment"># secure</span>
+<span class="token function">curl</span> <span class="token parameter variable">-skI</span> <span class="token parameter variable">--resolve</span> site.test:443:127.0.0.1 https://site.test/
+<span class="token comment"># HTTP/2 200</span>
+<span class="token comment"># strict-transport-security: max-age=31536000</span>
+<span class="token builtin class-name">echo</span> <span class="token operator">|</span> openssl s_client <span class="token parameter variable">-connect</span> <span class="token number">127.0</span>.0.1:443 <span class="token parameter variable">-servername</span> site.test <span class="token operator"><span class="token file-descriptor important">2</span>&gt;</span>/dev/null <span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">"Cipher is"</span>
+<span class="token comment"># New, TLSv1.3, Cipher is TLS_AES_256_GCM_SHA384</span></code></pre>
+<ul>
+<li><code>ssl_certificate</code> 에는 서버 인증서 뒤에 중간 인증서를 이어 붙인 파일(<code>fullchain.pem</code>) 을 준다. 서버 인증서만 주면 브라우저는 되어도 <code>curl</code> · 앱에서 검증이 실패할 수 있다</li>
+<li><code>$request_uri</code> 는 경로와 쿼리를 모두 담아, <code>/a?b=1</code> 이 그대로 <code>https://…/a?b=1</code> 로 간다</li>
+<li><code>ssl_protocols TLSv1.2 TLSv1.3</code> 이면 TLS 1.1 로 붙는 클라이언트는 끊긴다 (<code>curl --tls-max 1.1</code> 은 35 로 끝났다)</li>
+<li><code>Strict-Transport-Security</code>(HSTS) 를 받은 브라우저는 그 기간 동안 http 로 가지 않는다. 처음에는 짧게(<code>max-age=300</code>) 두고 문제없으면 늘린다</li>
+<li>nginx 1.25.1 부터는 <code>listen 443 ssl;</code> 과 <code>http2 on;</code> 을 따로 쓴다. 옛 꼴을 쓰면 <code>the "listen ... http2" directive is deprecated, use the "http2" directive instead</code> 경고가 난다 (1.28 에서 확인)</li>
+</ul>
+<h2 id="스스로-서명한-인증서">스스로 서명한 인증서</h2>
+<p>내부 시험용으로 만든다. 브라우저 · curl 은 믿지 않으므로 경고가 나거나(<code>curl</code> 은 60 으로 끝남) <code>-k</code> · <code>--cacert</code> 로 따로 믿게 해야 한다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> <span class="token function">mkdir</span> <span class="token parameter variable">-p</span> /etc/nginx/ssl <span class="token operator">&amp;&amp;</span> <span class="token builtin class-name">cd</span> /etc/nginx/ssl
+<span class="token function">sudo</span> openssl req <span class="token parameter variable">-x509</span> <span class="token parameter variable">-newkey</span> rsa:2048 <span class="token parameter variable">-nodes</span> <span class="token parameter variable">-days</span> <span class="token number">30</span> <span class="token punctuation">\</span>
+  <span class="token parameter variable">-keyout</span> site.key <span class="token parameter variable">-out</span> site.crt <span class="token parameter variable">-subj</span> <span class="token string">"/CN=site.test"</span> <span class="token parameter variable">-addext</span> <span class="token string">"subjectAltName=DNS:site.test"</span>
+openssl x509 <span class="token parameter variable">-in</span> site.crt <span class="token parameter variable">-noout</span> <span class="token parameter variable">-subject</span> <span class="token parameter variable">-enddate</span>
+<span class="token comment"># subject=CN = site.test</span>
+<span class="token comment"># notAfter=Dec  8 10:04:07 2026 GMT</span></code></pre>
+<ul>
+<li>비밀 키는 <code>-rw-------</code>(600) 로 만들어진다. 그대로 root 만 읽게 둔다 — nginx 는 root 로 키를 읽은 뒤 <code>www-data</code> 로 일한다</li>
+<li>지금 브라우저는 <code>CN</code> 이 아니라 <code>subjectAltName</code> 을 본다. <code>-addext "subjectAltName=DNS:…"</code> 를 꼭 넣는다</li>
+<li>내 컴퓨터에서 개발할 때는 mkcert 가 로컬에서 믿는 인증서를 만들어 준다</li>
+</ul>
+<h2 id="lets-encrypt-certbot">Let's Encrypt (certbot)</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> <span class="token function">apt</span> <span class="token function">install</span> certbot python3-certbot-nginx
+<span class="token function">sudo</span> certbot <span class="token parameter variable">--nginx</span> <span class="token parameter variable">-d</span> example.com <span class="token parameter variable">-d</span> www.example.com   <span class="token comment"># 받고 nginx 설정까지 고친다</span>
+<span class="token function">sudo</span> certbot certificates                                 <span class="token comment"># 받은 인증서와 만료일</span>
+<span class="token function">sudo</span> certbot renew --dry-run                              <span class="token comment"># 갱신이 될지 시험</span></code></pre>
+<ul>
+<li>도메인이 이 서버를 가리키고 80 포트가 바깥에서 열려 있어야 한다. Let's Encrypt 가 그 도메인의 80 으로 확인 요청을 보낸다</li>
+<li>받은 파일은 <code>/etc/letsencrypt/live/도메인/fullchain.pem</code> · <code>privkey.pem</code> 이다</li>
+<li>Ubuntu 24.04 의 certbot 2.9 는 <code>certbot.timer</code> 를 함께 깐다. 하루 두 번(<code>OnCalendar=*-*-* 00,12:00:00</code>, 최대 12 시간 무작위로 늦춤) 돌아 만료 30 일 안의 인증서를 갱신한다</li>
+<li>플러그인은 <code>nginx</code>(설정을 직접 고침) · <code>webroot</code>(폴더에 확인 파일을 둠) · <code>standalone</code>(잠깐 자기 서버를 띄움) 이 있다. 설정을 손으로 관리하려면 <code>certbot certonly --webroot -w /var/www/site -d example.com</code> 으로 받기만 한다</li>
+</ul>
+<h2 id="인증서-오류">인증서 오류</h2>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">[emerg] 36#36: SSL_CTX_use_PrivateKey("/etc/nginx/ssl/other.key") failed (SSL: error:05800074:x509 certificate routines::key values mismatch)</code></pre>
+<ul>
+<li>인증서와 비밀 키가 짝이 아니다. 다른 인증서의 키를 주었거나 갱신 뒤 파일 하나만 바꾼 것이다</li>
+<li>만료일은 <code>openssl x509 -in 파일 -noout -enddate</code>, 실제로 내보내는 인증서는 <code>openssl s_client -connect 도메인:443 -servername 도메인</code> 으로 본다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://nginx.org/en/docs/http/configuring_https_servers.html">Configuring HTTPS servers</a> — nginx.org</li>
+<li><a href="https://ssl-config.mozilla.org/">Mozilla SSL Configuration Generator</a> — 서버 · 버전에 맞는 TLS 설정을 만든다</li>
+<li><a href="https://certbot.eff.org/instructions">Certbot instructions</a> — 서버 · OS 마다 certbot 설치 안내</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/HTTP/">HTTP</a></li><li><a href="/docs/server/HTTP/Nginx/">Nginx</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Nginx/" rel="tag">Nginx</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-08T10:25:59.000Z">2026-11-08</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>네트워크 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">Linux</span><span class="up"> / <a href="/docs/server/OS/" title="한 단계 위로">OS</a></span></p><ul><li><a href="/docs/server/OS/Linux/">개요</a></li><li><a href="/docs/server/OS/Linux/셸/">셸</a></li><li><a href="/docs/server/OS/Linux/파일-찾기/">파일 찾기</a></li><li><a href="/docs/server/OS/Linux/복사와-동기화/">복사와 동기화</a></li><li><a href="/docs/server/OS/Linux/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/OS/Linux/패키지/">패키지</a></li><li><a href="/docs/server/OS/Linux/프로세스와-포트/">프로세스와 포트</a></li><li><a href="/docs/server/OS/Linux/디스크/">디스크</a></li><li><a href="/docs/server/OS/Linux/서비스/">서비스</a></li><li><a href="/docs/server/OS/Linux/예약-작업/">예약 작업</a></li><li><a href="/docs/server/OS/Linux/네트워크/" aria-current="page">네트워크</a></li><li><a href="/docs/server/OS/Linux/방화벽/">방화벽</a></li><li><a href="/docs/server/OS/Linux/SSH/">SSH</a></li><li><a href="/docs/server/OS/Linux/시간대/">시간대</a></li></ul></nav><article><h1 class="page-title">네트워크</h1><details class="sidebar-m"><summary>목록 · Linux</summary><ul><li><a href="/docs/server/OS/Linux/">개요</a></li><li><a href="/docs/server/OS/Linux/셸/">셸</a></li><li><a href="/docs/server/OS/Linux/파일-찾기/">파일 찾기</a></li><li><a href="/docs/server/OS/Linux/복사와-동기화/">복사와 동기화</a></li><li><a href="/docs/server/OS/Linux/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/OS/Linux/패키지/">패키지</a></li><li><a href="/docs/server/OS/Linux/프로세스와-포트/">프로세스와 포트</a></li><li><a href="/docs/server/OS/Linux/디스크/">디스크</a></li><li><a href="/docs/server/OS/Linux/서비스/">서비스</a></li><li><a href="/docs/server/OS/Linux/예약-작업/">예약 작업</a></li><li><a href="/docs/server/OS/Linux/네트워크/" aria-current="page">네트워크</a></li><li><a href="/docs/server/OS/Linux/방화벽/">방화벽</a></li><li><a href="/docs/server/OS/Linux/SSH/">SSH</a></li><li><a href="/docs/server/OS/Linux/시간대/">시간대</a></li></ul></details><div class="content"><p>리눅스 서버의 네트워크는 <code>ip</code> 명령으로 보고, Ubuntu 에서는 netplan 의 YAML 파일 하나로 IP · 게이트웨이 · DNS 를 정한다. netplan 은 이 파일을 읽어 systemd-networkd(서버) 나 NetworkManager(데스크톱) 설정으로 바꿔 준다. 고정 IP 를 줄 때는 원격으로 고치다 연결이 끊길 수 있으므로 <code>netplan try</code> 로 적용한다. 아래 예제는 colima 의 Ubuntu 24.04 가상 머신(netplan 1.1.2) 에서 돌렸고, 고정 IP 설정은 가상 머신의 연결을 끊지 않도록 <code>netplan generate --root-dir</code> 로 따로 만들어 확인했다.</p>
+<h2 id="지금-상태-보기">지금 상태 보기</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">ip</span> <span class="token parameter variable">-br</span> addr          <span class="token comment"># 인터페이스마다 상태 · IP</span>
+<span class="token comment"># lo               UNKNOWN        127.0.0.1/8 ::1/128</span>
+<span class="token comment"># eth0             UP             192.168.5.1/24 metric 200 fe80::5055:55ff:feb5:5a18/64</span>
+<span class="token comment"># docker0          DOWN           172.17.0.1/16 fe80::d018:b2ff:fe89:4c77/64</span>
+<span class="token function">ip</span> route             <span class="token comment"># 경로 — default 가 게이트웨이</span>
+<span class="token comment"># default via 192.168.5.2 dev eth0 proto dhcp src 192.168.5.1 metric 200</span>
+<span class="token comment"># 192.168.5.0/24 dev eth0 proto kernel scope link src 192.168.5.1 metric 200</span>
+<span class="token function">cat</span> /etc/resolv.conf <span class="token comment"># DNS — nameserver 192.168.5.1</span>
+getent hosts example.com    <span class="token comment"># 이름 풀이 확인 — /etc/hosts 와 DNS 를 차례로 본다</span></code></pre>
+<ul>
+<li><code>-br</code> 은 짧게 보기다. 빼면 MAC · MTU 까지 나온다</li>
+<li><code>ifconfig</code> · <code>route</code> · <code>netstat</code> 는 <code>net-tools</code> 패키지로 옛 명령이다. 기본으로 깔려 있지 않다</li>
+<li>외부로 나가는지 확인할 때는 <code>ping -c 3 1.1.1.1</code>(IP) 과 <code>ping -c 3 example.com</code>(이름) 을 나눠 본다. IP 는 되고 이름이 안 되면 DNS 문제다</li>
+</ul>
+<h2 id="고정-ip-netplan">고정 IP (netplan)</h2>
+<p><code>/etc/netplan/01-static.yaml</code></p>
+<pre class="language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">network</span><span class="token punctuation">:</span>
+  <span class="token key atrule">version</span><span class="token punctuation">:</span> <span class="token number">2</span>
+  <span class="token key atrule">ethernets</span><span class="token punctuation">:</span>
+    <span class="token key atrule">eth0</span><span class="token punctuation">:</span>
+      <span class="token key atrule">addresses</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>192.168.2.20/24<span class="token punctuation">]</span>
+      <span class="token key atrule">routes</span><span class="token punctuation">:</span>
+        <span class="token punctuation">-</span> <span class="token key atrule">to</span><span class="token punctuation">:</span> default
+          <span class="token key atrule">via</span><span class="token punctuation">:</span> 192.168.2.1
+      <span class="token key atrule">nameservers</span><span class="token punctuation">:</span>
+        <span class="token key atrule">addresses</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>1.1.1.1<span class="token punctuation">,</span> 8.8.8.8<span class="token punctuation">]</span>
+        <span class="token key atrule">search</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>lan<span class="token punctuation">]</span></code></pre>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> <span class="token function">chmod</span> <span class="token number">600</span> /etc/netplan/01-static.yaml
+<span class="token function">sudo</span> netplan try        <span class="token comment"># 적용하고 120 초 안에 Enter 를 누르지 않으면 되돌린다</span>
+<span class="token function">sudo</span> netplan apply      <span class="token comment"># 바로 적용</span></code></pre>
+<p>netplan 이 이 파일로 만든 systemd-networkd 설정이다.</p>
+<pre class="language-ini" data-language="ini"><code class="language-ini"><span class="token section"><span class="token punctuation">[</span><span class="token section-name selector">Match</span><span class="token punctuation">]</span></span>
+<span class="token key attr-name">Name</span><span class="token punctuation">=</span><span class="token value attr-value">eth0</span>
+
+<span class="token section"><span class="token punctuation">[</span><span class="token section-name selector">Network</span><span class="token punctuation">]</span></span>
+<span class="token key attr-name">LinkLocalAddressing</span><span class="token punctuation">=</span><span class="token value attr-value">ipv6</span>
+<span class="token key attr-name">Address</span><span class="token punctuation">=</span><span class="token value attr-value">192.168.2.20/24</span>
+<span class="token key attr-name">DNS</span><span class="token punctuation">=</span><span class="token value attr-value">1.1.1.1</span>
+<span class="token key attr-name">DNS</span><span class="token punctuation">=</span><span class="token value attr-value">8.8.8.8</span>
+<span class="token key attr-name">Domains</span><span class="token punctuation">=</span><span class="token value attr-value">lan</span>
+
+<span class="token section"><span class="token punctuation">[</span><span class="token section-name selector">Route</span><span class="token punctuation">]</span></span>
+<span class="token key attr-name">Destination</span><span class="token punctuation">=</span><span class="token value attr-value">0.0.0.0/0</span>
+<span class="token key attr-name">Gateway</span><span class="token punctuation">=</span><span class="token value attr-value">192.168.2.1</span></code></pre>
+<ul>
+<li>인터페이스 이름(<code>eth0</code> · <code>ens3</code> · <code>enp0s1</code> …) 은 <code>ip -br link</code> 로 확인한다</li>
+<li>DHCP 로 받으려면 <code>addresses</code> · <code>routes</code> 대신 <code>dhcp4: true</code> 를 쓴다</li>
+<li>파일은 이름 순서로 읽고 뒤의 것이 앞의 것을 덮는다. 클라우드 이미지에는 <code>50-cloud-init.yaml</code> 이 있으니, 고칠 내용은 그보다 뒤 이름으로 두거나 그 파일을 고친다 (cloud-init 이 다시 쓰지 않게 하려면 <code>/etc/cloud/cloud.cfg.d/99-disable-network-config.cfg</code> 에 <code>network: {config: disabled}</code>)</li>
+<li>원격(SSH) 에서 바꿀 때는 꼭 <code>netplan try</code> 를 쓴다. 잘못 적어 연결이 끊겨도 저절로 되돌아온다</li>
+</ul>
+<h2 id="netplan-오류">netplan 오류</h2>
+<p>잘못 적은 파일을 <code>netplan generate</code> 로 검사하면 이렇게 나온다 (<code>--root-dir</code> 로 돌려 붙은 경로 앞부분과 시각은 뺐다).</p>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">/etc/netplan/01-static.yaml:6:7: Invalid YAML: inconsistent indentation:
+      dhcp4: true
+      ^</code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">** (generate:23424): WARNING **: `gateway4` has been deprecated, use default routes instead.
+** (generate:23464): WARNING **: Permissions for /etc/netplan/01-static.yaml are too open. Netplan configuration should NOT be accessible by others.</code></pre>
+<ul>
+<li>YAML 은 들여쓰기가 뜻이다. 공백으로만, 같은 단계는 같은 칸에 맞춘다</li>
+<li><code>gateway4: 192.168.2.1</code> 은 옛 꼴이다. <code>routes: - to: default via: …</code> 로 바꾼다</li>
+<li>파일 권한은 <code>600</code> 이다. 와이파이 비밀번호 같은 것이 들어 있을 수 있어 netplan 이 경고한다</li>
+<li>적용 전 검사는 <code>sudo netplan generate</code> 다. 오류가 없으면 아무것도 찍지 않는다</li>
+</ul>
+<h2 id="이름-풀이-etchosts--dns">이름 풀이 (/etc/hosts · DNS)</h2>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">127.0.0.1   localhost
+192.168.2.30  db.lan db</code></pre>
+<ul>
+<li><code>/etc/hosts</code> 는 DNS 보다 먼저 본다. 몇 대 안 되는 서버끼리 이름으로 부를 때 쓴다</li>
+<li>Ubuntu 의 <code>/etc/resolv.conf</code> 는 systemd-resolved 가 관리하는 파일로 이어져 있어(<code>nameserver 127.0.0.53</code>) 직접 고치면 다시 덮인다. DNS 는 netplan 의 <code>nameservers</code> 로 정하고 <code>resolvectl status</code> 로 확인한다</li>
+</ul>
+<h2 id="예전에는">예전에는</h2>
+<ul>
+<li>Ubuntu 16.04 까지는 <code>/etc/network/interfaces</code> 에 <code>iface eth0 inet static</code> · <code>address</code> · <code>netmask</code> · <code>gateway</code> 를 적고 <code>service networking restart</code> 했다. 18.04 부터 netplan 이다</li>
+<li>DNS 는 <code>/etc/resolvconf/resolv.conf.d/head</code> 에 <code>nameserver 8.8.8.8</code> 을 적고 <code>service resolvconf restart</code> 했다. 지금은 netplan 의 <code>nameservers</code> 다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://netplan.readthedocs.io/en/stable/">Netplan documentation</a> · <a href="https://netplan.readthedocs.io/en/stable/netplan-yaml/">Netplan YAML reference</a></li>
+<li><a href="https://man7.org/linux/man-pages/man8/ip.8.html">ip(8)</a> — man7.org</li>
+<li><a href="https://documentation.ubuntu.com/server/explanation/networking/">Ubuntu Server — Networking</a> — Ubuntu 문서</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/OS/">OS</a></li><li><a href="/docs/server/OS/Linux/">Linux</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Linux/" rel="tag">Linux</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-08T10:25:59.000Z">2026-11-08</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

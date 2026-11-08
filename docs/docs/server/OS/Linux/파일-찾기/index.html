@@ -1,0 +1,170 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>파일 찾기 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">Linux</span><span class="up"> / <a href="/docs/server/OS/" title="한 단계 위로">OS</a></span></p><ul><li><a href="/docs/server/OS/Linux/">개요</a></li><li><a href="/docs/server/OS/Linux/셸/">셸</a></li><li><a href="/docs/server/OS/Linux/파일-찾기/" aria-current="page">파일 찾기</a></li><li><a href="/docs/server/OS/Linux/복사와-동기화/">복사와 동기화</a></li><li><a href="/docs/server/OS/Linux/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/OS/Linux/패키지/">패키지</a></li><li><a href="/docs/server/OS/Linux/프로세스와-포트/">프로세스와 포트</a></li><li><a href="/docs/server/OS/Linux/디스크/">디스크</a></li><li><a href="/docs/server/OS/Linux/서비스/">서비스</a></li><li><a href="/docs/server/OS/Linux/예약-작업/">예약 작업</a></li><li><a href="/docs/server/OS/Linux/네트워크/">네트워크</a></li><li><a href="/docs/server/OS/Linux/방화벽/">방화벽</a></li><li><a href="/docs/server/OS/Linux/SSH/">SSH</a></li><li><a href="/docs/server/OS/Linux/시간대/">시간대</a></li></ul></nav><article><h1 class="page-title">파일 찾기</h1><details class="sidebar-m"><summary>목록 · Linux</summary><ul><li><a href="/docs/server/OS/Linux/">개요</a></li><li><a href="/docs/server/OS/Linux/셸/">셸</a></li><li><a href="/docs/server/OS/Linux/파일-찾기/" aria-current="page">파일 찾기</a></li><li><a href="/docs/server/OS/Linux/복사와-동기화/">복사와 동기화</a></li><li><a href="/docs/server/OS/Linux/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/OS/Linux/패키지/">패키지</a></li><li><a href="/docs/server/OS/Linux/프로세스와-포트/">프로세스와 포트</a></li><li><a href="/docs/server/OS/Linux/디스크/">디스크</a></li><li><a href="/docs/server/OS/Linux/서비스/">서비스</a></li><li><a href="/docs/server/OS/Linux/예약-작업/">예약 작업</a></li><li><a href="/docs/server/OS/Linux/네트워크/">네트워크</a></li><li><a href="/docs/server/OS/Linux/방화벽/">방화벽</a></li><li><a href="/docs/server/OS/Linux/SSH/">SSH</a></li><li><a href="/docs/server/OS/Linux/시간대/">시간대</a></li></ul></details><div class="content"><p><code>find</code> 는 파일을 이름 · 종류 · 시간 · 크기로 찾아 목록을 내거나 파일마다 명령을 돌리고, <code>grep</code> 은 파일 안의 글자를 찾는다. 설정 파일이 어디 있는지, 어떤 설정에 이 값이 들어 있는지, 오래된 로그가 무엇인지를 서버에서 찾을 때 둘을 함께 쓴다. 아래 예제는 Ubuntu 24.04 컨테이너(GNU findutils 4.9 · GNU grep 3.11) 에서 이런 폴더를 만들어 돌렸다.</p>
+<table>
+<thead>
+<tr>
+<th>경로</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>conf/default.conf</code></td>
+<td><code>server { listen 80; # virtual host }</code></td>
+</tr>
+<tr>
+<td><code>conf/site.conf</code></td>
+<td><code>&lt;VirtualHost *:80&gt;</code></td>
+</tr>
+<tr>
+<td><code>conf/.DS_Store</code> · <code>src/.DS_Store</code></td>
+<td>맥이 남긴 파일</td>
+</tr>
+<tr>
+<td><code>logs/big.log</code> · <code>logs/old.log</code></td>
+<td>3 MB · 40 일 전에 고친 것</td>
+</tr>
+<tr>
+<td><code>src/main.py</code></td>
+<td><code>virtual = true</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="find">find</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token parameter variable">-name</span> <span class="token string">".DS_Store"</span>                   <span class="token comment"># 이름으로 — ./conf/.DS_Store, ./src/.DS_Store</span>
+<span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token parameter variable">-type</span> f <span class="token parameter variable">-name</span> <span class="token string">"*.conf"</span>              <span class="token comment"># 파일만(f), 폴더는 d — ./conf/site.conf, ./conf/default.conf</span>
+<span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token parameter variable">-iname</span> <span class="token string">"*.CONF"</span>                     <span class="token comment"># 대소문자 무시</span>
+<span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token parameter variable">-type</span> f <span class="token parameter variable">-mtime</span> +30                  <span class="token comment"># 30 일보다 오래 고치지 않은 것 — ./logs/old.log</span>
+<span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token parameter variable">-type</span> f <span class="token parameter variable">-size</span> +1M                   <span class="token comment"># 1 MB 보다 큰 것 — ./logs/big.log</span>
+<span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token parameter variable">-maxdepth</span> <span class="token number">1</span> <span class="token parameter variable">-type</span> d                 <span class="token comment"># 한 단계만 — . ./conf ./src ./logs</span>
+<span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token parameter variable">-type</span> f <span class="token parameter variable">-not</span> <span class="token parameter variable">-path</span> <span class="token string">"./logs/*"</span>       <span class="token comment"># 이 경로는 빼고</span></code></pre>
+<ul>
+<li>이름 무늬는 꼭 따옴표로 감싼다. 감싸지 않으면 셸이 먼저 지금 폴더의 파일로 펼쳐 엉뚱한 것을 찾는다</li>
+<li>시간은 <code>-mtime</code>(일) · <code>-mmin</code>(분) 이다. <code>+30</code> 은 30 일 넘게, <code>-1</code> 은 하루 안에 고친 것이다</li>
+<li>크기 단위는 <code>k</code> · <code>M</code> · <code>G</code> 다</li>
+</ul>
+<h2 id="찾은-파일마다-명령">찾은 파일마다 명령</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token parameter variable">-name</span> <span class="token string">".DS_Store"</span> <span class="token parameter variable">-exec</span> <span class="token function">rm</span> <span class="token punctuation">{</span><span class="token punctuation">}</span> <span class="token punctuation">\</span><span class="token punctuation">;</span>               <span class="token comment"># 하나마다 rm 을 한 번씩</span>
+<span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token parameter variable">-type</span> f <span class="token parameter variable">-name</span> <span class="token string">"*.conf"</span> <span class="token parameter variable">-exec</span> <span class="token function">wc</span> <span class="token parameter variable">-l</span> <span class="token punctuation">{</span><span class="token punctuation">}</span> +        <span class="token comment"># 모아서 한 번에</span>
+<span class="token comment">#  2 ./conf/site.conf</span>
+<span class="token comment">#  4 ./conf/default.conf</span>
+<span class="token comment">#  6 total</span>
+<span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token parameter variable">-type</span> f <span class="token parameter variable">-mtime</span> +30 <span class="token parameter variable">-delete</span>                     <span class="token comment"># 지우기는 -delete 가 빠르다</span></code></pre>
+<ul>
+<li><code>{}</code> 자리에 찾은 파일이 들어간다. <code>\;</code> 은 파일마다 한 번, <code>+</code> 는 여럿을 모아 한 번 돌린다. 파일이 많으면 <code>+</code> 가 훨씬 빠르다</li>
+<li>끝맺음을 빠뜨리면 <code>find: missing argument to </code>-exec'` 가 난다</li>
+<li>지우기 전에는 <code>-delete</code> 를 빼고 돌려 목록을 먼저 본다</li>
+</ul>
+<p>폴더는 755, 파일은 644 로 권한을 한 번에 맞출 때도 쓴다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token parameter variable">-type</span> d <span class="token parameter variable">-exec</span> <span class="token function">chmod</span> <span class="token number">755</span> <span class="token punctuation">{</span><span class="token punctuation">}</span> +
+<span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token parameter variable">-type</span> f <span class="token parameter variable">-exec</span> <span class="token function">chmod</span> <span class="token number">644</span> <span class="token punctuation">{</span><span class="token punctuation">}</span> +</code></pre>
+<h2 id="grep">grep</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">grep</span> virtual conf/default.conf        <span class="token comment">#   # virtual host</span>
+<span class="token function">grep</span> <span class="token parameter variable">-rn</span> virtual <span class="token builtin class-name">.</span>                    <span class="token comment"># 하위 폴더까지(-r), 줄 번호(-n)</span>
+<span class="token comment"># ./conf/default.conf:3:  # virtual host</span>
+<span class="token comment"># ./src/main.py:1:virtual = true</span>
+<span class="token function">grep</span> <span class="token parameter variable">-rni</span> virtual <span class="token builtin class-name">.</span>                   <span class="token comment"># 대소문자 무시(-i) — site.conf 의 VirtualHost 도</span>
+<span class="token function">grep</span> <span class="token parameter variable">-rli</span> virtual <span class="token builtin class-name">.</span>                   <span class="token comment"># 파일 이름만(-l)</span>
+<span class="token function">grep</span> <span class="token parameter variable">-rn</span> <span class="token parameter variable">--include</span><span class="token operator">=</span><span class="token string">"*.conf"</span> <span class="token parameter variable">-i</span> virtual <span class="token builtin class-name">.</span>    <span class="token comment"># 이 이름의 파일에서만</span></code></pre>
+<table>
+<thead>
+<tr>
+<th>옵션</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-r</code></td>
+<td>하위 폴더까지</td>
+</tr>
+<tr>
+<td><code>-n</code></td>
+<td>줄 번호</td>
+</tr>
+<tr>
+<td><code>-i</code></td>
+<td>대소문자 무시</td>
+</tr>
+<tr>
+<td><code>-l</code></td>
+<td>맞는 파일 이름만</td>
+</tr>
+<tr>
+<td><code>-v</code></td>
+<td>맞지 않는 줄 — <code>grep -v "^ *#"</code> 로 주석 빼고 보기</td>
+</tr>
+<tr>
+<td><code>-c</code></td>
+<td>맞는 줄 수</td>
+</tr>
+<tr>
+<td><code>-E</code></td>
+<td>확장 정규식 — <code>+</code> · <code>?</code> · 묶음 <code>( )</code> 을 역슬래시 없이 쓴다</td>
+</tr>
+<tr>
+<td><code>-o</code></td>
+<td>맞은 부분만 — <code>grep -o "[0-9]\+"</code> → <code>80</code></td>
+</tr>
+<tr>
+<td><code>-w</code></td>
+<td>단어로만</td>
+</tr>
+<tr>
+<td><code>-A 1</code> · <code>-B 1</code> · <code>-C 1</code></td>
+<td>맞은 줄 뒤 · 앞 · 둘레 한 줄도</td>
+</tr>
+</tbody>
+</table>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">grep</span> <span class="token parameter variable">-n</span> <span class="token parameter variable">-A1</span> listen conf/default.conf
+<span class="token comment"># 2:  listen 80;</span>
+<span class="token comment"># 3-  # virtual host</span></code></pre>
+<ul>
+<li>설정 파일에서 주석 · 빈 줄을 빼고 보려면 <code>grep -Ev "^\s*(#|$)" 파일</code> 이다. 여럿 중 하나는 <code>grep -E "listen|server"</code> 다</li>
+</ul>
+<h2 id="find-와-grep-을-함께">find 와 grep 을 함께</h2>
+<p><code>grep -r</code> 은 이름으로 거르기가 <code>--include</code> 뿐이다. 시간 · 크기로 거른 파일 안을 찾을 때는 <code>find</code> 의 목록을 <code>xargs</code> 로 <code>grep</code> 에 넘긴다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token parameter variable">-name</span> <span class="token string">"*.conf"</span> <span class="token operator">|</span> <span class="token function">xargs</span> <span class="token function">grep</span> <span class="token parameter variable">-n</span> virtual        <span class="token comment"># 파일마다 grep — ./conf/default.conf:3:  # virtual host</span>
+<span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token parameter variable">-name</span> <span class="token string">"*.conf"</span> <span class="token operator">|</span> <span class="token function">grep</span> default                 <span class="token comment"># xargs 가 없으면 파일 이름에서 찾는다 — ./conf/default.conf</span></code></pre>
+<p>파일 이름에 공백이 있으면 <code>xargs</code> 가 공백에서 끊는다. <code>-print0</code> 과 <code>-0</code> 을 짝으로 쓴다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token parameter variable">-name</span> <span class="token string">"*.conf"</span> <span class="token operator">|</span> <span class="token function">xargs</span> <span class="token function">grep</span> <span class="token parameter variable">-l</span> virtual
+<span class="token comment"># grep: ./conf/my: No such file or directory</span>
+<span class="token comment"># grep: site.conf: No such file or directory</span>
+<span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token parameter variable">-name</span> <span class="token string">"*.conf"</span> <span class="token parameter variable">-print0</span> <span class="token operator">|</span> <span class="token function">xargs</span> <span class="token parameter variable">-0</span> <span class="token function">grep</span> <span class="token parameter variable">-l</span> virtual
+<span class="token comment"># ./conf/my site.conf</span>
+<span class="token comment"># ./conf/default.conf</span></code></pre>
+<ul>
+<li><code>find … -exec grep -n virtual {} +</code> 도 같은 일을 하고 공백 걱정이 없다</li>
+</ul>
+<h2 id="맥과-다른-점">맥과 다른 점</h2>
+<ul>
+<li>맥의 <code>find</code> · <code>grep</code> 은 BSD 판이라 옵션 · 메시지가 조금 다르다. <code>-exec</code> 끝맺음을 빠뜨리면 맥은 <code>find: -exec: no terminating ";" or "+"</code> 를 낸다</li>
+<li>맥에서는 <code>find</code> 에 경로를 꼭 줘야 한다. 빼면 <code>find: illegal option -- n</code> 이 난다. GNU 판은 빼면 <code>.</code> 으로 본다</li>
+<li>같은 옵션을 쓰려면 <code>brew install findutils grep</code> 으로 GNU 판(<code>gfind</code> · <code>ggrep</code>) 을 깐다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://www.gnu.org/software/grep/manual/grep.html">GNU Grep manual</a> — 정규식 · 옵션 설명</li>
+<li><a href="https://man7.org/linux/man-pages/man1/find.1.html">find(1)</a> · <a href="https://man7.org/linux/man-pages/man1/grep.1.html">grep(1)</a> — man7.org</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/OS/">OS</a></li><li><a href="/docs/server/OS/Linux/">Linux</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Linux/" rel="tag">Linux</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-08T10:25:59.000Z">2026-11-08</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>볼륨과 네트워크 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">Docker</span><span class="up"> / <a href="/docs/server/OS/" title="한 단계 위로">OS</a></span></p><ul><li><a href="/docs/server/OS/Docker/">개요</a></li><li><a href="/docs/server/OS/Docker/설치/">설치</a></li><li><a href="/docs/server/OS/Docker/이미지와-컨테이너/">이미지와 컨테이너</a></li><li><a href="/docs/server/OS/Docker/Dockerfile/">Dockerfile</a></li><li><a href="/docs/server/OS/Docker/볼륨과-네트워크/" aria-current="page">볼륨과 네트워크</a></li><li><a href="/docs/server/OS/Docker/Compose/">Compose</a></li><li><a href="/docs/server/OS/Docker/백업/">백업</a></li><li><a href="/docs/server/OS/Docker/Portainer/">Portainer</a></li><li><a href="/docs/server/OS/Docker/오류-모음/">오류 모음</a></li></ul></nav><article><h1 class="page-title">볼륨과 네트워크</h1><details class="sidebar-m"><summary>목록 · Docker</summary><ul><li><a href="/docs/server/OS/Docker/">개요</a></li><li><a href="/docs/server/OS/Docker/설치/">설치</a></li><li><a href="/docs/server/OS/Docker/이미지와-컨테이너/">이미지와 컨테이너</a></li><li><a href="/docs/server/OS/Docker/Dockerfile/">Dockerfile</a></li><li><a href="/docs/server/OS/Docker/볼륨과-네트워크/" aria-current="page">볼륨과 네트워크</a></li><li><a href="/docs/server/OS/Docker/Compose/">Compose</a></li><li><a href="/docs/server/OS/Docker/백업/">백업</a></li><li><a href="/docs/server/OS/Docker/Portainer/">Portainer</a></li><li><a href="/docs/server/OS/Docker/오류-모음/">오류 모음</a></li></ul></details><div class="content"><p>컨테이너 안에서 쓴 파일은 컨테이너를 지우면 함께 사라진다. DB 자료 · 업로드 파일처럼 남겨야 하는 것은 호스트 폴더나 볼륨에 두고 컨테이너에 연결한다. 또 컨테이너는 저마다 IP 를 받는 작은 네트워크 안에 있어서, 바깥에서 들어오려면 포트를 열고 컨테이너끼리 찾으려면 같은 네트워크에 넣는다. 아래 예제는 맥(colima) 에서 Nginx · Alpine 컨테이너로 돌렸다.</p>
+<h2 id="호스트-폴더-연결-바인드-마운트">호스트 폴더 연결 (바인드 마운트)</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">mkdir</span> <span class="token parameter variable">-p</span> site <span class="token operator">&amp;&amp;</span> <span class="token builtin class-name">echo</span> <span class="token string">'&lt;h1&gt;안녕&lt;/h1&gt;'</span> <span class="token operator">&gt;</span> site/index.html
+<span class="token function">docker</span> run <span class="token parameter variable">-d</span> <span class="token parameter variable">--name</span> web <span class="token parameter variable">-p</span> <span class="token number">127.0</span>.0.1:8080:80 <span class="token parameter variable">-v</span> <span class="token string">"<span class="token environment constant">$PWD</span>/site:/usr/share/nginx/html:ro"</span> nginx:1.28-alpine
+<span class="token builtin class-name">echo</span> <span class="token string">'&lt;h1&gt;고침&lt;/h1&gt;'</span> <span class="token operator">&gt;</span> site/index.html
+<span class="token function">curl</span> <span class="token parameter variable">-s</span> localhost:8080            <span class="token comment"># &lt;h1&gt;고침&lt;/h1&gt; — 호스트에서 고친 것이 바로 보인다</span>
+<span class="token function">docker</span> <span class="token builtin class-name">exec</span> web <span class="token function">sh</span> <span class="token parameter variable">-c</span> <span class="token string">'echo x &gt; /usr/share/nginx/html/a'</span>
+<span class="token comment"># sh: can't create /usr/share/nginx/html/a: Read-only file system</span></code></pre>
+<ul>
+<li>경로는 절대 경로로 쓴다. 지금 폴더는 <code>"$PWD/site"</code> 로 쓴다</li>
+<li>끝에 <code>:ro</code> 를 붙이면 컨테이너가 읽기만 한다. 설정 파일 · 정적 파일에 쓴다</li>
+<li>소스 폴더를 연결하면 고친 것이 바로 반영되어 개발할 때 편하다</li>
+<li>호스트에 없는 경로를 주면 Docker 가 빈 폴더를 만들어 연결한다. 오류가 나지 않으므로 경로를 잘못 적으면 컨테이너가 빈 폴더를 본다</li>
+</ul>
+<h2 id="볼륨">볼륨</h2>
+<p>Docker 가 관리하는 저장 공간이다. 이름을 붙여 만들고 여러 컨테이너가 함께 쓴다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">docker</span> volume create data
+<span class="token function">docker</span> run <span class="token parameter variable">--rm</span> <span class="token parameter variable">-v</span> data:/data alpine:3.22 <span class="token function">sh</span> <span class="token parameter variable">-c</span> <span class="token string">'echo 1 &gt; /data/n'</span>
+<span class="token function">docker</span> run <span class="token parameter variable">--rm</span> <span class="token parameter variable">-v</span> data:/data alpine:3.22 <span class="token function">cat</span> /data/n       <span class="token comment"># 1 — 컨테이너가 바뀌어도 남는다</span>
+<span class="token function">docker</span> volume <span class="token function">ls</span>
+<span class="token function">docker</span> volume inspect <span class="token parameter variable">-f</span> <span class="token string">'{{.Mountpoint}}'</span> data             <span class="token comment"># /var/lib/docker/volumes/data/_data</span></code></pre>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>바인드 마운트</th>
+<th>볼륨</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>쓰는 꼴</td>
+<td><code>-v /호스트/경로:/안</code></td>
+<td><code>-v 이름:/안</code></td>
+</tr>
+<tr>
+<td>자리</td>
+<td>호스트의 아무 폴더</td>
+<td>Docker 가 정한 곳 (<code>/var/lib/docker/volumes</code>)</td>
+</tr>
+<tr>
+<td>알맞은 곳</td>
+<td>설정 파일 · 소스 · 호스트에서 고칠 것</td>
+<td>DB 자료 · 컨테이너만 쓰는 것</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>비어 있는 볼륨을 처음 연결하면 이미지의 그 경로에 있던 파일이 볼륨에 복사된다. 빈 볼륨을 Nginx 의 <code>/usr/share/nginx/html</code> 에 연결하면 <code>50x.html</code> · <code>index.html</code> 이 들어 있다. 빈 호스트 폴더를 연결하면 복사하지 않고 이미지의 파일을 가려 아무것도 없다</li>
+<li>맥 · 윈도우에서 볼륨은 가상 머신 안에 있어 Finder · 탐색기로 볼 수 없다. 꺼내려면 백업처럼 컨테이너로 <code>tar</code> 를 만든다</li>
+<li>이미지가 <code>VOLUME</code> 으로 정해 둔 경로(<code>mysql</code> 의 <code>/var/lib/mysql</code>, <code>wordpress</code> 의 <code>/var/www/html</code>) 에 아무것도 연결하지 않으면 이름 없는 볼륨이 생긴다. 컨테이너를 지워도 남으므로 <code>docker volume prune</code> 으로 지운다 (이름 있는 볼륨까지 지우려면 <code>-a</code>)</li>
+</ul>
+<h2 id="포트">포트</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">docker</span> run <span class="token parameter variable">-d</span> <span class="token parameter variable">--name</span> web <span class="token parameter variable">-p</span> <span class="token number">127.0</span>.0.1:8080:80 nginx:1.28-alpine
+<span class="token function">docker</span> port web                   <span class="token comment"># 80/tcp -&gt; 127.0.0.1:8080</span></code></pre>
+<ul>
+<li><code>-p 8080:80</code> 은 모든 주소(<code>0.0.0.0</code>) 에 연다. 리눅스 서버에서는 방화벽(ufw) 규칙보다 먼저 적용되어 바깥에 열리므로, 리버스 프록시 뒤에 둘 컨테이너는 <code>127.0.0.1:</code> 을 붙인다</li>
+<li>포트를 열지 않은 컨테이너도 같은 네트워크의 컨테이너끼리는 닿는다. DB 는 포트를 열지 않고 네트워크로만 연결한다</li>
+</ul>
+<h2 id="네트워크">네트워크</h2>
+<p>사용자 정의 네트워크에 함께 넣으면 컨테이너 이름이 곧 주소가 된다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">docker</span> network create app
+<span class="token function">docker</span> run <span class="token parameter variable">-d</span> <span class="token parameter variable">--name</span> db <span class="token parameter variable">--network</span> app nginx:1.28-alpine
+<span class="token function">docker</span> run <span class="token parameter variable">--rm</span> <span class="token parameter variable">--network</span> app alpine:3.22 <span class="token function">sh</span> <span class="token parameter variable">-c</span> <span class="token string">"wget -qO- http://db | grep -o '&lt;title&gt;.*&lt;/title&gt;'"</span>
+<span class="token comment"># &lt;title&gt;Welcome to nginx!&lt;/title&gt;</span>
+<span class="token function">docker</span> run <span class="token parameter variable">--rm</span> alpine:3.22 <span class="token function">wget</span> -qO- <span class="token parameter variable">-T</span> <span class="token number">2</span> http://db
+<span class="token comment"># wget: bad address 'db' — 기본 네트워크에서는 이름을 찾지 못한다</span>
+<span class="token function">docker</span> network <span class="token function">ls</span></code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">NETWORK ID     NAME      DRIVER    SCOPE
+a1f1b33e1fb8   app       bridge    local
+1465f1a70229   bridge    bridge    local
+89925d9ee49c   host      host      local
+ea60aaf3f02b   none      null      local</code></pre>
+<ul>
+<li>네트워크를 정하지 않으면 기본 <code>bridge</code> 에 들어간다. 여기서는 IP 로만 닿고 이름으로는 찾지 못한다</li>
+<li><code>docker network connect app web</code> 으로 실행 중인 컨테이너를 네트워크에 더한다</li>
+<li>Compose 는 프로젝트마다 네트워크를 하나 만들어 서비스를 모두 넣는다. 서비스 이름(<code>db</code>) 으로 바로 닿는다</li>
+</ul>
+<h2 id="컨테이너에서-호스트로">컨테이너에서 호스트로</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh">python3 <span class="token parameter variable">-m</span> http.server <span class="token number">9001</span> <span class="token parameter variable">--bind</span> <span class="token number">127.0</span>.0.1       <span class="token comment"># 호스트(맥) 에서</span>
+<span class="token function">docker</span> run <span class="token parameter variable">--rm</span> alpine:3.22 <span class="token function">sh</span> <span class="token parameter variable">-c</span> <span class="token string">'getent hosts host.docker.internal; wget -qO- http://host.docker.internal:9001/ | head -c 50'</span>
+<span class="token comment"># 192.168.5.2       host.docker.internal  host.docker.internal</span>
+<span class="token comment"># &lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"</span></code></pre>
+<ul>
+<li>컨테이너 안의 <code>localhost</code> 는 컨테이너 자신이다. 호스트의 서비스는 <code>host.docker.internal</code> 로 닿는다 (Docker Desktop · colima)</li>
+<li>리눅스의 Docker 엔진에서는 이 이름이 없다. <code>--add-host=host.docker.internal:host-gateway</code> 를 붙인다</li>
+</ul>
+<h2 id="예전에는">예전에는</h2>
+<ul>
+<li>컨테이너끼리 연결할 때 <code>--link mysql_57:mysql</code> 을 썼다. 지금은 사용자 정의 네트워크에 함께 넣는다</li>
+<li>윈도우에서는 <code>route -p add 172.17.0.0 MASK 255.255.255.0 10.0.75.2</code> 처럼 경로를 더해 호스트에서 컨테이너 IP 로 바로 들어갔다. Hyper-V 시절의 방법이고, 지금은 포트를 열어 쓴다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://docs.docker.com/engine/storage/volumes/">Volumes</a> · <a href="https://docs.docker.com/engine/storage/bind-mounts/">Bind mounts</a> · <a href="https://docs.docker.com/engine/network/">Networking overview</a> — Docker Docs</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/OS/">OS</a></li><li><a href="/docs/server/OS/Docker/">Docker</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Docker/" rel="tag">Docker</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-08T09:34:08.000Z">2026-11-08</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>설정 구조 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">Nginx</span><span class="up"> / <a href="/docs/server/HTTP/" title="한 단계 위로">HTTP</a></span></p><ul><li><a href="/docs/server/HTTP/Nginx/">개요</a></li><li><a href="/docs/server/HTTP/Nginx/설정-구조/" aria-current="page">설정 구조</a></li><li><a href="/docs/server/HTTP/Nginx/정적-파일/">정적 파일</a></li><li><a href="/docs/server/HTTP/Nginx/리버스-프록시/">리버스 프록시</a></li><li><a href="/docs/server/HTTP/Nginx/HTTPS/">HTTPS</a></li><li><a href="/docs/server/HTTP/Nginx/오류-모음/">오류 모음</a></li></ul></nav><article><h1 class="page-title">설정 구조</h1><details class="sidebar-m"><summary>목록 · Nginx</summary><ul><li><a href="/docs/server/HTTP/Nginx/">개요</a></li><li><a href="/docs/server/HTTP/Nginx/설정-구조/" aria-current="page">설정 구조</a></li><li><a href="/docs/server/HTTP/Nginx/정적-파일/">정적 파일</a></li><li><a href="/docs/server/HTTP/Nginx/리버스-프록시/">리버스 프록시</a></li><li><a href="/docs/server/HTTP/Nginx/HTTPS/">HTTPS</a></li><li><a href="/docs/server/HTTP/Nginx/오류-모음/">오류 모음</a></li></ul></details><div class="content"><p>Nginx 설정은 블록이 겹친 글자 파일이다. 맨 바깥 <code>http</code> 안에 사이트마다 <code>server</code> 블록이 있고, <code>server</code> 안에서 주소 경로마다 <code>location</code> 블록이 무엇을 할지 정한다. 요청이 오면 Nginx 는 포트와 <code>Host</code> 헤더로 <code>server</code> 를, 경로로 <code>location</code> 을 고른다. 고친 설정은 <code>nginx -t</code> 로 검사하고 <code>reload</code> 로 끊김 없이 적용한다. 아래 예제는 Ubuntu 24.04 에 apt 로 깐 nginx 1.24 로 돌렸다.</p>
+<h2 id="파일-배치-ubuntu-패키지">파일 배치 (Ubuntu 패키지)</h2>
+<table>
+<thead>
+<tr>
+<th>경로</th>
+<th>쓰임</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/etc/nginx/nginx.conf</code></td>
+<td>메인 설정 — <code>user www-data</code> · <code>worker_processes auto</code> · 로그 · <code>http</code> 블록</td>
+</tr>
+<tr>
+<td><code>/etc/nginx/sites-available/</code></td>
+<td>사이트마다 파일 하나</td>
+</tr>
+<tr>
+<td><code>/etc/nginx/sites-enabled/</code></td>
+<td>켤 사이트의 링크 — <code>nginx.conf</code> 가 <code>include /etc/nginx/sites-enabled/*;</code> 로 읽는다</td>
+</tr>
+<tr>
+<td><code>/etc/nginx/conf.d/*.conf</code></td>
+<td>함께 읽는 설정 — 공식 Docker 이미지 · RHEL 계열은 사이트를 여기에 둔다</td>
+</tr>
+<tr>
+<td><code>/etc/nginx/snippets/</code></td>
+<td>여러 사이트가 함께 쓰는 조각 (<code>include snippets/ssl.conf;</code>)</td>
+</tr>
+<tr>
+<td><code>/var/www/html</code></td>
+<td>기본 사이트의 파일</td>
+</tr>
+<tr>
+<td><code>/var/log/nginx/access.log</code> · <code>error.log</code></td>
+<td>로그</td>
+</tr>
+</tbody>
+</table>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> <span class="token function">ln</span> <span class="token parameter variable">-s</span> /etc/nginx/sites-available/a.conf /etc/nginx/sites-enabled/   <span class="token comment"># 켜기</span>
+<span class="token function">sudo</span> <span class="token function">rm</span> /etc/nginx/sites-enabled/a.conf                                   <span class="token comment"># 끄기 — 원본은 남는다</span></code></pre>
+<h2 id="검사와-적용">검사와 적용</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> nginx <span class="token parameter variable">-t</span>
+<span class="token comment"># nginx: the configuration file /etc/nginx/nginx.conf syntax is ok</span>
+<span class="token comment"># nginx: configuration file /etc/nginx/nginx.conf test is successful</span>
+<span class="token function">sudo</span> systemctl reload nginx      <span class="token comment"># nginx -s reload 와 같다 — 접속을 끊지 않는다</span>
+<span class="token function">sudo</span> nginx <span class="token parameter variable">-T</span> <span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">"^# configuration file"</span>     <span class="token comment"># 실제로 읽은 파일과 내용 전부</span>
+<span class="token comment"># # configuration file /etc/nginx/nginx.conf:</span>
+<span class="token comment"># # configuration file /etc/nginx/mime.types:</span>
+<span class="token comment"># # configuration file /etc/nginx/sites-enabled/a.conf:</span>
+<span class="token comment"># # configuration file /etc/nginx/sites-enabled/b.conf:</span>
+<span class="token comment"># # configuration file /etc/nginx/sites-enabled/default:</span></code></pre>
+<ul>
+<li>틀린 설정으로 <code>reload</code> 하면 <code>Job for nginx.service failed.</code> 로 실패하고 옛 설정으로 계속 돈다(<code>active</code>). <code>restart</code> 는 먼저 끈 뒤 다시 띄우다 검사에서 걸려 <code>failed</code> 가 되고 사이트가 멈춘다(curl 이 접속 못 함). 늘 <code>nginx -t</code> 뒤에 <code>reload</code> 한다</li>
+<li>모든 지시어는 <code>;</code> 로 끝난다. 빠뜨리면 다음 줄에서 <code>[emerg] … unexpected "}" in /etc/nginx/sites-enabled/a.conf:5</code> 처럼 알려 준다</li>
+</ul>
+<h2 id="server--사이트-고르기">server — 사이트 고르기</h2>
+<pre class="language-nginx" data-language="nginx"><code class="language-nginx"><span class="token directive"><span class="token keyword">server</span></span> <span class="token punctuation">{</span>
+    <span class="token directive"><span class="token keyword">listen</span> <span class="token number">80</span></span><span class="token punctuation">;</span>
+    <span class="token directive"><span class="token keyword">server_name</span> a.test www.a.test</span><span class="token punctuation">;</span>
+    <span class="token directive"><span class="token keyword">root</span> /var/www/a</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token directive"><span class="token keyword">server</span></span> <span class="token punctuation">{</span>
+    <span class="token directive"><span class="token keyword">listen</span> <span class="token number">80</span></span><span class="token punctuation">;</span>
+    <span class="token directive"><span class="token keyword">server_name</span> b.test</span><span class="token punctuation">;</span>
+    <span class="token directive"><span class="token keyword">root</span> /var/www/b</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">curl</span> <span class="token parameter variable">-H</span> <span class="token string">"Host: a.test"</span> http://127.0.0.1/        <span class="token comment"># site A</span>
+<span class="token function">curl</span> <span class="token parameter variable">-H</span> <span class="token string">"Host: www.a.test"</span> http://127.0.0.1/    <span class="token comment"># site A</span>
+<span class="token function">curl</span> <span class="token parameter variable">-H</span> <span class="token string">"Host: unknown.test"</span> http://127.0.0.1/  <span class="token comment"># default_server 가 받는다</span></code></pre>
+<ul>
+<li><code>server_name</code> 에 맞는 것이 없으면 그 포트의 <code>default_server</code> 가 받는다. <code>default_server</code> 가 없으면 그 포트에서 처음 읽은 <code>server</code> 가 받는다. Ubuntu 의 <code>sites-enabled/default</code> 를 지우자 모르는 이름에 <code>site A</code> 가 나왔다</li>
+<li>모르는 이름의 요청을 끊으려면 <code>server { listen 80 default_server; server_name _; return 444; }</code> 를 둔다. 444 는 응답 없이 연결을 닫는다 (curl 은 <code>52</code> 로 끝난다)</li>
+<li>같은 이름을 두 <code>server</code> 에 적으면 <code>[warn] conflicting server name "b.test" on 0.0.0.0:80, ignored</code> 가 나고 뒤의 것은 무시된다</li>
+<li><code>listen 80;</code> 은 IPv4 만 듣는다. 다른 <code>server</code> 가 <code>listen [::]:80</code> 을 갖고 있으면 <code>localhost</code>(IPv6 <code>::1</code> 로 먼저 감) 로 들어온 요청은 IPv6 쪽 <code>server</code> 로 간다. 위 설정에 Ubuntu 의 <code>default</code> 를 함께 켜 두었을 때 <code>curl localhost</code> 는 모두 기본 쪽으로 갔고 <code>127.0.0.1</code> 로는 맞게 갔다. 사이트마다 <code>listen [::]:80;</code> 도 함께 적는다</li>
+</ul>
+<h2 id="location--경로-고르기">location — 경로 고르기</h2>
+<pre class="language-nginx" data-language="nginx"><code class="language-nginx"><span class="token directive"><span class="token keyword">location</span> = /exact</span>    <span class="token punctuation">{</span> <span class="token directive"><span class="token keyword">return</span> <span class="token number">200</span> <span class="token string">"= /exact<span class="token escape entity">\n</span>"</span></span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+<span class="token directive"><span class="token keyword">location</span> ^~ /static/</span> <span class="token punctuation">{</span> <span class="token directive"><span class="token keyword">return</span> <span class="token number">200</span> <span class="token string">"^~ /static/<span class="token escape entity">\n</span>"</span></span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+<span class="token directive"><span class="token keyword">location</span> ~ \.php$</span>    <span class="token punctuation">{</span> <span class="token directive"><span class="token keyword">return</span> <span class="token number">200</span> <span class="token string">"~ php<span class="token escape entity">\n</span>"</span></span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+<span class="token directive"><span class="token keyword">location</span> /app/</span>       <span class="token punctuation">{</span> <span class="token directive"><span class="token keyword">return</span> <span class="token number">200</span> <span class="token string">"/app/<span class="token escape entity">\n</span>"</span></span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+<span class="token directive"><span class="token keyword">location</span> /</span>           <span class="token punctuation">{</span> <span class="token directive"><span class="token keyword">return</span> <span class="token number">200</span> <span class="token string">"/<span class="token escape entity">\n</span>"</span></span><span class="token punctuation">;</span> <span class="token punctuation">}</span></code></pre>
+<table>
+<thead>
+<tr>
+<th>요청</th>
+<th>받은 곳</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/exact</code></td>
+<td><code>= /exact</code></td>
+</tr>
+<tr>
+<td><code>/exact/</code></td>
+<td><code>/</code></td>
+</tr>
+<tr>
+<td><code>/static/x.php</code></td>
+<td><code>^~ /static/</code></td>
+</tr>
+<tr>
+<td><code>/app/x.php</code></td>
+<td><code>~ php</code></td>
+</tr>
+<tr>
+<td><code>/app/a.css</code></td>
+<td><code>/app/</code></td>
+</tr>
+<tr>
+<td><code>/etc</code></td>
+<td><code>/</code></td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li><code>=</code> 로 똑같이 맞는 것이 있으면 바로 그것이다</li>
+<li>접두사(<code>/app/</code> · <code>^~ /static/</code>) 중 가장 긴 것을 찾는다. 그것이 <code>^~</code> 면 거기서 끝난다</li>
+<li>아니면 정규식(<code>~</code> 대소문자 구분 · <code>~*</code> 무시) 을 적은 순서대로 보고 처음 맞는 것을 쓴다</li>
+<li>맞는 정규식이 없으면 2 에서 찾은 가장 긴 접두사를 쓴다</li>
+</ol>
+<ul>
+<li>그래서 <code>/app/x.php</code> 는 더 긴 접두사 <code>/app/</code> 이 있어도 정규식 <code>~ php</code> 로 갔다. 정적 파일 폴더를 정규식에서 빼려면 <code>^~</code> 를 붙인다</li>
+<li>설정 파일 안의 순서는 접두사에는 상관없고 정규식끼리만 상관있다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://nginx.org/en/docs/beginners_guide.html">Beginner's Guide</a> · <a href="https://nginx.org/en/docs/http/request_processing.html">How nginx processes a request</a> — nginx.org</li>
+<li><a href="https://nginx.org/en/docs/http/ngx_http_core_module.html#location">location</a> — <code>location</code> 고르는 규칙</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/HTTP/">HTTP</a></li><li><a href="/docs/server/HTTP/Nginx/">Nginx</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Nginx/" rel="tag">Nginx</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-08T10:25:59.000Z">2026-11-08</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

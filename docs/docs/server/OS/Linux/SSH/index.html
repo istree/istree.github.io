@@ -1,0 +1,92 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>SSH | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">Linux</span><span class="up"> / <a href="/docs/server/OS/" title="한 단계 위로">OS</a></span></p><ul><li><a href="/docs/server/OS/Linux/">개요</a></li><li><a href="/docs/server/OS/Linux/셸/">셸</a></li><li><a href="/docs/server/OS/Linux/파일-찾기/">파일 찾기</a></li><li><a href="/docs/server/OS/Linux/복사와-동기화/">복사와 동기화</a></li><li><a href="/docs/server/OS/Linux/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/OS/Linux/패키지/">패키지</a></li><li><a href="/docs/server/OS/Linux/프로세스와-포트/">프로세스와 포트</a></li><li><a href="/docs/server/OS/Linux/디스크/">디스크</a></li><li><a href="/docs/server/OS/Linux/서비스/">서비스</a></li><li><a href="/docs/server/OS/Linux/예약-작업/">예약 작업</a></li><li><a href="/docs/server/OS/Linux/네트워크/">네트워크</a></li><li><a href="/docs/server/OS/Linux/방화벽/">방화벽</a></li><li><a href="/docs/server/OS/Linux/SSH/" aria-current="page">SSH</a></li><li><a href="/docs/server/OS/Linux/시간대/">시간대</a></li></ul></nav><article><h1 class="page-title">SSH</h1><details class="sidebar-m"><summary>목록 · Linux</summary><ul><li><a href="/docs/server/OS/Linux/">개요</a></li><li><a href="/docs/server/OS/Linux/셸/">셸</a></li><li><a href="/docs/server/OS/Linux/파일-찾기/">파일 찾기</a></li><li><a href="/docs/server/OS/Linux/복사와-동기화/">복사와 동기화</a></li><li><a href="/docs/server/OS/Linux/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/OS/Linux/패키지/">패키지</a></li><li><a href="/docs/server/OS/Linux/프로세스와-포트/">프로세스와 포트</a></li><li><a href="/docs/server/OS/Linux/디스크/">디스크</a></li><li><a href="/docs/server/OS/Linux/서비스/">서비스</a></li><li><a href="/docs/server/OS/Linux/예약-작업/">예약 작업</a></li><li><a href="/docs/server/OS/Linux/네트워크/">네트워크</a></li><li><a href="/docs/server/OS/Linux/방화벽/">방화벽</a></li><li><a href="/docs/server/OS/Linux/SSH/" aria-current="page">SSH</a></li><li><a href="/docs/server/OS/Linux/시간대/">시간대</a></li></ul></details><div class="content"><p>SSH 는 다른 컴퓨터의 셸에 암호화된 연결로 들어가는 방법이다. 서버에는 OpenSSH 서버(<code>sshd</code>) 가 돌고, 내 컴퓨터의 <code>ssh</code> 로 들어간다. 비밀번호 대신 키로 들어가고, 자주 가는 서버는 <code>~/.ssh/config</code> 에 이름을 붙이며, 서버 쪽에서는 root 로그인과 비밀번호 로그인을 막는 것이 기본이다. 아래 예제는 맥(OpenSSH 9.9) 에서 colima 의 Ubuntu 24.04 가상 머신(OpenSSH 9.6) 에 <code>deploy</code> 사용자로 들어가며 돌렸다.</p>
+<h2 id="키-만들기">키 만들기</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh">ssh-keygen <span class="token parameter variable">-t</span> ed25519 <span class="token parameter variable">-C</span> <span class="token string">"geon@mac"</span>     <span class="token comment"># ~/.ssh/id_ed25519 · id_ed25519.pub 을 만든다</span></code></pre>
+<ul>
+<li><code>id_ed25519</code> 는 비밀 키(권한 <code>600</code>), <code>id_ed25519.pub</code> 은 공개 키다. 서버에는 공개 키만 올린다</li>
+<li>비밀 키에 암호(passphrase) 를 걸고, 맥에서는 <code>ssh-add --apple-use-keychain ~/.ssh/id_ed25519</code> 로 키체인에 넣어 매번 묻지 않게 한다</li>
+<li><code>ed25519</code> 가 지금 기본이다. 아주 옛 서버만 <code>rsa</code>(<code>-t rsa -b 4096</code>) 를 쓴다</li>
+</ul>
+<h2 id="서버에-공개-키-올리기">서버에 공개 키 올리기</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh">ssh-copy-id deploy@server         <span class="token comment"># 비밀번호로 한 번 들어가 authorized_keys 에 더한다</span></code></pre>
+<p>비밀번호 로그인이 막힌 서버는 다른 계정 · 콘솔로 들어가 직접 넣는다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> <span class="token parameter variable">-u</span> deploy <span class="token function">mkdir</span> <span class="token parameter variable">-p</span> /home/deploy/.ssh
+<span class="token builtin class-name">echo</span> <span class="token string">"ssh-ed25519 AAAA… geon@mac"</span> <span class="token operator">|</span> <span class="token function">sudo</span> <span class="token parameter variable">-u</span> deploy <span class="token function">tee</span> <span class="token parameter variable">-a</span> /home/deploy/.ssh/authorized_keys
+<span class="token function">sudo</span> <span class="token function">chmod</span> <span class="token number">700</span> /home/deploy/.ssh
+<span class="token function">sudo</span> <span class="token function">chmod</span> <span class="token number">600</span> /home/deploy/.ssh/authorized_keys</code></pre>
+<ul>
+<li>권한이 느슨하면 sshd 가 키를 쓰지 않는다. <code>authorized_keys</code> 를 <code>666</code> 으로 두자 로그인이 <code>Permission denied (publickey).</code> 로 막히고, 서버 로그에 <code>Authentication refused: bad ownership or modes for file /home/deploy/.ssh/authorized_keys</code> 가 남았다</li>
+<li>서버 로그는 <code>sudo journalctl -u ssh</code> 로 본다. 클라이언트에서는 <code>ssh -v</code> 로 어떤 키를 시도했는지 본다</li>
+</ul>
+<h2 id="sshconfig">~/.ssh/config</h2>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">Host vm
+  HostName 127.0.0.1
+  Port 49428
+  User deploy
+  IdentityFile ~/.ssh/id_ed25519</code></pre>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">ssh</span> vm <span class="token string">'whoami; hostname'</span>
+<span class="token comment"># deploy</span>
+<span class="token comment"># colima</span>
+<span class="token function">scp</span> file.txt vm:/tmp/        <span class="token comment"># scp · rsync 도 이 이름을 쓴다</span></code></pre>
+<ul>
+<li><code>Host *</code> 아래에 <code>ServerAliveInterval 60</code> 을 두면 오래 가만히 있어도 연결이 끊기지 않는다</li>
+<li>처음 들어가는 서버는 지문(fingerprint) 을 묻고 <code>~/.ssh/known_hosts</code> 에 남긴다. 서버를 다시 깔아 지문이 바뀌면 <code>ssh-keygen -R 호스트</code> 로 옛 것을 지운다</li>
+</ul>
+<h2 id="서버-설정-sshd">서버 설정 (sshd)</h2>
+<p>Ubuntu 24.04 의 <code>/etc/ssh/sshd_config</code> 는 맨 위에서 <code>Include /etc/ssh/sshd_config.d/*.conf</code> 를 읽는다. 바꿀 것은 이 폴더에 파일로 둔다.</p>
+<p><code>/etc/ssh/sshd_config.d/50-local.conf</code></p>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">PermitRootLogin no
+PasswordAuthentication no</code></pre>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> sshd <span class="token parameter variable">-t</span>                          <span class="token comment"># 검사 — 문제가 없으면 아무것도 찍지 않는다</span>
+<span class="token function">sudo</span> systemctl reload <span class="token function">ssh</span>
+<span class="token function">sudo</span> sshd <span class="token parameter variable">-T</span> <span class="token operator">|</span> <span class="token function">grep</span> <span class="token parameter variable">-E</span> <span class="token string">'^(permitrootlogin|passwordauthentication|pubkeyauthentication) '</span>
+<span class="token comment"># permitrootlogin without-password</span>
+<span class="token comment"># pubkeyauthentication yes</span>
+<span class="token comment"># passwordauthentication no</span></code></pre>
+<ul>
+<li><code>sshd -T</code> 는 모든 파일을 합친 최종 값을 보인다. 위 출력은 colima 가상 머신의 기본값이다 (<code>without-password</code> 는 <code>prohibit-password</code> 의 옛 이름 — root 는 키로만)</li>
+<li>틀린 값을 넣으면 <code>sshd -t</code> 가 <code>/etc/ssh/sshd_config.d/99-test.conf line 1: unsupported option "maybe".</code> 처럼 알려 준다. 검사 없이 재시작하면 sshd 가 뜨지 않아 원격으로 다시 들어갈 수 없다</li>
+<li>설정을 바꿀 때는 지금 연결을 닫지 말고 새 창으로 들어가 본다. 막혔으면 열려 있는 창에서 되돌린다</li>
+<li>비밀번호 로그인을 막은 서버에 비밀번호로 들어가려 하면 <code>Permission denied (publickey).</code> 로 끝난다</li>
+</ul>
+<h2 id="터널-포트-넘기기">터널 (포트 넘기기)</h2>
+<p>서버 안에서만 열린 포트(DB · 관리 화면) 를 내 컴퓨터로 끌어온다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">ssh</span> <span class="token parameter variable">-f</span> <span class="token parameter variable">-N</span> <span class="token parameter variable">-L</span> <span class="token number">9100</span>:127.0.0.1:9000 vm     <span class="token comment"># 내 9100 → 서버의 127.0.0.1:9000</span>
+<span class="token function">curl</span> <span class="token parameter variable">-s</span> localhost:9100 <span class="token operator">|</span> <span class="token function">head</span> <span class="token parameter variable">-1</span>        <span class="token comment"># &lt;!DOCTYPE HTML&gt;</span></code></pre>
+<ul>
+<li><code>-N</code> 은 명령 없이 연결만, <code>-f</code> 는 뒤로 보낸다. 끝낼 때는 그 <code>ssh</code> 프로세스를 끝낸다</li>
+<li>거꾸로 내 컴퓨터의 포트를 서버에 여는 것은 <code>-R</code> 이다</li>
+<li>다른 서버를 거쳐 들어가려면 <code>ssh -J 거칠서버 목적서버</code> 다 (config 에서는 <code>ProxyJump</code>)</li>
+</ul>
+<h2 id="예전에는">예전에는</h2>
+<ul>
+<li>옛 글은 설치 뒤 <code>PermitRootLogin yes</code> 로 root 비밀번호 로그인을 열었다. 인터넷에 열린 서버는 몇 분 안에 비밀번호 대입 공격을 받으므로, 일반 사용자 + 키 + <code>sudo</code> 로 들어간다</li>
+<li>설정을 고친 뒤 <code>service ssh restart</code> 로 다시 띄웠다. 지금은 <code>sshd -t</code> 로 검사하고 <code>systemctl reload ssh</code> 한다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://www.openssh.com/manual.html">OpenSSH manual pages</a> — ssh · sshd · ssh_config · sshd_config</li>
+<li><a href="https://documentation.ubuntu.com/server/how-to/security/openssh-server/">Ubuntu Server — OpenSSH server</a> — Ubuntu 문서</li>
+<li><a href="https://wiki.archlinux.org/title/OpenSSH">SSH — ArchWiki</a> — 설정 · 키 · 터널을 한데 모은 글</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/OS/">OS</a></li><li><a href="/docs/server/OS/Linux/">Linux</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Linux/" rel="tag">Linux</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-08T10:25:59.000Z">2026-11-08</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>서비스 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">Linux</span><span class="up"> / <a href="/docs/server/OS/" title="한 단계 위로">OS</a></span></p><ul><li><a href="/docs/server/OS/Linux/">개요</a></li><li><a href="/docs/server/OS/Linux/셸/">셸</a></li><li><a href="/docs/server/OS/Linux/파일-찾기/">파일 찾기</a></li><li><a href="/docs/server/OS/Linux/복사와-동기화/">복사와 동기화</a></li><li><a href="/docs/server/OS/Linux/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/OS/Linux/패키지/">패키지</a></li><li><a href="/docs/server/OS/Linux/프로세스와-포트/">프로세스와 포트</a></li><li><a href="/docs/server/OS/Linux/디스크/">디스크</a></li><li><a href="/docs/server/OS/Linux/서비스/" aria-current="page">서비스</a></li><li><a href="/docs/server/OS/Linux/예약-작업/">예약 작업</a></li><li><a href="/docs/server/OS/Linux/네트워크/">네트워크</a></li><li><a href="/docs/server/OS/Linux/방화벽/">방화벽</a></li><li><a href="/docs/server/OS/Linux/SSH/">SSH</a></li><li><a href="/docs/server/OS/Linux/시간대/">시간대</a></li></ul></nav><article><h1 class="page-title">서비스</h1><details class="sidebar-m"><summary>목록 · Linux</summary><ul><li><a href="/docs/server/OS/Linux/">개요</a></li><li><a href="/docs/server/OS/Linux/셸/">셸</a></li><li><a href="/docs/server/OS/Linux/파일-찾기/">파일 찾기</a></li><li><a href="/docs/server/OS/Linux/복사와-동기화/">복사와 동기화</a></li><li><a href="/docs/server/OS/Linux/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/OS/Linux/패키지/">패키지</a></li><li><a href="/docs/server/OS/Linux/프로세스와-포트/">프로세스와 포트</a></li><li><a href="/docs/server/OS/Linux/디스크/">디스크</a></li><li><a href="/docs/server/OS/Linux/서비스/" aria-current="page">서비스</a></li><li><a href="/docs/server/OS/Linux/예약-작업/">예약 작업</a></li><li><a href="/docs/server/OS/Linux/네트워크/">네트워크</a></li><li><a href="/docs/server/OS/Linux/방화벽/">방화벽</a></li><li><a href="/docs/server/OS/Linux/SSH/">SSH</a></li><li><a href="/docs/server/OS/Linux/시간대/">시간대</a></li></ul></details><div class="content"><p>서버 프로그램은 systemd 의 서비스로 돌린다. systemd 는 부팅 때 서비스를 띄우고, 죽으면 다시 띄우고, 출력을 로그(journal) 에 모은다. 서비스마다 유닛 파일 하나에 무엇을 누구 권한으로 어떻게 돌릴지 적고, <code>systemctl</code> 로 켜고 끄며, <code>journalctl</code> 로 로그를 본다. 아래 예제는 colima 의 Ubuntu 24.04 가상 머신(systemd 255) 에서 파이썬 웹 서버를 <code>hello</code> 서비스로 만들어 돌렸다.</p>
+<h2 id="다루기">다루기</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> systemctl start nginx          <span class="token comment"># 켠다</span>
+<span class="token function">sudo</span> systemctl stop nginx           <span class="token comment"># 끈다</span>
+<span class="token function">sudo</span> systemctl restart nginx        <span class="token comment"># 껐다 켠다</span>
+<span class="token function">sudo</span> systemctl reload nginx         <span class="token comment"># 끄지 않고 설정만 다시 읽는다 (되는 서비스만)</span>
+<span class="token function">sudo</span> systemctl <span class="token builtin class-name">enable</span> <span class="token parameter variable">--now</span> nginx   <span class="token comment"># 부팅 때 켜지게 하고 지금도 켠다</span>
+<span class="token function">sudo</span> systemctl disable <span class="token parameter variable">--now</span> nginx  <span class="token comment"># 부팅 때 켜지지 않게 하고 지금 끈다</span>
+systemctl status nginx
+systemctl is-active nginx           <span class="token comment"># active · inactive · failed</span>
+systemctl <span class="token parameter variable">--failed</span>                  <span class="token comment"># 실패한 유닛 목록</span>
+systemctl list-units <span class="token parameter variable">--type</span><span class="token operator">=</span>service <span class="token parameter variable">--state</span><span class="token operator">=</span>running</code></pre>
+<ul>
+<li><code>enable</code> 은 부팅 때 켤지만 정하고 지금 켜지는 않는다. <code>--now</code> 를 붙여야 지금도 켜진다</li>
+<li>설정을 고친 웹 서버는 <code>reload</code> 로 접속을 끊지 않고 적용한다. 먼저 설정 검사(<code>nginx -t</code>) 를 한다</li>
+</ul>
+<h2 id="서비스-만들기">서비스 만들기</h2>
+<p><code>/etc/systemd/system/hello.service</code></p>
+<pre class="language-ini" data-language="ini"><code class="language-ini"><span class="token section"><span class="token punctuation">[</span><span class="token section-name selector">Unit</span><span class="token punctuation">]</span></span>
+<span class="token key attr-name">Description</span><span class="token punctuation">=</span><span class="token value attr-value">Hello web server</span>
+<span class="token key attr-name">After</span><span class="token punctuation">=</span><span class="token value attr-value">network.target</span>
+
+<span class="token section"><span class="token punctuation">[</span><span class="token section-name selector">Service</span><span class="token punctuation">]</span></span>
+<span class="token key attr-name">User</span><span class="token punctuation">=</span><span class="token value attr-value">hello</span>
+<span class="token key attr-name">WorkingDirectory</span><span class="token punctuation">=</span><span class="token value attr-value">/opt/hello</span>
+<span class="token key attr-name">ExecStart</span><span class="token punctuation">=</span><span class="token value attr-value">/usr/bin/python3 -m http.server 8000</span>
+<span class="token key attr-name">Restart</span><span class="token punctuation">=</span><span class="token value attr-value">on-failure</span>
+<span class="token key attr-name">Environment</span><span class="token punctuation">=</span><span class="token value attr-value">PYTHONUNBUFFERED=1</span>
+
+<span class="token section"><span class="token punctuation">[</span><span class="token section-name selector">Install</span><span class="token punctuation">]</span></span>
+<span class="token key attr-name">WantedBy</span><span class="token punctuation">=</span><span class="token value attr-value">multi-user.target</span></code></pre>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> <span class="token function">useradd</span> <span class="token parameter variable">-r</span> <span class="token parameter variable">-s</span> /usr/sbin/nologin hello      <span class="token comment"># 로그인할 수 없는 서비스용 사용자</span>
+<span class="token function">sudo</span> systemctl daemon-reload                     <span class="token comment"># 유닛 파일을 새로 읽는다</span>
+<span class="token function">sudo</span> systemctl <span class="token builtin class-name">enable</span> <span class="token parameter variable">--now</span> hello
+<span class="token comment"># Created symlink /etc/systemd/system/multi-user.target.wants/hello.service → /etc/systemd/system/hello.service.</span>
+systemctl status hello</code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">● hello.service - Hello web server
+     Loaded: loaded (/etc/systemd/system/hello.service; enabled; preset: enabled)
+     Active: active (running) since Sun 2026-11-08 18:51:58 KST; 1s ago
+   Main PID: 22675 (python3)
+      Tasks: 1 (limit: 4632)
+     Memory: 9.2M (peak: 9.4M)
+        CPU: 41ms
+     CGroup: /system.slice/hello.service
+             └─22675 /usr/bin/python3 -m http.server 8000
+
+Nov 08 18:51:58 colima systemd[1]: Started hello.service - Hello web server.
+Nov 08 18:51:58 colima python3[22675]: Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...</code></pre>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>After=network.target</code></td>
+<td>네트워크가 올라온 뒤에 띄운다</td>
+</tr>
+<tr>
+<td><code>User=</code></td>
+<td>이 사용자로 돌린다. 빼면 root 다</td>
+</tr>
+<tr>
+<td><code>ExecStart=</code></td>
+<td>돌릴 명령. 전체 경로로 쓰고, 앞에서(foreground) 도는 명령이어야 한다</td>
+</tr>
+<tr>
+<td><code>Restart=on-failure</code></td>
+<td>0 이 아닌 코드 · 신호로 죽으면 다시 띄운다 (<code>always</code> 는 정상 종료도)</td>
+</tr>
+<tr>
+<td><code>Environment=</code> · <code>EnvironmentFile=</code></td>
+<td>환경 변수 · 그 파일 (<code>/etc/hello.env</code>)</td>
+</tr>
+<tr>
+<td><code>WantedBy=multi-user.target</code></td>
+<td><code>enable</code> 하면 일반 부팅 때 켜진다</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>프로그램을 <code>kill -9</code> 로 죽이면 <code>Restart=on-failure</code> 가 곧바로 다시 띄운다. 로그에 <code>Scheduled restart job, restart counter is at 1.</code> 이 남고 PID 가 바뀐다</li>
+<li>파이썬은 출력을 모아 두었다 내보내서 로그가 늦게 보인다. <code>PYTHONUNBUFFERED=1</code> 로 바로 쓰게 한다</li>
+<li>패키지가 깐 유닛(<code>/usr/lib/systemd/system/</code>) 은 고치지 않는다. 바꿀 것만 덧붙이는 파일(drop-in) 을 <code>sudo systemctl edit nginx</code> 로 만든다</li>
+</ul>
+<h2 id="설정-덧붙이기-drop-in">설정 덧붙이기 (drop-in)</h2>
+<p><code>/etc/systemd/system/hello.service.d/override.conf</code></p>
+<pre class="language-ini" data-language="ini"><code class="language-ini"><span class="token section"><span class="token punctuation">[</span><span class="token section-name selector">Service</span><span class="token punctuation">]</span></span>
+<span class="token key attr-name">ExecStart</span><span class="token punctuation">=</span>
+<span class="token key attr-name">ExecStart</span><span class="token punctuation">=</span><span class="token value attr-value">/usr/bin/python3 -m http.server 8001</span></code></pre>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> systemctl daemon-reload <span class="token operator">&amp;&amp;</span> <span class="token function">sudo</span> systemctl restart hello
+systemctl <span class="token function">cat</span> hello          <span class="token comment"># 원래 파일과 덧붙인 파일을 함께 보인다</span></code></pre>
+<ul>
+<li><code>ExecStart=</code> 는 빈 값으로 한 번 지우고 다시 적는다. 지우지 않으면 명령이 둘이 되어 <code>Service has more than one ExecStart= setting, which is only allowed for Type=oneshot services. Refusing.</code> 으로 뜨지 않는다</li>
+<li><code>systemctl edit 이름</code> 은 이 폴더 · 파일을 만들고 저장하면 <code>daemon-reload</code> 까지 한다</li>
+</ul>
+<h2 id="로그-보기">로그 보기</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh">journalctl <span class="token parameter variable">-u</span> hello <span class="token parameter variable">-n</span> <span class="token number">5</span>            <span class="token comment"># 마지막 다섯 줄</span>
+journalctl <span class="token parameter variable">-u</span> hello <span class="token parameter variable">-f</span>              <span class="token comment"># 따라 보기</span>
+journalctl <span class="token parameter variable">-u</span> hello <span class="token parameter variable">--since</span> <span class="token string">"10 min ago"</span>
+journalctl <span class="token parameter variable">-p</span> err <span class="token parameter variable">-b</span>                <span class="token comment"># 이번 부팅의 오류만</span>
+journalctl --disk-usage             <span class="token comment"># Archived and active journals take up 8.0M in the file system.</span></code></pre>
+<ul>
+<li>남의 서비스 로그는 <code>sudo</code> 나 <code>adm</code> · <code>systemd-journal</code> 그룹이 있어야 보인다</li>
+<li>오래된 로그는 <code>sudo journalctl --vacuum-size=200M</code> 으로 줄인다</li>
+</ul>
+<h2 id="뜨지-않을-때">뜨지 않을 때</h2>
+<p>유닛 파일의 명령 경로를 틀리게 고치고 돌리면 이렇게 된다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> systemctl restart hello
+<span class="token comment"># Warning: The unit file, source configuration file or drop-ins of hello.service changed on disk. Run 'systemctl daemon-reload' to reload units.</span></code></pre>
+<p><code>daemon-reload</code> 를 하지 않으면 고치기 전 내용으로 돈다. 다시 읽고 띄우면 실패한다.</p>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">× hello.service - Hello web server
+     Loaded: loaded (/etc/systemd/system/hello.service; enabled; preset: enabled)
+     Active: failed (Result: exit-code) since Sun 2026-11-08 18:52:10 KST; 372ms ago
+    Process: 22749 ExecStart=/usr/bin/python9 -m http.server 8000 (code=exited, status=203/EXEC)</code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">hello.service: Start request repeated too quickly.
+hello.service: Failed with result 'exit-code'.
+Failed to start hello.service - Hello web server.</code></pre>
+<ul>
+<li><code>status=203/EXEC</code> 는 명령을 실행하지 못했다는 뜻이다. 경로 · 실행 권한을 본다</li>
+<li>짧은 시간에 여러 번 죽으면 systemd 가 다시 띄우기를 멈춘다(<code>Start request repeated too quickly</code>). 고친 뒤 <code>sudo systemctl reset-failed hello</code> 하고 다시 띄운다</li>
+<li><code>systemctl status</code> 아래의 로그 몇 줄로 모자라면 <code>journalctl -u 이름 -n 50</code> 으로 더 본다</li>
+</ul>
+<h2 id="예전에는">예전에는</h2>
+<ul>
+<li><code>service ssh restart</code> · <code>/etc/init.d/nginx restart</code> 처럼 SysV init 스크립트를 썼다. 지금도 <code>service</code> 명령은 systemctl 로 넘겨 주지만, 새로 쓸 때는 <code>systemctl</code> 이다</li>
+<li>부팅 때 띄울 명령을 <code>/etc/rc.local</code> 에 적었다. 지금은 유닛 파일을 만들어 <code>enable</code> 한다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://man7.org/linux/man-pages/man5/systemd.service.5.html">systemd.service(5)</a> · <a href="https://man7.org/linux/man-pages/man1/systemctl.1.html">systemctl(1)</a> · <a href="https://man7.org/linux/man-pages/man1/journalctl.1.html">journalctl(1)</a> — man7.org</li>
+<li><a href="https://wiki.archlinux.org/title/Systemd">systemd — ArchWiki</a> — 유닛 쓰기 · 다루기를 한데 모은 글</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/OS/">OS</a></li><li><a href="/docs/server/OS/Linux/">Linux</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Linux/" rel="tag">Linux</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-08T10:25:59.000Z">2026-11-08</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

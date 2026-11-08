@@ -1,0 +1,153 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>리버스 프록시 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">Apache2</span><span class="up"> / <a href="/docs/server/HTTP/" title="한 단계 위로">HTTP</a></span></p><ul><li><a href="/docs/server/HTTP/Apache2/">개요</a></li><li><a href="/docs/server/HTTP/Apache2/설정과-모듈/">설정과 모듈</a></li><li><a href="/docs/server/HTTP/Apache2/가상-호스트/">가상 호스트</a></li><li><a href="/docs/server/HTTP/Apache2/리버스-프록시/" aria-current="page">리버스 프록시</a></li></ul></nav><article><h1 class="page-title">리버스 프록시</h1><details class="sidebar-m"><summary>목록 · Apache2</summary><ul><li><a href="/docs/server/HTTP/Apache2/">개요</a></li><li><a href="/docs/server/HTTP/Apache2/설정과-모듈/">설정과 모듈</a></li><li><a href="/docs/server/HTTP/Apache2/가상-호스트/">가상 호스트</a></li><li><a href="/docs/server/HTTP/Apache2/리버스-프록시/" aria-current="page">리버스 프록시</a></li></ul></details><div class="content"><p>Apache 도 <code>mod_proxy</code> 로 요청을 안쪽 앱 서버에 넘기는 리버스 프록시가 된다. 이미 Apache 로 사이트를 돌리는 서버에 GitLab · Jenkins · 사내 앱을 같은 도메인의 경로나 다른 도메인으로 붙일 때 쓴다. <code>ProxyPass</code> 가 요청을 넘기고, <code>ProxyPassReverse</code> 가 앱의 응답 헤더에 든 안쪽 주소를 바깥 주소로 고친다. 아래 예제는 Ubuntu 24.04 의 Apache 2.4.58 뒤에 받은 경로와 헤더를 그대로 돌려주는 파이썬 서버(3000 · 3001) 를 두고 돌렸다.</p>
+<h2 id="모듈-켜기">모듈 켜기</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> a2enmod proxy proxy_http headers       <span class="token comment"># WebSocket 은 proxy_wstunnel, 부하 분산은 proxy_balancer lbmethod_byrequests</span>
+<span class="token function">sudo</span> systemctl restart apache2</code></pre>
+<ul>
+<li><code>proxy_http</code> 를 빼고 <code>ProxyPass</code> 를 쓰면 500 이고, 로그에 <code>AH01144: No protocol handler was valid for the URL /b/ (scheme 'http'). If you are using a DSO version of mod_proxy, make sure the proxy submodules are included in the configuration using LoadModule.</code> 가 남는다</li>
+</ul>
+<h2 id="proxypass-의-경로">ProxyPass 의 경로</h2>
+<pre class="language-apache" data-language="apache"><code class="language-apache">&lt;VirtualHost *:80&gt;
+    ServerName p.test
+    ProxyPass /a/ http://127.0.0.1:3000/a/
+    ProxyPass /b/ http://127.0.0.1:3000/
+    ProxyPass /c  http://127.0.0.1:3000/
+&lt;/VirtualHost&gt;</code></pre>
+<table>
+<thead>
+<tr>
+<th>요청</th>
+<th>앱이 받은 경로</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/a/users?x=1</code></td>
+<td><code>/a/users?x=1</code></td>
+</tr>
+<tr>
+<td><code>/b/users?x=1</code></td>
+<td><code>/users?x=1</code></td>
+</tr>
+<tr>
+<td><code>/c/users</code></td>
+<td><code>/users</code></td>
+</tr>
+<tr>
+<td><code>/cusers</code></td>
+<td>404 — 넘기지 않음</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>앞의 경로(<code>/b/</code>) 를 뒤의 주소(<code>http://…/</code>) 로 바꿔 넘긴다. Nginx 와 달리 언제나 바꾸므로, 경로를 그대로 넘기려면 뒤에도 같은 경로를 적는다(<code>/a/</code> → <code>…/a/</code>)</li>
+<li>앞뒤의 끝 <code>/</code> 는 맞춰 적는다. 이 버전에서는 <code>/c</code> 와 <code>…/</code> 로 어긋나도 <code>/c/users</code> 가 <code>/users</code> 로 갔고 <code>/cusers</code> 는 넘기지 않았지만, 문서는 둘을 맞추라고 한다</li>
+<li>여러 줄이면 위에서부터 처음 맞는 것을 쓴다. 긴 경로를 위에 적는다</li>
+</ul>
+<h2 id="host-와-리다이렉트">Host 와 리다이렉트</h2>
+<pre class="language-apache" data-language="apache"><code class="language-apache">&lt;VirtualHost *:80&gt;
+    ServerName h.test
+    ProxyPreserveHost On
+    RequestHeader set X-Forwarded-Proto "http"
+    ProxyPass        / http://127.0.0.1:3000/
+    ProxyPassReverse / http://127.0.0.1:3000/
+&lt;/VirtualHost&gt;</code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">p.test /b/users → {"Host": "127.0.0.1:3000", "X-Forwarded-For": "127.0.0.1", …}
+h.test /users   → {"Host": "h.test", "X-Forwarded-For": "127.0.0.1", "X-Forwarded-Proto": "http", …}</code></pre>
+<ul>
+<li><code>X-Forwarded-For</code> 는 Apache 가 저절로 붙인다. <code>Host</code> 는 <code>ProxyPreserveHost On</code> 이어야 바깥 이름이 간다</li>
+<li><code>X-Forwarded-Proto</code> 는 붙이지 않는다. HTTPS 사이트(<code>*:443</code>) 에서는 <code>RequestHeader set X-Forwarded-Proto "https"</code> 로 넣어야 앱이 <code>http://</code> 로 리다이렉트하지 않는다</li>
+<li>앱이 <code>Location: http://127.0.0.1:3002/login</code> 으로 리다이렉트할 때, <code>ProxyPassReverse</code> 가 없으면 브라우저가 그 안쪽 주소로 가서 실패한다</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>설정</th>
+<th>받은 <code>Location</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ProxyPass</code> 만</td>
+<td><code>http://127.0.0.1:3002/login</code></td>
+</tr>
+<tr>
+<td><code>ProxyPassReverse</code> 도</td>
+<td><code>http://r2.test/login</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="websocket">WebSocket</h2>
+<pre class="language-apache" data-language="apache"><code class="language-apache">ProxyPass /ws/ ws://127.0.0.1:3000/</code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">/ws/chat → {"path": "/chat", "Upgrade": "websocket", "Connection": "Upgrade", …}</code></pre>
+<ul>
+<li><code>proxy_wstunnel</code> 모듈을 켜고 <code>ws://</code> 로 적는다. Apache 2.4.47 부터는 <code>ProxyPass /ws/ http://127.0.0.1:3000/ upgrade=websocket</code> 으로도 된다</li>
+</ul>
+<h2 id="부하-분산">부하 분산</h2>
+<pre class="language-apache" data-language="apache"><code class="language-apache">ProxyPass /lb/ balancer://app/
+&lt;Proxy balancer://app&gt;
+    BalancerMember http://127.0.0.1:3000
+    BalancerMember http://127.0.0.1:3001
+&lt;/Proxy&gt;</code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">/lb/ → app1
+/lb/ → app2
+/lb/ → app1
+/lb/ → app2</code></pre>
+<h2 id="앱이-죽었거나-늦을-때">앱이 죽었거나 늦을 때</h2>
+<table>
+<thead>
+<tr>
+<th>경우</th>
+<th>응답</th>
+<th>오류 로그</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>앱이 꺼져 있다</td>
+<td>503</td>
+<td><code>AH00957: http: attempt to connect to 127.0.0.1:3999 (127.0.0.1:3999) failed</code> · <code>AH01114: HTTP: failed to make connection to backend: 127.0.0.1</code></td>
+</tr>
+<tr>
+<td>앱이 늦다 (<code>ProxyTimeout 2</code>, 5 초 걸림)</td>
+<td>502 (2.0 초)</td>
+<td><code>(70007)The timeout specified has expired: … AH01102: error reading status line from remote server 127.0.0.1:3000</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Nginx 는 앱이 꺼지면 502, 늦으면 504 인데 Apache 는 503 · 502 다. 상태 코드보다 로그 문구로 원인을 가린다</li>
+<li>시간 제한은 <code>ProxyTimeout</code>(사이트 전체) 로 준다. <code>ProxyPass /slow/ http://127.0.0.1:3000/slow/ timeout=2</code> 처럼 줄마다 주는 값은, 같은 앱 주소로 가는 다른 <code>ProxyPass</code>(<code>/b/ http://127.0.0.1:3000/</code>) 가 먼저 있으면 그 설정을 함께 써서 무시되었다 — 5 초 뒤 200</li>
+<li>앱이 꺼진 뒤에는 그 앱을 잠시 빼 두므로(기본 60 초), 앱을 다시 켜도 한동안 503 이 날 수 있다. <code>ProxyPass … retry=0</code> 이면 바로 다시 시도한다</li>
+</ul>
+<h2 id="예전에는">예전에는</h2>
+<ul>
+<li>옛 글은 <code>ProxyRequests</code> 를 「포워드 프록시면 On, 리버스면 Off」, <code>ProxyPreserveHost</code> 를 「포워드면 Off, 리버스면 On」 으로 적었다. <code>ProxyRequests</code> 는 맞고(리버스 프록시에서 On 이면 남의 요청을 대신 보내 주는 열린 프록시가 된다), <code>ProxyPreserveHost</code> 는 포워드 · 리버스와 상관없이 앱이 바깥 이름을 받아야 하면 On 이다</li>
+<li><code>LoadModule proxy_module …</code> 줄을 손으로 적었다. Ubuntu 에서는 <code>a2enmod proxy_http</code> 로 된다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://httpd.apache.org/docs/2.4/mod/mod_proxy.html">mod_proxy</a> · <a href="https://httpd.apache.org/docs/2.4/howto/reverse_proxy.html">Reverse Proxy Guide</a> — Apache 문서</li>
+<li><a href="https://httpd.apache.org/docs/2.4/mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a> — WebSocket</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/HTTP/">HTTP</a></li><li><a href="/docs/server/HTTP/Apache2/">Apache2</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Apache/" rel="tag">Apache</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-08T10:25:59.000Z">2026-11-08</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>
