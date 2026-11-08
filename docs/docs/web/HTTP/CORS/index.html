@@ -1,0 +1,116 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>CORS | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">웹</span><span class="up"> / <a href="/docs/" title="한 단계 위로">정리</a></span></p><ul><li><a href="/docs/web/">개요</a></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/web/HTML/">HTML</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/HTML/문서-구조/">문서 구조</a></li><li><a href="/docs/web/HTML/시맨틱과-접근성/">시맨틱과 접근성</a></li><li><a href="/docs/web/HTML/폼/">폼</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/web/CSS/">CSS</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/CSS/선택자/">선택자</a></li><li><a href="/docs/web/CSS/박스-모델/">박스 모델</a></li><li><a href="/docs/web/CSS/Flexbox/">Flexbox</a></li><li><a href="/docs/web/CSS/Grid/">Grid</a></li><li><a href="/docs/web/CSS/반응형/">반응형</a></li><li><a href="/docs/web/CSS/변수와-꾸미기/">변수와 꾸미기</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/web/DOM/">DOM</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/DOM/찾기와-고치기/">찾기와 고치기</a></li><li><a href="/docs/web/DOM/이벤트/">이벤트</a></li><li><a href="/docs/web/DOM/폼-다루기/">폼 다루기</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/web/SVG/">SVG</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/SVG/시작하기/">시작하기</a></li><li><a href="/docs/web/SVG/도형과-경로/">도형과 경로</a></li><li><a href="/docs/web/SVG/텍스트/">텍스트</a></li><li><a href="/docs/web/SVG/재사용과-변환/">재사용과 변환</a></li><li><a href="/docs/web/SVG/스타일과-필터/">스타일과 필터</a></li><li><a href="/docs/web/SVG/애니메이션/">애니메이션</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/web/Canvas/">Canvas</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/Canvas/그리기/">그리기</a></li><li><a href="/docs/web/Canvas/이미지와-픽셀/">이미지와 픽셀</a></li><li><a href="/docs/web/Canvas/애니메이션/">애니메이션</a></li></ul></details></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/web/HTTP/">HTTP</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/HTTP/요청과-응답/">요청과 응답</a></li><li><a href="/docs/web/HTTP/상태-코드/">상태 코드</a></li><li><a href="/docs/web/HTTP/헤더와-캐시/">헤더와 캐시</a></li><li><a href="/docs/web/HTTP/CORS/" aria-current="page">CORS</a></li><li><a href="/docs/web/HTTP/쿠키와-세션/">쿠키와 세션</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/web/웹-API/">웹 API</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/웹-API/저장소/">저장소</a></li><li><a href="/docs/web/웹-API/백그라운드-작업/">백그라운드 작업</a></li><li><a href="/docs/web/웹-API/브라우저-기능/">브라우저 기능</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/web/도구/">도구</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/도구/개발자-도구/">개발자 도구</a></li><li><a href="/docs/web/도구/헤드리스-브라우저/">헤드리스 브라우저</a></li></ul></details></li></ul></nav><article><h1 class="page-title">CORS</h1><details class="sidebar-m"><summary>목록 · 웹</summary><ul><li><a href="/docs/web/">개요</a></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/web/HTML/">HTML</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/HTML/문서-구조/">문서 구조</a></li><li><a href="/docs/web/HTML/시맨틱과-접근성/">시맨틱과 접근성</a></li><li><a href="/docs/web/HTML/폼/">폼</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/web/CSS/">CSS</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/CSS/선택자/">선택자</a></li><li><a href="/docs/web/CSS/박스-모델/">박스 모델</a></li><li><a href="/docs/web/CSS/Flexbox/">Flexbox</a></li><li><a href="/docs/web/CSS/Grid/">Grid</a></li><li><a href="/docs/web/CSS/반응형/">반응형</a></li><li><a href="/docs/web/CSS/변수와-꾸미기/">변수와 꾸미기</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/web/DOM/">DOM</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/DOM/찾기와-고치기/">찾기와 고치기</a></li><li><a href="/docs/web/DOM/이벤트/">이벤트</a></li><li><a href="/docs/web/DOM/폼-다루기/">폼 다루기</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/web/SVG/">SVG</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/SVG/시작하기/">시작하기</a></li><li><a href="/docs/web/SVG/도형과-경로/">도형과 경로</a></li><li><a href="/docs/web/SVG/텍스트/">텍스트</a></li><li><a href="/docs/web/SVG/재사용과-변환/">재사용과 변환</a></li><li><a href="/docs/web/SVG/스타일과-필터/">스타일과 필터</a></li><li><a href="/docs/web/SVG/애니메이션/">애니메이션</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/web/Canvas/">Canvas</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/Canvas/그리기/">그리기</a></li><li><a href="/docs/web/Canvas/이미지와-픽셀/">이미지와 픽셀</a></li><li><a href="/docs/web/Canvas/애니메이션/">애니메이션</a></li></ul></details></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/web/HTTP/">HTTP</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/HTTP/요청과-응답/">요청과 응답</a></li><li><a href="/docs/web/HTTP/상태-코드/">상태 코드</a></li><li><a href="/docs/web/HTTP/헤더와-캐시/">헤더와 캐시</a></li><li><a href="/docs/web/HTTP/CORS/" aria-current="page">CORS</a></li><li><a href="/docs/web/HTTP/쿠키와-세션/">쿠키와 세션</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/web/웹-API/">웹 API</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/웹-API/저장소/">저장소</a></li><li><a href="/docs/web/웹-API/백그라운드-작업/">백그라운드 작업</a></li><li><a href="/docs/web/웹-API/브라우저-기능/">브라우저 기능</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/web/도구/">도구</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/도구/개발자-도구/">개발자 도구</a></li><li><a href="/docs/web/도구/헤드리스-브라우저/">헤드리스 브라우저</a></li></ul></details></li></ul></details><div class="content"><p>CORS(Cross-Origin Resource Sharing) 는 다른 출처의 서버가 "이 출처의 스크립트는 내 응답을 읽어도 된다" 고 허락하는 방법이다. 브라우저는 기본으로 다른 출처에 보낸 <code>fetch</code> 의 응답을 스크립트가 읽지 못하게 막는다(동일 출처 정책). 서버가 응답에 <code>Access-Control-Allow-Origin</code> 헤더를 붙여야 읽힌다. 아래 예는 <code>http://127.0.0.1:8802</code> 의 쪽에서 <code>http://127.0.0.1:8801</code> 의 API 를 부른 것이다 — 포트가 달라 다른 출처다.</p>
+<h2 id="막힐-때">막힐 때</h2>
+<pre class="language-js" data-language="js"><code class="language-js"><span class="token comment">// http://localhost:8802 에서 — 서버가 허락한 출처는 http://127.0.0.1:8802 뿐이다</span>
+<span class="token keyword">await</span> <span class="token function">fetch</span><span class="token punctuation">(</span><span class="token string">"http://127.0.0.1:8801/api/todos"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// TypeError: Failed to fetch</span></code></pre>
+<pre class="language-text" data-language="text"><code class="language-text">Access to fetch at 'http://127.0.0.1:8801/api/todos' from origin 'http://localhost:8802' has been blocked by CORS policy:
+No 'Access-Control-Allow-Origin' header is present on the requested resource.</code></pre>
+<ul>
+<li>서버 기록에는 <code>GET /api/todos Origin=http://localhost:8802</code> 가 남는다. 요청은 가고 처리도 됐지만, 브라우저가 응답을 스크립트에 넘기지 않은 것이다</li>
+<li>스크립트에는 <code>TypeError: Failed to fetch</code> 만 온다. 까닭은 콘솔에만 나온다</li>
+<li><code>localhost</code> 와 <code>127.0.0.1</code> 도 다른 출처다</li>
+<li><code>curl</code> · 서버끼리의 요청에는 CORS 가 없다. 브라우저가 사용자를 지키려고 하는 검사다</li>
+</ul>
+<h2 id="허락하기">허락하기</h2>
+<pre class="language-http" data-language="http"><code class="language-http"><span class="token response-status"><span class="token http-version property">HTTP/1.1</span> <span class="token status-code number">200</span> <span class="token reason-phrase string">OK</span></span>
+<span class="token header"><span class="token header-name keyword">Access-Control-Allow-Origin</span><span class="token punctuation">:</span> <span class="token header-value">http://127.0.0.1:8802      ← 이 출처는 읽어도 된다</span></span>
+<span class="token header"><span class="token header-name keyword">Vary</span><span class="token punctuation">:</span> <span class="token header-value">Origin                                             ← 출처마다 응답이 다르다 — 캐시가 섞이지 않게</span></span></code></pre>
+<pre class="language-js" data-language="js"><code class="language-js"><span class="token comment">// Node 서버 — 허락할 출처 목록에 있으면 그 출처를 돌려준다</span>
+<span class="token keyword">const</span> <span class="token constant">ALLOW</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Set</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">"http://127.0.0.1:8802"</span><span class="token punctuation">,</span> <span class="token string">"https://app.example.com"</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token constant">ALLOW</span><span class="token punctuation">.</span><span class="token function">has</span><span class="token punctuation">(</span>req<span class="token punctuation">.</span>headers<span class="token punctuation">.</span>origin<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  res<span class="token punctuation">.</span><span class="token function">setHeader</span><span class="token punctuation">(</span><span class="token string">"Access-Control-Allow-Origin"</span><span class="token punctuation">,</span> req<span class="token punctuation">.</span>headers<span class="token punctuation">.</span>origin<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  res<span class="token punctuation">.</span><span class="token function">setHeader</span><span class="token punctuation">(</span><span class="token string">"Vary"</span><span class="token punctuation">,</span> <span class="token string">"Origin"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<ul>
+<li>아무나 읽어도 되는 공개 API 는 <code>Access-Control-Allow-Origin: *</code> 다. 단 쿠키를 함께 보내는 요청에는 <code>*</code> 가 통하지 않는다</li>
+<li>허락할 출처는 목록으로 견준다. 요청의 <code>Origin</code> 을 그대로 돌려주면 모든 사이트에 허락한 것과 같다</li>
+</ul>
+<h2 id="사전-요청">사전 요청</h2>
+<p><code>GET</code> · <code>POST</code>(폼 형식) 같은 단순한 요청이 아니면, 브라우저가 본 요청 전에 <code>OPTIONS</code> 로 먼저 묻는다.</p>
+<pre class="language-js" data-language="js"><code class="language-js"><span class="token keyword">await</span> <span class="token function">fetch</span><span class="token punctuation">(</span><span class="token string">"http://127.0.0.1:8801/api/todos/1"</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">method</span><span class="token operator">:</span> <span class="token string">"PUT"</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">headers</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token string-property property">"Content-Type"</span><span class="token operator">:</span> <span class="token string">"application/json"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>     <span class="token comment">// JSON · PUT · 내 헤더 — 사전 요청이 간다</span>
+  <span class="token literal-property property">body</span><span class="token operator">:</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token literal-property property">done</span><span class="token operator">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<pre class="language-text" data-language="text"><code class="language-text">서버 기록:
+OPTIONS /api/todos/1 Origin=http://127.0.0.1:8802     ← 사전 요청
+PUT /api/todos/1 Origin=http://127.0.0.1:8802         ← 허락을 받은 뒤 본 요청</code></pre>
+<pre class="language-console" data-language="console"><code class="language-console">$ curl -i -X OPTIONS -H "Origin: http://127.0.0.1:8802" \
+       -H "Access-Control-Request-Method: PUT" -H "Access-Control-Request-Headers: content-type" \
+       http://127.0.0.1:8801/api/todos/1
+HTTP/1.1 204 No Content
+Access-Control-Allow-Origin: http://127.0.0.1:8802
+Access-Control-Allow-Methods: GET, POST, PUT, DELETE
+Access-Control-Allow-Headers: Content-Type
+Access-Control-Max-Age: 600                              ← 10 분 동안 다시 묻지 않는다</code></pre>
+<table>
+<thead>
+<tr>
+<th>사전 요청이 가는 때</th>
+<th>예</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>메서드가 GET · HEAD · POST 가 아니다</td>
+<td><code>PUT</code> · <code>DELETE</code> · <code>PATCH</code></td>
+</tr>
+<tr>
+<td><code>Content-Type</code> 이 폼 · 글자가 아니다</td>
+<td><code>application/json</code></td>
+</tr>
+<tr>
+<td>내 헤더를 붙였다</td>
+<td><code>Authorization</code> · <code>X-Request-Id</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>OPTIONS</code> 에 <code>404</code> · <code>401</code> 을 주면 본 요청이 가지 않는다. 인증 검사보다 앞에서 <code>OPTIONS</code> 를 받아 준다</li>
+</ul>
+<h2 id="쿠키와-함께">쿠키와 함께</h2>
+<pre class="language-js" data-language="js"><code class="language-js"><span class="token keyword">await</span> <span class="token function">fetch</span><span class="token punctuation">(</span><span class="token string">"http://127.0.0.1:8801/me"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>                              <span class="token comment">// 401 — 쿠키가 가지 않는다</span>
+<span class="token keyword">await</span> <span class="token function">fetch</span><span class="token punctuation">(</span><span class="token string">"http://127.0.0.1:8801/login"</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> <span class="token literal-property property">method</span><span class="token operator">:</span> <span class="token string">"POST"</span><span class="token punctuation">,</span> <span class="token literal-property property">credentials</span><span class="token operator">:</span> <span class="token string">"include"</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">await</span> <span class="token function">fetch</span><span class="token punctuation">(</span><span class="token string">"http://127.0.0.1:8801/me"</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> <span class="token literal-property property">credentials</span><span class="token operator">:</span> <span class="token string">"include"</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// 200 {"user":"geon"}</span></code></pre>
+<ul>
+<li>다른 출처로는 <code>credentials: "include"</code> 를 줘야 쿠키를 보내고 받는다</li>
+<li>서버는 <code>Access-Control-Allow-Credentials: true</code> 와 <code>*</code> 가 아닌 출처를 함께 보내야 한다</li>
+</ul>
+<h2 id="피하는-길">피하는 길</h2>
+<ul>
+<li>개발 중에는 개발 서버의 프록시(Vite 의 <code>server.proxy</code>) 로 API 를 같은 출처처럼 부른다</li>
+<li>운영에서는 Nginx 가 <code>/api</code> 를 백엔드로 넘겨 같은 출처로 맞추면 CORS 가 필요 없다</li>
+<li><code>mode: "no-cors"</code> 는 막힘을 푸는 것이 아니다. 요청은 가지만 응답은 비어 있다(<code>type: "opaque"</code>, <code>status: 0</code>)</li>
+</ul>
+<h2 id="예전에는">예전에는</h2>
+<ul>
+<li>다른 출처의 데이터를 <code>&lt;script src="…?callback=f"&gt;</code> 로 받는 JSONP 를 썼다. GET 만 되고 그 서버의 스크립트를 그대로 실행해 위험했다</li>
+<li>IE 8 · 9 는 <code>XDomainRequest</code> 라는 따로 된 API 를 썼다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS">Cross-Origin Resource Sharing (CORS)</a> · <a href="https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy">Same-origin policy</a> — MDN</li>
+<li><a href="https://fetch.spec.whatwg.org/#http-cors-protocol">Fetch Standard: CORS protocol</a> — 표준 문서</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">웹</a></li><li><a href="/docs/web/HTTP/">HTTP</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/web/" rel="tag">web</a><a class="chip" href="/tags/HTTP/" rel="tag">HTTP</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-08T04:39:41.000Z">2026-11-08</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

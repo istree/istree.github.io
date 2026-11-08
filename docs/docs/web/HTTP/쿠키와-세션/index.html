@@ -1,0 +1,151 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>쿠키와 세션 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">웹</span><span class="up"> / <a href="/docs/" title="한 단계 위로">정리</a></span></p><ul><li><a href="/docs/web/">개요</a></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/web/HTML/">HTML</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/HTML/문서-구조/">문서 구조</a></li><li><a href="/docs/web/HTML/시맨틱과-접근성/">시맨틱과 접근성</a></li><li><a href="/docs/web/HTML/폼/">폼</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/web/CSS/">CSS</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/CSS/선택자/">선택자</a></li><li><a href="/docs/web/CSS/박스-모델/">박스 모델</a></li><li><a href="/docs/web/CSS/Flexbox/">Flexbox</a></li><li><a href="/docs/web/CSS/Grid/">Grid</a></li><li><a href="/docs/web/CSS/반응형/">반응형</a></li><li><a href="/docs/web/CSS/변수와-꾸미기/">변수와 꾸미기</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/web/DOM/">DOM</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/DOM/찾기와-고치기/">찾기와 고치기</a></li><li><a href="/docs/web/DOM/이벤트/">이벤트</a></li><li><a href="/docs/web/DOM/폼-다루기/">폼 다루기</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/web/SVG/">SVG</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/SVG/시작하기/">시작하기</a></li><li><a href="/docs/web/SVG/도형과-경로/">도형과 경로</a></li><li><a href="/docs/web/SVG/텍스트/">텍스트</a></li><li><a href="/docs/web/SVG/재사용과-변환/">재사용과 변환</a></li><li><a href="/docs/web/SVG/스타일과-필터/">스타일과 필터</a></li><li><a href="/docs/web/SVG/애니메이션/">애니메이션</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/web/Canvas/">Canvas</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/Canvas/그리기/">그리기</a></li><li><a href="/docs/web/Canvas/이미지와-픽셀/">이미지와 픽셀</a></li><li><a href="/docs/web/Canvas/애니메이션/">애니메이션</a></li></ul></details></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/web/HTTP/">HTTP</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/HTTP/요청과-응답/">요청과 응답</a></li><li><a href="/docs/web/HTTP/상태-코드/">상태 코드</a></li><li><a href="/docs/web/HTTP/헤더와-캐시/">헤더와 캐시</a></li><li><a href="/docs/web/HTTP/CORS/">CORS</a></li><li><a href="/docs/web/HTTP/쿠키와-세션/" aria-current="page">쿠키와 세션</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/web/웹-API/">웹 API</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/웹-API/저장소/">저장소</a></li><li><a href="/docs/web/웹-API/백그라운드-작업/">백그라운드 작업</a></li><li><a href="/docs/web/웹-API/브라우저-기능/">브라우저 기능</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/web/도구/">도구</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/도구/개발자-도구/">개발자 도구</a></li><li><a href="/docs/web/도구/헤드리스-브라우저/">헤드리스 브라우저</a></li></ul></details></li></ul></nav><article><h1 class="page-title">쿠키와 세션</h1><details class="sidebar-m"><summary>목록 · 웹</summary><ul><li><a href="/docs/web/">개요</a></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/web/HTML/">HTML</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/HTML/문서-구조/">문서 구조</a></li><li><a href="/docs/web/HTML/시맨틱과-접근성/">시맨틱과 접근성</a></li><li><a href="/docs/web/HTML/폼/">폼</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/web/CSS/">CSS</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/CSS/선택자/">선택자</a></li><li><a href="/docs/web/CSS/박스-모델/">박스 모델</a></li><li><a href="/docs/web/CSS/Flexbox/">Flexbox</a></li><li><a href="/docs/web/CSS/Grid/">Grid</a></li><li><a href="/docs/web/CSS/반응형/">반응형</a></li><li><a href="/docs/web/CSS/변수와-꾸미기/">변수와 꾸미기</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/web/DOM/">DOM</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/DOM/찾기와-고치기/">찾기와 고치기</a></li><li><a href="/docs/web/DOM/이벤트/">이벤트</a></li><li><a href="/docs/web/DOM/폼-다루기/">폼 다루기</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/web/SVG/">SVG</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/SVG/시작하기/">시작하기</a></li><li><a href="/docs/web/SVG/도형과-경로/">도형과 경로</a></li><li><a href="/docs/web/SVG/텍스트/">텍스트</a></li><li><a href="/docs/web/SVG/재사용과-변환/">재사용과 변환</a></li><li><a href="/docs/web/SVG/스타일과-필터/">스타일과 필터</a></li><li><a href="/docs/web/SVG/애니메이션/">애니메이션</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/web/Canvas/">Canvas</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/Canvas/그리기/">그리기</a></li><li><a href="/docs/web/Canvas/이미지와-픽셀/">이미지와 픽셀</a></li><li><a href="/docs/web/Canvas/애니메이션/">애니메이션</a></li></ul></details></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/web/HTTP/">HTTP</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/HTTP/요청과-응답/">요청과 응답</a></li><li><a href="/docs/web/HTTP/상태-코드/">상태 코드</a></li><li><a href="/docs/web/HTTP/헤더와-캐시/">헤더와 캐시</a></li><li><a href="/docs/web/HTTP/CORS/">CORS</a></li><li><a href="/docs/web/HTTP/쿠키와-세션/" aria-current="page">쿠키와 세션</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/web/웹-API/">웹 API</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/웹-API/저장소/">저장소</a></li><li><a href="/docs/web/웹-API/백그라운드-작업/">백그라운드 작업</a></li><li><a href="/docs/web/웹-API/브라우저-기능/">브라우저 기능</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/web/도구/">도구</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/도구/개발자-도구/">개발자 도구</a></li><li><a href="/docs/web/도구/헤드리스-브라우저/">헤드리스 브라우저</a></li></ul></details></li></ul></details><div class="content"><p>HTTP 는 요청마다 따로라서 서버는 앞의 요청을 기억하지 못한다. 서버가 응답에 <code>Set-Cookie</code> 로 작은 값을 주면 브라우저가 저장해 두었다가 같은 사이트로 가는 요청마다 <code>Cookie</code> 헤더로 돌려보내고, 서버는 그 값으로 누구인지 알아본다. 로그인은 보통 세션 id 를 쿠키에 넣고, 사용자 정보는 서버의 세션 저장소에 둔다.</p>
+<h2 id="로그인-흐름">로그인 흐름</h2>
+<pre class="language-mermaid" data-language="mermaid"><code class="language-mermaid"><span class="token keyword">sequenceDiagram</span>
+  <span class="token keyword">participant</span> B as 브라우저
+  <span class="token keyword">participant</span> S as 서버
+  B<span class="token arrow operator">-&gt;&gt;</span>S<span class="token operator">:</span> POST /login <span class="token text string">(아이디 · 비밀번호)</span>
+  <span class="token keyword">Note over</span> S<span class="token operator">:</span> 세션 만들기 — sid → <span class="token text string">{user: "geon"}</span>
+  S<span class="token arrow operator">--&gt;&gt;</span>B<span class="token operator">:</span> 200 · Set-Cookie<span class="token operator">:</span> sid=7e51…<span class="token punctuation">;</span> HttpOnly<span class="token punctuation">;</span> SameSite=Lax<span class="token punctuation">;</span> Ma<span class="token arrow operator">x-</span>Age=3600
+  B<span class="token arrow operator">-&gt;&gt;</span>S<span class="token operator">:</span> GET /me · Cookie<span class="token operator">:</span> sid=7e51…
+  S<span class="token arrow operator">--&gt;&gt;</span>B<span class="token operator">:</span> 200 <span class="token text string">{"user":"geon"}</span>
+  B<span class="token arrow operator">-&gt;&gt;</span>S<span class="token operator">:</span> POST /logout · Cookie<span class="token operator">:</span> sid=7e51…
+  <span class="token keyword">Note over</span> S<span class="token operator">:</span> 세션 지우기
+  S<span class="token arrow operator">--&gt;&gt;</span>B<span class="token operator">:</span> 204 · Set-Cookie<span class="token operator">:</span> sid=<span class="token punctuation">;</span> Ma<span class="token arrow operator">x-</span>Age=0</code></pre>
+<pre class="language-console" data-language="console"><code class="language-console">$ curl -i -c jar -X POST http://127.0.0.1:8801/login          ← -c 는 받은 쿠키를 jar 에 저장
+HTTP/1.1 200 OK
+Set-Cookie: sid=7e51fd45cdfd624285318c8252ae1814; Path=/; HttpOnly; SameSite=Lax; Max-Age=3600
+
+$ curl -b jar http://127.0.0.1:8801/me                        ← -b 는 jar 의 쿠키를 보낸다
+{"user":"geon"}
+$ curl -i http://127.0.0.1:8801/me
+HTTP/1.1 401 Unauthorized</code></pre>
+<pre class="language-js" data-language="js"><code class="language-js"><span class="token comment">// Node — 세션 id 는 맞힐 수 없게 충분히 길고 무작위로</span>
+<span class="token keyword">const</span> sid <span class="token operator">=</span> crypto<span class="token punctuation">.</span><span class="token function">randomBytes</span><span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token string">"hex"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+sessions<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>sid<span class="token punctuation">,</span> <span class="token punctuation">{</span> <span class="token literal-property property">user</span><span class="token operator">:</span> <span class="token string">"geon"</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+res<span class="token punctuation">.</span><span class="token function">setHeader</span><span class="token punctuation">(</span><span class="token string">"Set-Cookie"</span><span class="token punctuation">,</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">sid=</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>sid<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=3600</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<h2 id="쿠키-속성">쿠키 속성</h2>
+<table>
+<thead>
+<tr>
+<th>속성</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>HttpOnly</code></td>
+<td>스크립트(<code>document.cookie</code>) 가 읽지 못한다 — XSS 로 훔쳐 가지 못하게</td>
+</tr>
+<tr>
+<td><code>Secure</code></td>
+<td>https 로만 보낸다 (<code>localhost</code> 는 예외)</td>
+</tr>
+<tr>
+<td><code>SameSite=Lax</code></td>
+<td>다른 사이트에서 온 요청에는 보내지 않는다 — 링크를 눌러 들어오는 GET 만 보낸다 — Chrome 은 속성이 없으면 이것으로 본다</td>
+</tr>
+<tr>
+<td><code>SameSite=Strict</code></td>
+<td>다른 사이트에서 온 것은 링크라도 보내지 않는다</td>
+</tr>
+<tr>
+<td><code>SameSite=None; Secure</code></td>
+<td>다른 사이트에서도 보낸다 — 다른 사이트에 넣은 위젯 · 결제 창</td>
+</tr>
+<tr>
+<td><code>Max-Age=3600</code> · <code>Expires=…</code></td>
+<td>살아 있는 시간 — 없으면 브라우저를 닫을 때 지워진다</td>
+</tr>
+<tr>
+<td><code>Path=/</code> · <code>Domain=example.com</code></td>
+<td>보낼 경로 · 하위 도메인까지 보낼지</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>로그인 쿠키는 <code>HttpOnly; Secure; SameSite=Lax</code> 를 기본으로 한다</li>
+<li>위 예에서 <code>HttpOnly</code> 쿠키는 <code>document.cookie</code> 가 <code>""</code> 이고, <code>fetch</code> 응답의 <code>res.headers.get("set-cookie")</code> 도 <code>null</code> 이다. 스크립트는 로그인 쿠키를 만질 수 없다</li>
+<li>쿠키는 크기가 4KB 쯤이고 요청마다 따라간다. 화면 설정 같은 큰 값은 <code>localStorage</code> 에 둔다</li>
+<li>지우려면 같은 이름 · <code>Path</code> 로 <code>Max-Age=0</code> 을 보낸다</li>
+</ul>
+<h2 id="사이트와-출처">사이트와 출처</h2>
+<ul>
+<li><code>SameSite</code> 의 "사이트" 는 출처보다 넓다. <code>app.example.com</code> 과 <code>api.example.com</code> 은 출처는 다르지만 같은 사이트라 <code>Lax</code> 쿠키가 간다</li>
+<li>포트도 사이트를 가르지 않는다. 위 예의 <code>127.0.0.1:8802</code> 에서 <code>127.0.0.1:8801</code> 로 간 요청에 쿠키가 실렸다(CORS 의 <code>credentials</code> 는 따로 필요하다)</li>
+<li>다른 사이트의 쿠키(서드파티 쿠키) 는 Safari 가 막고, Firefox 는 사이트마다 따로 담아 추적에 못 쓰게 한다. 광고 추적에 쓰였기 때문이다</li>
+</ul>
+<h2 id="세션--토큰">세션 · 토큰</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>세션 쿠키</th>
+<th>토큰 (JWT)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>담는 것</td>
+<td>무작위 id — 정보는 서버에</td>
+<td>사용자 정보 + 서명</td>
+</tr>
+<tr>
+<td>서버</td>
+<td>세션 저장소(메모리 · Redis · DB) 를 찾는다</td>
+<td>서명만 검사한다 — 저장소가 없다</td>
+</tr>
+<tr>
+<td>로그아웃 · 강제 종료</td>
+<td>세션을 지우면 끝</td>
+<td>만료 전까지 막기 어렵다 — 짧게 주고 다시 받기</td>
+</tr>
+<tr>
+<td>알맞은 곳</td>
+<td>브라우저로 쓰는 웹 서비스</td>
+<td>앱 · 서버끼리 · 여러 서비스가 함께 쓰는 로그인</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>브라우저에서 토큰을 <code>localStorage</code> 에 두면 XSS 한 번에 털린다. 브라우저용이면 <code>HttpOnly</code> 쿠키에 넣는다</li>
+<li>로그인하면 세션 id 를 새로 만든다. 로그인 전 id 를 그대로 쓰면 남이 심어 둔 id 로 로그인될 수 있다(세션 고정)</li>
+</ul>
+<h2 id="csrf">CSRF</h2>
+<p>다른 사이트의 쪽이 내 사이트로 폼을 보내면, 브라우저가 내 쿠키를 붙여 보내 사용자 몰래 일이 처리될 수 있다.</p>
+<ul>
+<li><code>SameSite=Lax</code> 가 대부분 막는다. 다른 사이트에서 보낸 POST 에는 쿠키가 가지 않는다</li>
+<li>바꾸는 일은 GET 으로 하지 않는다. <code>Lax</code> 는 링크로 들어오는 GET 에는 쿠키를 보낸다</li>
+<li>더 막으려면 폼에 숨은 토큰(CSRF 토큰) 을 넣어 서버가 견준다. 프레임워크(Spring Security · Django) 가 해 준다</li>
+</ul>
+<h2 id="예전에는">예전에는</h2>
+<ul>
+<li><code>SameSite</code> 가 없어 모든 요청에 쿠키가 붙었고, CSRF 토큰이 꼭 필요했다. 2020 년 Chrome 이 <code>Lax</code> 를 기본으로 바꿨다</li>
+<li>세션 id 를 주소에 붙였다(<code>;jsessionid=…</code>). 주소가 공유 · 기록되며 새어 나가 지금은 쓰지 않는다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Cookies">Using HTTP cookies</a> · <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Set-Cookie">Set-Cookie</a> — MDN</li>
+<li><a href="https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html">OWASP Session Management Cheat Sheet</a> · <a href="https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html">CSRF Prevention Cheat Sheet</a> — OWASP</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">웹</a></li><li><a href="/docs/web/HTTP/">HTTP</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/web/" rel="tag">web</a><a class="chip" href="/tags/HTTP/" rel="tag">HTTP</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-08T04:39:41.000Z">2026-11-08</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

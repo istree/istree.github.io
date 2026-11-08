@@ -1,0 +1,139 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Flexbox | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">웹</span><span class="up"> / <a href="/docs/" title="한 단계 위로">정리</a></span></p><ul><li><a href="/docs/web/">개요</a></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/web/HTML/">HTML</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/HTML/문서-구조/">문서 구조</a></li><li><a href="/docs/web/HTML/시맨틱과-접근성/">시맨틱과 접근성</a></li><li><a href="/docs/web/HTML/폼/">폼</a></li></ul></details></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/web/CSS/">CSS</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/CSS/선택자/">선택자</a></li><li><a href="/docs/web/CSS/박스-모델/">박스 모델</a></li><li><a href="/docs/web/CSS/Flexbox/" aria-current="page">Flexbox</a></li><li><a href="/docs/web/CSS/Grid/">Grid</a></li><li><a href="/docs/web/CSS/반응형/">반응형</a></li><li><a href="/docs/web/CSS/변수와-꾸미기/">변수와 꾸미기</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/web/DOM/">DOM</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/DOM/찾기와-고치기/">찾기와 고치기</a></li><li><a href="/docs/web/DOM/이벤트/">이벤트</a></li><li><a href="/docs/web/DOM/폼-다루기/">폼 다루기</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/web/SVG/">SVG</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/SVG/시작하기/">시작하기</a></li><li><a href="/docs/web/SVG/도형과-경로/">도형과 경로</a></li><li><a href="/docs/web/SVG/텍스트/">텍스트</a></li><li><a href="/docs/web/SVG/재사용과-변환/">재사용과 변환</a></li><li><a href="/docs/web/SVG/스타일과-필터/">스타일과 필터</a></li><li><a href="/docs/web/SVG/애니메이션/">애니메이션</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/web/Canvas/">Canvas</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/Canvas/그리기/">그리기</a></li><li><a href="/docs/web/Canvas/이미지와-픽셀/">이미지와 픽셀</a></li><li><a href="/docs/web/Canvas/애니메이션/">애니메이션</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/web/HTTP/">HTTP</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/HTTP/요청과-응답/">요청과 응답</a></li><li><a href="/docs/web/HTTP/상태-코드/">상태 코드</a></li><li><a href="/docs/web/HTTP/헤더와-캐시/">헤더와 캐시</a></li><li><a href="/docs/web/HTTP/CORS/">CORS</a></li><li><a href="/docs/web/HTTP/쿠키와-세션/">쿠키와 세션</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/web/웹-API/">웹 API</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/웹-API/저장소/">저장소</a></li><li><a href="/docs/web/웹-API/백그라운드-작업/">백그라운드 작업</a></li><li><a href="/docs/web/웹-API/브라우저-기능/">브라우저 기능</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/web/도구/">도구</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/도구/개발자-도구/">개발자 도구</a></li><li><a href="/docs/web/도구/헤드리스-브라우저/">헤드리스 브라우저</a></li></ul></details></li></ul></nav><article><h1 class="page-title">Flexbox</h1><details class="sidebar-m"><summary>목록 · 웹</summary><ul><li><a href="/docs/web/">개요</a></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/web/HTML/">HTML</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/HTML/문서-구조/">문서 구조</a></li><li><a href="/docs/web/HTML/시맨틱과-접근성/">시맨틱과 접근성</a></li><li><a href="/docs/web/HTML/폼/">폼</a></li></ul></details></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/web/CSS/">CSS</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/CSS/선택자/">선택자</a></li><li><a href="/docs/web/CSS/박스-모델/">박스 모델</a></li><li><a href="/docs/web/CSS/Flexbox/" aria-current="page">Flexbox</a></li><li><a href="/docs/web/CSS/Grid/">Grid</a></li><li><a href="/docs/web/CSS/반응형/">반응형</a></li><li><a href="/docs/web/CSS/변수와-꾸미기/">변수와 꾸미기</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/web/DOM/">DOM</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/DOM/찾기와-고치기/">찾기와 고치기</a></li><li><a href="/docs/web/DOM/이벤트/">이벤트</a></li><li><a href="/docs/web/DOM/폼-다루기/">폼 다루기</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/web/SVG/">SVG</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/SVG/시작하기/">시작하기</a></li><li><a href="/docs/web/SVG/도형과-경로/">도형과 경로</a></li><li><a href="/docs/web/SVG/텍스트/">텍스트</a></li><li><a href="/docs/web/SVG/재사용과-변환/">재사용과 변환</a></li><li><a href="/docs/web/SVG/스타일과-필터/">스타일과 필터</a></li><li><a href="/docs/web/SVG/애니메이션/">애니메이션</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/web/Canvas/">Canvas</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/Canvas/그리기/">그리기</a></li><li><a href="/docs/web/Canvas/이미지와-픽셀/">이미지와 픽셀</a></li><li><a href="/docs/web/Canvas/애니메이션/">애니메이션</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/web/HTTP/">HTTP</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/HTTP/요청과-응답/">요청과 응답</a></li><li><a href="/docs/web/HTTP/상태-코드/">상태 코드</a></li><li><a href="/docs/web/HTTP/헤더와-캐시/">헤더와 캐시</a></li><li><a href="/docs/web/HTTP/CORS/">CORS</a></li><li><a href="/docs/web/HTTP/쿠키와-세션/">쿠키와 세션</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/web/웹-API/">웹 API</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/웹-API/저장소/">저장소</a></li><li><a href="/docs/web/웹-API/백그라운드-작업/">백그라운드 작업</a></li><li><a href="/docs/web/웹-API/브라우저-기능/">브라우저 기능</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/web/도구/">도구</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/도구/개발자-도구/">개발자 도구</a></li><li><a href="/docs/web/도구/헤드리스-브라우저/">헤드리스 브라우저</a></li></ul></details></li></ul></details><div class="content"><p>Flexbox 는 자식을 한 줄(가로 또는 세로) 로 늘어놓는 배치다. 메뉴 · 단추 줄 · 입력 칸과 단추 · 카드 줄처럼 한 방향으로 놓고, 남는 자리를 나누고, 세로 가운데를 맞추는 일에 쓴다. 두 방향(행과 열) 을 함께 맞춰야 하면 Grid 를 쓴다. 아래는 이 글의 예제를 실제 HTML · CSS 로 넣은 것이다. 상자의 오른쪽 아래 모서리를 끌어 폭을 바꾸면 남는 폭이 나뉘고 카드가 감기는 모습이 보인다.</p>
+<div class="flex-demo">
+<style>
+.flex-demo { margin: 1.5em 0; font-size: .9em; }
+.flex-demo .cap { color: var(--muted); margin: 12px 0 4px; font-family: var(--mono); font-size: .9em; }
+.flex-demo .box { display: flex; gap: 8px; padding: 8px; background: var(--code-bg); border-radius: var(--radius); resize: horizontal; overflow: auto; min-width: 180px; max-width: 100%; }
+.flex-demo .box > * { background: #4E79A7; color: #fff; padding: 6px 10px; border-radius: var(--radius); white-space: nowrap; }
+.flex-demo .nav { justify-content: space-between; align-items: center; }
+.flex-demo .nav .tall { padding: 16px 10px; }
+.flex-demo .search .input { flex: 1; background: #59A14F; }
+.flex-demo .toolbar .last { margin-left: auto; background: #E15759; }
+.flex-demo .cards { flex-wrap: wrap; width: 60%; }
+.flex-demo .cards > * { flex: 1 1 100px; }
+</style>
+<div class="cap">justify-content: space-between · align-items: center</div>
+<div class="box nav"><span>로고</span><span class="tall">메뉴</span><span>로그인</span></div>
+<div class="cap">.input { flex: 1 } — 남는 폭 차지</div>
+<div class="box search"><span>아이콘</span><span class="input">입력 칸</span><span>검색</span></div>
+<div class="cap">.last { margin-left: auto } — 오른쪽으로 밀기</div>
+<div class="box toolbar"><span>저장</span><span>취소</span><span class="last">삭제</span></div>
+<div class="cap">flex-wrap: wrap · flex: 1 1 100px — 폭을 줄이면 감긴다</div>
+<div class="box cards"><span>카드 1</span><span>카드 2</span><span>카드 3</span><span>카드 4</span></div>
+</div>
+<h2 id="기본">기본</h2>
+<pre class="language-css" data-language="css"><code class="language-css"><span class="token selector">.row</span> <span class="token punctuation">{</span>
+  <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span>
+  <span class="token property">gap</span><span class="token punctuation">:</span> 8px<span class="token punctuation">;</span>                          <span class="token comment">/* 자식 사이 간격 */</span>
+  <span class="token property">flex-direction</span><span class="token punctuation">:</span> row<span class="token punctuation">;</span>               <span class="token comment">/* 기본 — 가로. column 이면 세로 */</span>
+  <span class="token property">justify-content</span><span class="token punctuation">:</span> space-between<span class="token punctuation">;</span>    <span class="token comment">/* 주축(가로) 으로 나누기 */</span>
+  <span class="token property">align-items</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span>               <span class="token comment">/* 교차축(세로) 맞추기 */</span>
+<span class="token punctuation">}</span></code></pre>
+<table>
+<thead>
+<tr>
+<th>속성</th>
+<th>값</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>justify-content</code></td>
+<td><code>flex-start</code> · <code>center</code> · <code>flex-end</code> · <code>space-between</code> · <code>space-around</code> · <code>space-evenly</code></td>
+</tr>
+<tr>
+<td><code>align-items</code></td>
+<td><code>stretch</code>(기본 — 높이를 맞춰 늘림) · <code>center</code> · <code>flex-start</code> · <code>flex-end</code> · <code>baseline</code></td>
+</tr>
+<tr>
+<td><code>flex-wrap</code></td>
+<td><code>nowrap</code>(기본) · <code>wrap</code> — 넘치면 다음 줄로</td>
+</tr>
+<tr>
+<td><code>gap</code></td>
+<td>자식 사이 간격 (<code>row-gap</code> · <code>column-gap</code>)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>justify-content</code> 는 늘어놓는 방향(주축), <code>align-items</code> 는 그 직각 방향이다. <code>flex-direction: column</code> 이면 둘의 방향이 바뀐다</li>
+</ul>
+<h2 id="자식의-크기">자식의 크기</h2>
+<pre class="language-css" data-language="css"><code class="language-css"><span class="token selector">.search .input</span> <span class="token punctuation">{</span> <span class="token property">flex</span><span class="token punctuation">:</span> 1<span class="token punctuation">;</span> <span class="token punctuation">}</span>          <span class="token comment">/* 남는 폭을 모두 — 아이콘 · 단추는 제 크기 */</span>
+<span class="token selector">.cards &gt; div</span> <span class="token punctuation">{</span> <span class="token property">flex</span><span class="token punctuation">:</span> 1 1 100px<span class="token punctuation">;</span> <span class="token punctuation">}</span>    <span class="token comment">/* 기본 100px, 남으면 늘고 모자라면 준다 */</span>
+<span class="token selector">.sidebar</span> <span class="token punctuation">{</span> <span class="token property">flex</span><span class="token punctuation">:</span> 0 0 240px<span class="token punctuation">;</span> <span class="token punctuation">}</span>        <span class="token comment">/* 240px 고정 */</span>
+<span class="token selector">.toolbar .last</span> <span class="token punctuation">{</span> <span class="token property">margin-left</span><span class="token punctuation">:</span> auto<span class="token punctuation">;</span> <span class="token punctuation">}</span>   <span class="token comment">/* 이것부터 오른쪽 끝으로 밀기 */</span></code></pre>
+<table>
+<thead>
+<tr>
+<th><code>flex</code></th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>flex: 1</code></td>
+<td><code>1 1 0</code> — 남는 자리를 같은 몫으로</td>
+</tr>
+<tr>
+<td><code>flex: 0 0 240px</code></td>
+<td>늘지도 줄지도 않는 240px</td>
+</tr>
+<tr>
+<td><code>flex: 1 1 100px</code></td>
+<td>100px 에서 시작해 늘고 준다 — <code>wrap</code> 과 함께 카드 줄</td>
+</tr>
+<tr>
+<td><code>flex: none</code></td>
+<td>제 크기 그대로</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>세 값은 <code>flex-grow</code>(남는 자리를 얼마나 가져갈지) · <code>flex-shrink</code>(모자랄 때 얼마나 줄지) · <code>flex-basis</code>(시작 크기) 다</li>
+<li>긴 글자가 든 자식이 줄지 않고 넘치면 <code>min-width: 0</code> 을 준다. flex 자식의 최소 폭이 기본으로 내용 폭이라서다</li>
+<li>자식 하나만 다르게 맞추려면 <code>align-self: flex-end</code> · 순서만 바꾸려면 <code>order: -1</code> 이다(화면 읽기 순서는 HTML 순서대로라 조심한다)</li>
+</ul>
+<h2 id="자주-쓰는-꼴">자주 쓰는 꼴</h2>
+<pre class="language-css" data-language="css"><code class="language-css"><span class="token comment">/* 가로 · 세로 가운데 */</span>
+<span class="token selector">.center</span> <span class="token punctuation">{</span> <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">justify-content</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span> <span class="token property">align-items</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span> <span class="token punctuation">}</span>
+
+<span class="token comment">/* 아래에 붙는 꼬리 — 본문이 짧아도 footer 가 화면 아래에 */</span>
+<span class="token selector">body</span> <span class="token punctuation">{</span> <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">flex-direction</span><span class="token punctuation">:</span> column<span class="token punctuation">;</span> <span class="token property">min-height</span><span class="token punctuation">:</span> 100dvh<span class="token punctuation">;</span> <span class="token punctuation">}</span>
+<span class="token selector">main</span> <span class="token punctuation">{</span> <span class="token property">flex</span><span class="token punctuation">:</span> 1<span class="token punctuation">;</span> <span class="token punctuation">}</span>
+
+<span class="token comment">/* 단추 줄 — 오른쪽 정렬 */</span>
+<span class="token selector">.actions</span> <span class="token punctuation">{</span> <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span> <span class="token property">justify-content</span><span class="token punctuation">:</span> flex-end<span class="token punctuation">;</span> <span class="token property">gap</span><span class="token punctuation">:</span> 8px<span class="token punctuation">;</span> <span class="token punctuation">}</span></code></pre>
+<h2 id="예전에는">예전에는</h2>
+<ul>
+<li>가로로 늘어놓으려고 <code>float: left</code> · <code>display: inline-block</code> 을 썼다. 세로 가운데 맞추기는 <code>table-cell</code> · <code>line-height</code> 꼼수였다</li>
+<li>간격을 자식의 <code>margin</code> 으로 주고 마지막 것만 빼는 <code>:last-child { margin-right: 0 }</code> 을 붙였다. 지금은 <code>gap</code> 이다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/">A Complete Guide to Flexbox</a> — CSS-Tricks</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Flexbox">Flexbox</a> — MDN</li>
+<li><a href="https://flexboxfroggy.com/">Flexbox Froggy</a> — 게임으로 익히기</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">웹</a></li><li><a href="/docs/web/CSS/">CSS</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/web/" rel="tag">web</a><a class="chip" href="/tags/CSS/" rel="tag">CSS</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-08T05:54:09.000Z">2026-11-08</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

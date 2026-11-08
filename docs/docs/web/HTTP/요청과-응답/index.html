@@ -1,0 +1,233 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>요청과 응답 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">웹</span><span class="up"> / <a href="/docs/" title="한 단계 위로">정리</a></span></p><ul><li><a href="/docs/web/">개요</a></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/web/HTML/">HTML</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/HTML/문서-구조/">문서 구조</a></li><li><a href="/docs/web/HTML/시맨틱과-접근성/">시맨틱과 접근성</a></li><li><a href="/docs/web/HTML/폼/">폼</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/web/CSS/">CSS</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/CSS/선택자/">선택자</a></li><li><a href="/docs/web/CSS/박스-모델/">박스 모델</a></li><li><a href="/docs/web/CSS/Flexbox/">Flexbox</a></li><li><a href="/docs/web/CSS/Grid/">Grid</a></li><li><a href="/docs/web/CSS/반응형/">반응형</a></li><li><a href="/docs/web/CSS/변수와-꾸미기/">변수와 꾸미기</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/web/DOM/">DOM</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/DOM/찾기와-고치기/">찾기와 고치기</a></li><li><a href="/docs/web/DOM/이벤트/">이벤트</a></li><li><a href="/docs/web/DOM/폼-다루기/">폼 다루기</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/web/SVG/">SVG</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/SVG/시작하기/">시작하기</a></li><li><a href="/docs/web/SVG/도형과-경로/">도형과 경로</a></li><li><a href="/docs/web/SVG/텍스트/">텍스트</a></li><li><a href="/docs/web/SVG/재사용과-변환/">재사용과 변환</a></li><li><a href="/docs/web/SVG/스타일과-필터/">스타일과 필터</a></li><li><a href="/docs/web/SVG/애니메이션/">애니메이션</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/web/Canvas/">Canvas</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/Canvas/그리기/">그리기</a></li><li><a href="/docs/web/Canvas/이미지와-픽셀/">이미지와 픽셀</a></li><li><a href="/docs/web/Canvas/애니메이션/">애니메이션</a></li></ul></details></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/web/HTTP/">HTTP</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/HTTP/요청과-응답/" aria-current="page">요청과 응답</a></li><li><a href="/docs/web/HTTP/상태-코드/">상태 코드</a></li><li><a href="/docs/web/HTTP/헤더와-캐시/">헤더와 캐시</a></li><li><a href="/docs/web/HTTP/CORS/">CORS</a></li><li><a href="/docs/web/HTTP/쿠키와-세션/">쿠키와 세션</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/web/웹-API/">웹 API</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/웹-API/저장소/">저장소</a></li><li><a href="/docs/web/웹-API/백그라운드-작업/">백그라운드 작업</a></li><li><a href="/docs/web/웹-API/브라우저-기능/">브라우저 기능</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/web/도구/">도구</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/도구/개발자-도구/">개발자 도구</a></li><li><a href="/docs/web/도구/헤드리스-브라우저/">헤드리스 브라우저</a></li></ul></details></li></ul></nav><article><h1 class="page-title">요청과 응답</h1><details class="sidebar-m"><summary>목록 · 웹</summary><ul><li><a href="/docs/web/">개요</a></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/web/HTML/">HTML</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/HTML/문서-구조/">문서 구조</a></li><li><a href="/docs/web/HTML/시맨틱과-접근성/">시맨틱과 접근성</a></li><li><a href="/docs/web/HTML/폼/">폼</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/web/CSS/">CSS</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/CSS/선택자/">선택자</a></li><li><a href="/docs/web/CSS/박스-모델/">박스 모델</a></li><li><a href="/docs/web/CSS/Flexbox/">Flexbox</a></li><li><a href="/docs/web/CSS/Grid/">Grid</a></li><li><a href="/docs/web/CSS/반응형/">반응형</a></li><li><a href="/docs/web/CSS/변수와-꾸미기/">변수와 꾸미기</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/web/DOM/">DOM</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/DOM/찾기와-고치기/">찾기와 고치기</a></li><li><a href="/docs/web/DOM/이벤트/">이벤트</a></li><li><a href="/docs/web/DOM/폼-다루기/">폼 다루기</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/web/SVG/">SVG</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/SVG/시작하기/">시작하기</a></li><li><a href="/docs/web/SVG/도형과-경로/">도형과 경로</a></li><li><a href="/docs/web/SVG/텍스트/">텍스트</a></li><li><a href="/docs/web/SVG/재사용과-변환/">재사용과 변환</a></li><li><a href="/docs/web/SVG/스타일과-필터/">스타일과 필터</a></li><li><a href="/docs/web/SVG/애니메이션/">애니메이션</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/web/Canvas/">Canvas</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/Canvas/그리기/">그리기</a></li><li><a href="/docs/web/Canvas/이미지와-픽셀/">이미지와 픽셀</a></li><li><a href="/docs/web/Canvas/애니메이션/">애니메이션</a></li></ul></details></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/web/HTTP/">HTTP</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/HTTP/요청과-응답/" aria-current="page">요청과 응답</a></li><li><a href="/docs/web/HTTP/상태-코드/">상태 코드</a></li><li><a href="/docs/web/HTTP/헤더와-캐시/">헤더와 캐시</a></li><li><a href="/docs/web/HTTP/CORS/">CORS</a></li><li><a href="/docs/web/HTTP/쿠키와-세션/">쿠키와 세션</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/web/웹-API/">웹 API</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/웹-API/저장소/">저장소</a></li><li><a href="/docs/web/웹-API/백그라운드-작업/">백그라운드 작업</a></li><li><a href="/docs/web/웹-API/브라우저-기능/">브라우저 기능</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/web/도구/">도구</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/web/도구/개발자-도구/">개발자 도구</a></li><li><a href="/docs/web/도구/헤드리스-브라우저/">헤드리스 브라우저</a></li></ul></details></li></ul></details><div class="content"><p>HTTP 의 한 번 주고받기는 요청 하나와 응답 하나다. 요청은 "메서드 · 경로 · 헤더 · 본문", 응답은 "상태 코드 · 헤더 · 본문" 으로 되어 있고, HTTP/1.1 에서는 이것이 사람이 읽을 수 있는 글자로 오간다. 아래 예는 할 일 API 를 만든 작은 서버에 <code>curl</code> 로 보낸 실제 메시지다.</p>
+<h2 id="메시지">메시지</h2>
+<pre class="language-console" data-language="console"><code class="language-console">$ curl -v http://127.0.0.1:8801/api/todos
+&gt; GET /api/todos HTTP/1.1                        ← 요청 줄: 메서드 · 경로 · 판
+&gt; Host: 127.0.0.1:8801                           ← 요청 헤더
+&gt; User-Agent: curl/8.7.1
+&gt; Accept: */*
+&gt;                                                ← 빈 줄 — 헤더 끝 (GET 은 본문이 없다)
+&lt; HTTP/1.1 200 OK                                ← 상태 줄: 판 · 코드 · 이유
+&lt; Content-Type: application/json; charset=utf-8  ← 응답 헤더
+&lt; ETag: "cIgZsr1sIr46"
+&lt; Cache-Control: no-cache
+&lt; Date: Sun, 08 Nov 2026 04:24:57 GMT
+&lt; Connection: keep-alive
+&lt; Transfer-Encoding: chunked
+&lt;
+[{"id":1,"title":"우유 사기","done":false}]      ← 본문</code></pre>
+<ul>
+<li><code>&gt;</code> 는 보낸 것, <code>&lt;</code> 는 받은 것이다. <code>curl -i</code> 는 응답 헤더만, <code>curl -v</code> 는 둘 다 보인다</li>
+<li>브라우저에서는 개발자 도구의 네트워크 탭에서 같은 것을 본다</li>
+</ul>
+<h2 id="메서드">메서드</h2>
+<table>
+<thead>
+<tr>
+<th>메서드</th>
+<th>뜻</th>
+<th>본문</th>
+<th>여러 번 보내도 같나</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET</code></td>
+<td>가져오기</td>
+<td>없음</td>
+<td>같다</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td>만들기 · 그 밖의 처리</td>
+<td>있음</td>
+<td>아니다 — 두 번 보내면 둘이 생긴다</td>
+</tr>
+<tr>
+<td><code>PUT</code></td>
+<td>통째로 바꾸기 (없으면 만들기)</td>
+<td>있음</td>
+<td>같다</td>
+</tr>
+<tr>
+<td><code>PATCH</code></td>
+<td>일부 바꾸기</td>
+<td>있음</td>
+<td>경우에 따라</td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td>지우기</td>
+<td>보통 없음</td>
+<td>같다</td>
+</tr>
+<tr>
+<td><code>HEAD</code></td>
+<td>헤더만 가져오기</td>
+<td>없음</td>
+<td>같다</td>
+</tr>
+<tr>
+<td><code>OPTIONS</code></td>
+<td>되는 것 묻기 — CORS 사전 요청</td>
+<td>없음</td>
+<td>같다</td>
+</tr>
+</tbody>
+</table>
+<pre class="language-console" data-language="console"><code class="language-console">$ curl -i -b jar -X POST -H 'Content-Type: application/json' -d '{"title":"책 읽기"}' http://127.0.0.1:8801/api/todos
+HTTP/1.1 201 Created
+Content-Type: application/json; charset=utf-8
+Location: /api/todos/2                           ← 새로 만든 것의 주소
+
+{"id":2,"title":"책 읽기","done":false}
+
+$ curl -X PUT -H 'Content-Type: application/json' -d '{"done":true}' http://127.0.0.1:8801/api/todos/1
+{"id":1,"title":"우유 사기","done":true}
+
+$ curl -i -X DELETE http://127.0.0.1:8801/api/todos/2
+HTTP/1.1 204 No Content                          ← 됐고 돌려줄 본문은 없다</code></pre>
+<ul>
+<li><code>GET</code> 으로 무언가를 바꾸지 않는다. 검색 엔진 · 미리 받기(prefetch) 가 링크를 따라가며 GET 을 보낸다</li>
+<li>"여러 번 보내도 같다(멱등)" 는 메서드는 연결이 끊겼을 때 브라우저 · 라이브러리가 다시 보내도 안전하다. <code>POST</code> 를 다시 보낼 때는 <code>Idempotency-Key</code> 헤더 같은 장치를 둔다</li>
+</ul>
+<h2 id="주소">주소</h2>
+<p><code>https://api.example.com:8443/todos/7?done=false&amp;sort=due#memo</code> 는 이렇게 나뉜다.</p>
+<table>
+<thead>
+<tr>
+<th>부분</th>
+<th>값</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>scheme</td>
+<td><code>https</code></td>
+</tr>
+<tr>
+<td>host</td>
+<td><code>api.example.com</code></td>
+</tr>
+<tr>
+<td>port</td>
+<td><code>8443</code> (https 의 기본은 443)</td>
+</tr>
+<tr>
+<td>path</td>
+<td><code>/todos/7</code></td>
+</tr>
+<tr>
+<td>query</td>
+<td><code>done=false&amp;sort=due</code></td>
+</tr>
+<tr>
+<td>fragment</td>
+<td><code>memo</code></td>
+</tr>
+</tbody>
+</table>
+<pre class="language-js" data-language="js"><code class="language-js"><span class="token keyword">const</span> u <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">URL</span><span class="token punctuation">(</span><span class="token string">"https://api.example.com:8443/todos/7?done=false&amp;sort=due#memo"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+u<span class="token punctuation">.</span>origin<span class="token punctuation">;</span>                      <span class="token comment">// "https://api.example.com:8443"</span>
+u<span class="token punctuation">.</span>searchParams<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">"sort"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment">// "due"</span></code></pre>
+<ul>
+<li><code>#</code> 뒤(fragment) 는 서버에 가지 않는다. 쪽 안의 위치 · 화면 상태에 쓴다</li>
+<li>출처(origin) 는 scheme · host · port 셋이다. 셋 중 하나라도 다르면 다른 출처다 — CORS · 쿠키가 이것으로 갈린다</li>
+<li>쿼리의 한글 · 공백은 <code>%ED%95%9C</code> 처럼 바꿔 보낸다. 스크립트에서는 <code>new URLSearchParams({ q: "한글 검색" })</code> 이 해 준다</li>
+</ul>
+<h2 id="본문의-형식">본문의 형식</h2>
+<table>
+<thead>
+<tr>
+<th><code>Content-Type</code></th>
+<th>본문</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>application/json</code></td>
+<td><code>{"title":"책 읽기"}</code> — API</td>
+</tr>
+<tr>
+<td><code>application/x-www-form-urlencoded</code></td>
+<td><code>title=%EC%B1%85&amp;done=false</code> — HTML 폼 기본</td>
+</tr>
+<tr>
+<td><code>multipart/form-data; boundary=…</code></td>
+<td>칸마다 나눈 덩어리 — 파일 올리기</td>
+</tr>
+<tr>
+<td><code>text/html; charset=utf-8</code></td>
+<td>쪽</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>서버는 <code>Content-Type</code> 을 보고 본문을 읽는다. JSON 을 보내며 이 헤더를 빠뜨리면 서버가 읽지 못한다 — 위 서버는 <code>400 {"error":"JSON 이 아니다"}</code> 로 답한다</li>
+<li>받고 싶은 형식은 <code>Accept: application/json</code> 으로 알린다</li>
+</ul>
+<h2 id="http11--2--3">HTTP/1.1 · 2 · 3</h2>
+<table>
+<thead>
+<tr>
+<th>판</th>
+<th>오가는 꼴</th>
+<th>특징</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HTTP/1.1</td>
+<td>글자</td>
+<td>연결 하나에 한 번에 요청 하나 — 브라우저는 출처마다 연결 6 개를 연다</td>
+</tr>
+<tr>
+<td>HTTP/2</td>
+<td>이진 프레임 (TLS 위)</td>
+<td>연결 하나에 요청 여럿을 섞어 보낸다 · 헤더를 줄인다</td>
+</tr>
+<tr>
+<td>HTTP/3</td>
+<td>이진 프레임 (QUIC · UDP 위)</td>
+<td>패킷 하나가 늦어도 다른 요청이 기다리지 않는다 · 연결이 빠르다</td>
+</tr>
+</tbody>
+</table>
+<pre class="language-console" data-language="console"><code class="language-console">$ curl -sI https://example.com
+HTTP/2 200
+alt-svc: h3=":443"; ma=86400                     ← "HTTP/3 도 된다" 는 안내</code></pre>
+<ul>
+<li>판이 바뀌어도 메서드 · 상태 코드 · 헤더의 뜻은 같다. 코드는 판을 신경 쓰지 않는다</li>
+<li>HTTP/2 부터 헤더 이름은 모두 소문자로 오간다</li>
+</ul>
+<h2 id="예전에는">예전에는</h2>
+<ul>
+<li>HTTP/1.1 에서 요청 수를 줄이려고 그림을 한 장으로 붙이고(스프라이트), JS · CSS 를 하나로 합치고, 도메인을 나눠(sharding) 연결을 늘렸다. HTTP/2 부터는 대부분 필요 없다</li>
+<li><code>X-HTTP-Method-Override</code> 헤더로 PUT · DELETE 를 POST 에 실어 보냈다. 지금은 그대로 보낸다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview">An overview of HTTP</a> · <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods">HTTP request methods</a> — MDN</li>
+<li><a href="https://everything.curl.dev/">Everything curl</a> — curl 안내서</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">웹</a></li><li><a href="/docs/web/HTTP/">HTTP</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/web/" rel="tag">web</a><a class="chip" href="/tags/HTTP/" rel="tag">HTTP</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-08T04:39:41.000Z">2026-11-08</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>
