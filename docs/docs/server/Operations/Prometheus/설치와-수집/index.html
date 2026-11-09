@@ -1,0 +1,114 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>설치와 수집 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">운영</span><span class="up"> / <a href="/docs/server/" title="한 단계 위로">서버</a></span></p><ul><li><a href="/docs/server/Operations/">개요</a></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/Operations/Java-앱/">Java 앱</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Operations/Java-앱/빌드와-실행/">빌드와 실행</a></li><li><a href="/docs/server/Operations/Java-앱/systemd-서비스/">systemd 서비스</a></li><li><a href="/docs/server/Operations/Java-앱/Nginx-뒤에/">Nginx 뒤에</a></li><li><a href="/docs/server/Operations/Java-앱/Docker로/">Docker로</a></li></ul></details></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/server/Operations/Prometheus/">Prometheus</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Operations/Prometheus/설치와-수집/" aria-current="page">설치와 수집</a></li><li><a href="/docs/server/Operations/Prometheus/PromQL/">PromQL</a></li><li><a href="/docs/server/Operations/Prometheus/앱-지표/">앱 지표</a></li><li><a href="/docs/server/Operations/Prometheus/경보/">경보</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/Operations/Grafana/">Grafana</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Operations/Grafana/설치와-데이터-소스/">설치와 데이터 소스</a></li><li><a href="/docs/server/Operations/Grafana/대시보드/">대시보드</a></li><li><a href="/docs/server/Operations/Grafana/경보/">경보</a></li></ul></details></li></ul></nav><article><h1 class="page-title">설치와 수집</h1><details class="sidebar-m"><summary>목록 · 운영</summary><ul><li><a href="/docs/server/Operations/">개요</a></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/Operations/Java-앱/">Java 앱</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Operations/Java-앱/빌드와-실행/">빌드와 실행</a></li><li><a href="/docs/server/Operations/Java-앱/systemd-서비스/">systemd 서비스</a></li><li><a href="/docs/server/Operations/Java-앱/Nginx-뒤에/">Nginx 뒤에</a></li><li><a href="/docs/server/Operations/Java-앱/Docker로/">Docker로</a></li></ul></details></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/server/Operations/Prometheus/">Prometheus</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Operations/Prometheus/설치와-수집/" aria-current="page">설치와 수집</a></li><li><a href="/docs/server/Operations/Prometheus/PromQL/">PromQL</a></li><li><a href="/docs/server/Operations/Prometheus/앱-지표/">앱 지표</a></li><li><a href="/docs/server/Operations/Prometheus/경보/">경보</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/Operations/Grafana/">Grafana</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Operations/Grafana/설치와-데이터-소스/">설치와 데이터 소스</a></li><li><a href="/docs/server/Operations/Grafana/대시보드/">대시보드</a></li><li><a href="/docs/server/Operations/Grafana/경보/">경보</a></li></ul></details></li></ul></details><div class="content"><p>Prometheus 는 설정 파일 하나(<code>prometheus.yml</code>) 에 어디서 지표를 당겨 올지(<code>scrape_configs</code>) 를 적고 띄운다. 대상마다 <code>job</code> 이름을 붙이고, 그 job 의 주소들(<code>targets</code>) 을 15 초쯤마다 찾아가 <code>/metrics</code> 를 읽는다. 리눅스 서버의 CPU · 메모리 · 디스크는 node_exporter 가, 앱의 지표는 앱이 스스로 내놓는다. 모은 것은 디스크에 보존 기간 동안 두고, 설정을 바꾸면 다시 띄우지 않고 다시 읽힌다. 아래 예제는 Docker 네트워크 하나에 <code>prom/prometheus:v3.13.5</code>(LTS) · <code>prom/node-exporter:v1.12.1</code> · Spring Boot 4.1.2 앱(<code>app</code>) 을 띄워 돌렸다.</p>
+<h2 id="설정">설정</h2>
+<pre class="language-yaml" data-language="yaml"><code class="language-yaml"><span class="token comment"># prometheus.yml</span>
+<span class="token key atrule">global</span><span class="token punctuation">:</span>
+  <span class="token key atrule">scrape_interval</span><span class="token punctuation">:</span> 15s
+
+<span class="token key atrule">scrape_configs</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">job_name</span><span class="token punctuation">:</span> prometheus
+    <span class="token key atrule">static_configs</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">targets</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">"localhost:9090"</span><span class="token punctuation">]</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">job_name</span><span class="token punctuation">:</span> node
+    <span class="token key atrule">static_configs</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">targets</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">"node:9100"</span><span class="token punctuation">]</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">job_name</span><span class="token punctuation">:</span> shop
+    <span class="token key atrule">metrics_path</span><span class="token punctuation">:</span> /actuator/prometheus
+    <span class="token key atrule">static_configs</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">targets</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">"app:8080"</span><span class="token punctuation">]</span></code></pre>
+<ul>
+<li><code>metrics_path</code> 의 기본은 <code>/metrics</code> 다. Spring Boot 앱은 <code>/actuator/prometheus</code> 로 바꾼다</li>
+<li>같은 일을 하는 서버 여럿은 한 job 의 <code>targets</code> 에 함께 적는다. 모은 값에는 <code>job</code> 과 <code>instance</code>(주소) 라벨이 붙는다</li>
+</ul>
+<h2 id="띄우기">띄우기</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">docker</span> network create mon
+<span class="token function">docker</span> run <span class="token parameter variable">-d</span> <span class="token parameter variable">--name</span> <span class="token function">node</span> <span class="token parameter variable">--network</span> mon <span class="token parameter variable">--pid</span> <span class="token function">host</span> <span class="token parameter variable">--uts</span> <span class="token function">host</span> <span class="token parameter variable">-v</span> /:/host:ro,rslave <span class="token punctuation">\</span>
+  prom/node-exporter:v1.12.1 <span class="token parameter variable">--path.rootfs</span><span class="token operator">=</span>/host
+<span class="token function">docker</span> run <span class="token parameter variable">-d</span> <span class="token parameter variable">--name</span> prom <span class="token parameter variable">--network</span> mon <span class="token parameter variable">-p</span> <span class="token number">127.0</span>.0.1:9090:9090 <span class="token punctuation">\</span>
+  <span class="token parameter variable">-v</span> <span class="token environment constant">$PWD</span>/prometheus.yml:/etc/prometheus/prometheus.yml <span class="token punctuation">\</span>
+  <span class="token parameter variable">-v</span> prom-data:/prometheus <span class="token punctuation">\</span>
+  prom/prometheus:v3.13.5 <span class="token punctuation">\</span>
+  <span class="token parameter variable">--config.file</span><span class="token operator">=</span>/etc/prometheus/prometheus.yml <span class="token parameter variable">--storage.tsdb.path</span><span class="token operator">=</span>/prometheus <span class="token punctuation">\</span>
+  <span class="token parameter variable">--storage.tsdb.retention.time</span><span class="token operator">=</span>15d --web.enable-lifecycle</code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">msg="Starting Prometheus Server" mode=server version="(version=3.13.5, …)"
+msg="TSDB retention updated" duration=15d size=0B percentage=0
+msg="Server is ready to receive web requests."</code></pre>
+<ul>
+<li>node_exporter 를 컨테이너로 띄울 때는 바깥 기계를 보도록 <code>/</code> 를 붙이고 <code>--path.rootfs=/host</code>, <code>--pid host</code> 를 준다. <code>--uts host</code> 가 없으면 서버 이름(<code>node_uname_info</code> 의 <code>nodename</code>) 이 컨테이너 id(<code>cfb0cdc79988</code>) 로 나왔고, 주자 <code>colima</code> 였다. 서버에 바로 깔면(<code>prometheus-node-exporter</code> 패키지 · 받은 파일) 이것이 필요 없다</li>
+<li>이미지의 기본 명령은 <code>--config.file=… --storage.tsdb.path=/prometheus</code> 다. 옵션을 더하려고 명령을 바꾸면 이 둘이 빠지므로 다시 적는다. 빠뜨렸더니 자료가 <code>/prometheus/data</code> 에 쌓였다(작업 폴더 <code>/prometheus</code> 아래 기본값 <code>data/</code>)</li>
+<li>보존 기간의 기본은 15 일이다. <code>--storage.tsdb.retention.size=10GB</code> 로 크기 한도도 준다</li>
+<li>화면은 <code>http://localhost:9090</code>. 인증이 없으므로 바깥에 열지 않는다</li>
+<li>Ubuntu 24.04 의 <code>prometheus</code> 패키지는 2.45.3 이다. 3.x 와 화면 · 일부 설정이 다르다</li>
+</ul>
+<h2 id="대상-보기">대상 보기</h2>
+<p>화면의 Status → Targets 나 API 로 본다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">curl</span> <span class="token parameter variable">-s</span> localhost:9090/api/v1/targets</code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">node        http://node:9100/metrics               up
+prometheus  http://localhost:9090/metrics          up
+shop        http://app:8080/actuator/prometheus    up</code></pre>
+<p>대상이 죽거나 주소가 틀리면 <code>down</code> 과 까닭이 나온다.</p>
+<table>
+<thead>
+<tr>
+<th>상황</th>
+<th><code>lastError</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>앱 컨테이너를 멈춤</td>
+<td><code>Get "http://app:8080/actuator/prometheus": dial tcp: lookup app on 127.0.0.11:53: no such host</code></td>
+</tr>
+<tr>
+<td>포트를 틀리게 적음(<code>app:8081</code>)</td>
+<td><code>Get "http://app:8081/metrics": dial tcp 172.19.0.2:8081: connect: connection refused</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>대상마다 <code>up</code> 시계열이 저절로 생긴다. 붙으면 1, 못 붙으면 0 이다. 앱을 멈추자 <code>up{instance="app:8080", job="shop"}</code> 가 0 이었다. "앱이 죽었다" 경보는 이것으로 건다</li>
+<li>한 번 읽는 데 걸린 시간도 남는다(<code>lastScrapeDuration</code> 0.035 초, 시계열 <code>scrape_duration_seconds</code>)</li>
+</ul>
+<h2 id="설정-다시-읽기">설정 다시 읽기</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh">promtool check config /etc/prometheus/prometheus.yml
+<span class="token comment"># SUCCESS: /etc/prometheus/prometheus.yml is valid prometheus config file syntax</span>
+<span class="token function">curl</span> <span class="token parameter variable">-X</span> POST localhost:9090/-/reload      <span class="token comment"># --web.enable-lifecycle 가 있어야 한다</span></code></pre>
+<ul>
+<li>틀린 파일은 <code>promtool</code> 이 줄 번호와 함께 알린다. <code>targets</code> 를 목록이 아닌 곳에 적자 <code>line 4: cannot unmarshal !!map into []*targetgroup.Group</code> 이었다</li>
+<li><code>--web.enable-lifecycle</code> 없이 띄웠다면 <code>kill -HUP</code> 으로 다시 읽힌다</li>
+</ul>
+<h2 id="자리--크기">자리 · 크기</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">curl</span> <span class="token parameter variable">-s</span> localhost:9090/api/v1/query --data-urlencode <span class="token string">'query=prometheus_tsdb_head_series'</span>   <span class="token comment"># 1959</span>
+<span class="token function">curl</span> <span class="token parameter variable">-s</span> localhost:9090/api/v1/query --data-urlencode <span class="token string">'query=count({job="shop"})'</span>           <span class="token comment"># 524</span></code></pre>
+<ul>
+<li>대상 셋에서 시계열이 2 천 개쯤이었고, 그 가운데 앱 하나가 524 개였다. 디스크는 몇 분에 464 KB 였다</li>
+<li>크기는 시계열 수 × 보존 기간에 비례한다. 시계열이 갑자기 늘면 라벨에 바뀌는 값(사용자 id · 주문 번호) 이 들어간 것이다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://prometheus.io/docs/prometheus/latest/getting_started/">Getting started</a> — 처음 띄우기</li>
+<li><a href="https://prometheus.io/docs/prometheus/latest/configuration/configuration/">Configuration</a> — <code>scrape_configs</code> · <code>relabel_configs</code> · 서비스 찾기</li>
+<li><a href="https://prometheus.io/docs/prometheus/latest/storage/">Storage</a> — 보존 기간 · 크기 · 디스크 쓰임</li>
+<li><a href="https://github.com/prometheus/node_exporter">node_exporter</a> — 모으는 것 · 켜고 끄는 collector</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/Operations/">운영</a></li><li><a href="/docs/server/Operations/Prometheus/">Prometheus</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Prometheus/" rel="tag">Prometheus</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-09T12:03:34.000Z">2026-11-09</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

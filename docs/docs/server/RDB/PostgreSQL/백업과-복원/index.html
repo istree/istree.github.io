@@ -1,0 +1,155 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>백업과 복원 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">관계형 DB</span><span class="up"> / <a href="/docs/server/" title="한 단계 위로">서버</a></span></p><ul><li><a href="/docs/server/RDB/">개요</a></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/RDB/MySQL/">MySQL</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/RDB/MySQL/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/RDB/MySQL/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/RDB/MySQL/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/RDB/MariaDB/">MariaDB</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/RDB/MariaDB/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/RDB/MariaDB/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/RDB/MariaDB/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/server/RDB/PostgreSQL/">PostgreSQL</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/RDB/PostgreSQL/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/RDB/PostgreSQL/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/RDB/PostgreSQL/백업과-복원/" aria-current="page">백업과 복원</a></li><li><a href="/docs/server/RDB/PostgreSQL/MySQL과-다른-것/">MySQL과 다른 것</a></li></ul></details></li></ul></nav><article><h1 class="page-title">백업과 복원</h1><details class="sidebar-m"><summary>목록 · 관계형 DB</summary><ul><li><a href="/docs/server/RDB/">개요</a></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/RDB/MySQL/">MySQL</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/RDB/MySQL/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/RDB/MySQL/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/RDB/MySQL/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/RDB/MariaDB/">MariaDB</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/RDB/MariaDB/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/RDB/MariaDB/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/RDB/MariaDB/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/server/RDB/PostgreSQL/">PostgreSQL</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/RDB/PostgreSQL/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/RDB/PostgreSQL/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/RDB/PostgreSQL/백업과-복원/" aria-current="page">백업과 복원</a></li><li><a href="/docs/server/RDB/PostgreSQL/MySQL과-다른-것/">MySQL과 다른 것</a></li></ul></details></li></ul></details><div class="content"><p>PostgreSQL 의 백업은 대개 <code>pg_dump</code> 로 DB 하나를 파일로 떠 두는 것이다. 평문(SQL) 으로 뜨면 <code>psql</code> 로 넣고, 자체 형식(<code>-Fc</code>) 으로 뜨면 <code>pg_restore</code> 로 넣는다. 자체 형식은 압축되고, 표 하나만 골라 넣거나 넣기 전에 지우는 일을 복원할 때 정할 수 있어 서버 백업에는 이쪽을 쓴다. role(사용자) 은 DB 밖에 있어 <code>pg_dump</code> 에 들어가지 않으므로 <code>pg_dumpall --globals-only</code> 로 따로 뜬다. 아래 예제는 PostgreSQL 16.15(Ubuntu 패키지) 에서 뜨고, <code>postgres:18</code>(18.6) 컨테이너에 넣어 봤다.</p>
+<h2 id="뜨기">뜨기</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> <span class="token parameter variable">-u</span> postgres pg_dump shop <span class="token operator">&gt;</span> shop.sql            <span class="token comment"># 평문 — 3013 바이트</span>
+<span class="token function">sudo</span> <span class="token parameter variable">-u</span> postgres pg_dump <span class="token parameter variable">-Fc</span> shop <span class="token operator">&gt;</span> shop.dump       <span class="token comment"># 자체 형식 — 7874 바이트 (작은 DB 라 오히려 크다)</span>
+<span class="token function">sudo</span> <span class="token parameter variable">-u</span> postgres pg_dump <span class="token parameter variable">-Fd</span> <span class="token parameter variable">-j</span> <span class="token number">2</span> <span class="token parameter variable">-f</span> shopdir shop   <span class="token comment"># 폴더 형식 — 표마다 파일, 여럿을 함께 뜬다</span>
+<span class="token function">sudo</span> <span class="token parameter variable">-u</span> postgres pg_dumpall --globals-only <span class="token operator">&gt;</span> globals.sql   <span class="token comment"># role · 테이블스페이스</span></code></pre>
+<p><code>shop.sql</code> 의 중심은 표를 만들고 자료를 넣는 SQL 이다. 자료는 <code>INSERT</code> 가 아니라 <code>COPY</code> 로 들어간다.</p>
+<pre class="language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token keyword">public</span><span class="token punctuation">.</span>orders <span class="token punctuation">(</span>
+    id <span class="token keyword">integer</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+    item <span class="token keyword">text</span><span class="token punctuation">,</span>
+    qty <span class="token keyword">integer</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">ALTER</span> <span class="token keyword">TABLE</span> <span class="token keyword">public</span><span class="token punctuation">.</span>orders OWNER <span class="token keyword">TO</span> app<span class="token punctuation">;</span>
+<span class="token keyword">ALTER</span> <span class="token keyword">TABLE</span> <span class="token keyword">public</span><span class="token punctuation">.</span>orders <span class="token keyword">ALTER</span> <span class="token keyword">COLUMN</span> id <span class="token keyword">ADD</span> GENERATED ALWAYS <span class="token keyword">AS</span> <span class="token keyword">IDENTITY</span> <span class="token punctuation">(</span>
+    SEQUENCE NAME <span class="token keyword">public</span><span class="token punctuation">.</span>orders_id_seq
+    …
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+COPY <span class="token keyword">public</span><span class="token punctuation">.</span>orders <span class="token punctuation">(</span>id<span class="token punctuation">,</span> item<span class="token punctuation">,</span> qty<span class="token punctuation">)</span> <span class="token keyword">FROM</span> stdin<span class="token punctuation">;</span></code></pre>
+<table>
+<thead>
+<tr>
+<th>옵션</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-Fc</code></td>
+<td>자체 형식 (압축, <code>pg_restore</code> 로 넣는다)</td>
+</tr>
+<tr>
+<td><code>-Fd -j N</code></td>
+<td>폴더 형식, N 개를 함께 뜬다. 큰 DB 에 쓴다</td>
+</tr>
+<tr>
+<td><code>-t orders</code> · <code>-T log</code></td>
+<td>그 표만 · 그 표를 빼고</td>
+</tr>
+<tr>
+<td><code>-n app</code></td>
+<td>그 스키마만</td>
+</tr>
+<tr>
+<td><code>--no-owner</code> · <code>--no-acl</code></td>
+<td>주인 · 권한 줄을 넣지 않는다</td>
+</tr>
+<tr>
+<td><code>-s</code> · <code>-a</code></td>
+<td>표 구조만 · 자료만</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>pg_dump</code> 는 한 시점의 모습으로 뜬다. 뜨는 동안에도 서비스가 계속 쓴다</li>
+<li><code>pg_restore -l shop.dump</code> 로 파일 안의 목록(표 · 자료 · 권한) 을 본다</li>
+<li>평문 덤프 앞뒤에 <code>\restrict 열쇠</code> · <code>\unrestrict 열쇠</code> 줄이 있다(16.15 · 18.6 모두). 덤프 안에 숨은 psql 명령이 돌지 못하게 막는 줄로, 2025 년 보안 업데이트에서 생겼다. 그보다 옛 <code>psql</code>(16.9) 로 넣으면 <code>invalid command \restrict</code> 가 나온다</li>
+</ul>
+<h2 id="복원">복원</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh">createdb shop
+pg_restore <span class="token parameter variable">-d</span> shop shop.dump</code></pre>
+<table>
+<thead>
+<tr>
+<th>넣는 곳</th>
+<th>결과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DB 가 없을 때 <code>psql shop &lt; shop.sql</code></td>
+<td><code>FATAL:  database "shop" does not exist</code> — 먼저 <code>createdb</code></td>
+</tr>
+<tr>
+<td>role 이 없는 서버에 평문</td>
+<td><code>ERROR:  role "app" does not exist</code> 가 줄마다 나고 표 주인은 <code>postgres</code> 가 된다 (자료는 들어간다)</td>
+</tr>
+<tr>
+<td>role 이 없는 서버에 <code>pg_restore</code></td>
+<td><code>pg_restore: warning: errors ignored on restore: 8</code> — 같은 까닭</td>
+</tr>
+<tr>
+<td><code>globals.sql</code> 을 먼저 넣은 뒤 <code>pg_restore</code></td>
+<td>오류 없이 표 주인이 <code>app</code> 으로 돌아온다</td>
+</tr>
+<tr>
+<td><code>pg_restore --no-owner --no-acl</code></td>
+<td>오류 없이, 넣은 role(<code>postgres</code>) 이 주인이 된다</td>
+</tr>
+</tbody>
+</table>
+<pre class="language-sh" data-language="sh"><code class="language-sh">pg_restore <span class="token parameter variable">-d</span> shop <span class="token parameter variable">--clean</span> --if-exists shop.dump   <span class="token comment"># 있는 표를 지우고 다시 넣는다</span>
+pg_restore <span class="token parameter variable">-C</span> <span class="token parameter variable">-d</span> postgres shop.dump                <span class="token comment"># DB 를 만들면서 넣는다 (-d 는 붙을 DB)</span>
+pg_restore <span class="token parameter variable">-t</span> orders <span class="token parameter variable">-f</span> - shop.dump                <span class="token comment"># orders 만 SQL 로 꺼내 본다</span></code></pre>
+<ul>
+<li><code>globals.sql</code> 을 새 서버에 넣으면 <code>ERROR:  role "postgres" already exists</code> 한 줄이 나온다. 이미 있는 관리자 role 이라 괜찮다</li>
+<li><code>--clean</code> 은 복원 대상 DB 의 같은 이름 표를 지운다. <code>귤</code> 을 더한 표에 다시 넣자 덤프 때의 두 행으로 돌아갔다. 운영 DB 에 넣기 전에 새 DB 에 먼저 넣어 본다</li>
+<li>큰 DB 는 <code>pg_restore -j 4</code> 로 여럿을 함께 넣는다 (자체 · 폴더 형식만)</li>
+</ul>
+<h2 id="판이-다를-때">판이 다를 때</h2>
+<p>새 판 서버에 옛 판의 덤프를 넣는 것은 된다(16 → 18). 거꾸로는 막힌다.</p>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext"># 18 에서 뜬 평문을 16 에 넣으면
+ERROR:  unrecognized configuration parameter "transaction_timeout"
+# 18 에서 뜬 자체 형식을 16 의 pg_restore 로 넣으면
+pg_restore: error: unsupported version (1.16) in file header</code></pre>
+<ul>
+<li>판을 올릴 때는 새 판의 <code>pg_dump</code> 로 옛 서버에서 뜬다. <code>pg_dump</code> 는 자기보다 옛 서버에서 뜰 수 있다</li>
+<li>같은 서버에서 판을 올릴 때는 덤프 대신 <code>pg_upgradecluster 16 main</code>(Ubuntu) 이나 <code>pg_upgrade</code> 를 쓴다</li>
+</ul>
+<h2 id="docker-에서">Docker 에서</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">docker</span> <span class="token builtin class-name">exec</span> pg pg_dump <span class="token parameter variable">-U</span> postgres <span class="token parameter variable">-Fc</span> shop <span class="token operator">&gt;</span> shop.dump
+<span class="token function">docker</span> <span class="token builtin class-name">exec</span> <span class="token parameter variable">-i</span> pg pg_restore <span class="token parameter variable">-U</span> postgres <span class="token parameter variable">-d</span> shop <span class="token operator">&lt;</span> shop.dump    <span class="token comment"># -i 가 있어야 파일이 들어간다</span>
+<span class="token function">docker</span> <span class="token builtin class-name">exec</span> pg pg_dumpall <span class="token parameter variable">-U</span> postgres --globals-only <span class="token operator">&gt;</span> globals.sql</code></pre>
+<h2 id="매일-뜨기">매일 뜨기</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token shebang important">#!/bin/bash</span>
+<span class="token comment"># /usr/local/bin/pg-backup.sh — postgres 사용자의 crontab 에서 돈다</span>
+<span class="token builtin class-name">set</span> <span class="token parameter variable">-euo</span> pipefail
+<span class="token assign-left variable">d</span><span class="token operator">=</span>/var/backups/postgresql
+pg_dump <span class="token parameter variable">-Fc</span> shop <span class="token operator">&gt;</span> <span class="token variable">$d</span>/shop-<span class="token variable"><span class="token variable">$(</span><span class="token function">date</span> +%F<span class="token variable">)</span></span>.dump
+pg_dumpall --globals-only <span class="token operator">&gt;</span> <span class="token variable">$d</span>/globals-<span class="token variable"><span class="token variable">$(</span><span class="token function">date</span> +%F<span class="token variable">)</span></span>.sql
+<span class="token function">find</span> <span class="token variable">$d</span> <span class="token parameter variable">-name</span> <span class="token string">"*.dump"</span> <span class="token parameter variable">-mtime</span> +14 <span class="token parameter variable">-delete</span>
+<span class="token function">find</span> <span class="token variable">$d</span> <span class="token parameter variable">-name</span> <span class="token string">"globals-*.sql"</span> <span class="token parameter variable">-mtime</span> +14 <span class="token parameter variable">-delete</span></code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext"># sudo -u postgres crontab -e
+30 3 * * * /usr/local/bin/pg-backup.sh &gt;&gt; /var/log/postgresql/backup.log 2&gt;&amp;1</code></pre>
+<ul>
+<li>폴더는 먼저 만들어 <code>postgres</code> 에게 준다(<code>sudo install -d -o postgres -m 700 /var/backups/postgresql</code>)</li>
+<li><code>postgres</code> 사용자로 돌리면 peer 방식으로 들어가 비밀번호가 필요 없다. 다른 사용자로 돌린다면 <code>~/.pgpass</code> 를 쓴다</li>
+<li>덤프는 뜬 시점으로만 돌아간다. 그 사이의 변경까지 살리려면 WAL 을 모아 두는 방식(<code>pg_basebackup</code> · 시점 복구) 을 쓴다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://www.postgresql.org/docs/current/app-pgdump.html">pg_dump</a> · <a href="https://www.postgresql.org/docs/current/app-pgrestore.html">pg_restore</a> — 옵션 전부</li>
+<li><a href="https://www.postgresql.org/docs/current/backup.html">Backup and Restore</a> — 덤프 · 파일 백업 · 시점 복구</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/RDB/">관계형 DB</a></li><li><a href="/docs/server/RDB/PostgreSQL/">PostgreSQL</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/PostgreSQL/" rel="tag">PostgreSQL</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-09T12:19:26.000Z">2026-11-09</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

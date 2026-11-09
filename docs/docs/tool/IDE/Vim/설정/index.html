@@ -1,0 +1,278 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>설정 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">편집기 IDE</span><span class="up"> / <a href="/docs/" title="한 단계 위로">도구</a></span></p><ul><li><a href="/docs/tool/IDE/">개요</a></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/tool/IDE/Vim/">Vim</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/tool/IDE/Vim/이동과-편집/">이동과 편집</a></li><li><a href="/docs/tool/IDE/Vim/검색과-바꾸기/">검색과 바꾸기</a></li><li><a href="/docs/tool/IDE/Vim/레지스터와-매크로/">레지스터와 매크로</a></li><li><a href="/docs/tool/IDE/Vim/설정/" aria-current="page">설정</a></li></ul></details></li><li><a href="/docs/tool/IDE/Visual-Studio-Code/">Visual Studio Code</a></li><li><a href="/docs/tool/IDE/Visual-Studio/">Visual Studio</a></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/tool/IDE/IntelliJ/">IntelliJ</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/tool/IDE/IntelliJ/터미널에서-실행(IntelliJ)/">터미널에서 실행(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/JetBrains-IDE를-사용한다면-기억하고-싶은-10-tips/">JetBrains IDE를 사용한다면 기억하고 싶은 10 tips(JP)</a></li><li><a href="/docs/tool/IDE/IntelliJ/단축키(IntelliJ)/">단축키(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/응용프로그램-실행-설정(IntelliJ)/">응용프로그램 실행 설정(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/코드스니펫(IntelliJ)/">코드스니펫(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/톰켓설정(IntelliJ)/">톰켓설정(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/파일-확장자-인식-오류(IntelliJ)/">파일 확장자 인식 오류(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/환경설정(IntelliJ)/">환경설정(IntelliJ)</a></li></ul></details></li><li><a href="/docs/tool/IDE/Eclipse/">Eclipse</a></li></ul></nav><article><h1 class="page-title">설정</h1><details class="sidebar-m"><summary>목록 · 편집기 IDE</summary><ul><li><a href="/docs/tool/IDE/">개요</a></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/tool/IDE/Vim/">Vim</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/tool/IDE/Vim/이동과-편집/">이동과 편집</a></li><li><a href="/docs/tool/IDE/Vim/검색과-바꾸기/">검색과 바꾸기</a></li><li><a href="/docs/tool/IDE/Vim/레지스터와-매크로/">레지스터와 매크로</a></li><li><a href="/docs/tool/IDE/Vim/설정/" aria-current="page">설정</a></li></ul></details></li><li><a href="/docs/tool/IDE/Visual-Studio-Code/">Visual Studio Code</a></li><li><a href="/docs/tool/IDE/Visual-Studio/">Visual Studio</a></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/tool/IDE/IntelliJ/">IntelliJ</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/tool/IDE/IntelliJ/터미널에서-실행(IntelliJ)/">터미널에서 실행(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/JetBrains-IDE를-사용한다면-기억하고-싶은-10-tips/">JetBrains IDE를 사용한다면 기억하고 싶은 10 tips(JP)</a></li><li><a href="/docs/tool/IDE/IntelliJ/단축키(IntelliJ)/">단축키(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/응용프로그램-실행-설정(IntelliJ)/">응용프로그램 실행 설정(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/코드스니펫(IntelliJ)/">코드스니펫(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/톰켓설정(IntelliJ)/">톰켓설정(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/파일-확장자-인식-오류(IntelliJ)/">파일 확장자 인식 오류(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/환경설정(IntelliJ)/">환경설정(IntelliJ)</a></li></ul></details></li><li><a href="/docs/tool/IDE/Eclipse/">Eclipse</a></li></ul></details><div class="content"><p>Vim 의 설정은 홈 폴더의 <code>~/.vimrc</code> 에 명령을 한 줄씩 적은 것이다. 띄울 때 이 파일을 차례로 실행하므로, <code>:set …</code> 으로 맞춰 본 것을 그대로 옮겨 적는다. 옵션(<code>set</code>) · 키 매핑(<code>nnoremap</code>) · 파일 종류마다의 설정(<code>autocmd FileType</code>) 이 대부분이고, 플러그인은 <code>~/.vim/pack/*/start/</code> 에 내려받아 두면 저절로 읽힌다. <code>~/.vimrc</code> 가 없으면 Vim 은 기본 설정(<code>defaults.vim</code>) 으로 뜬다.</p>
+<h2 id="시작용-vimrc">시작용 vimrc</h2>
+<pre class="language-vim" data-language="vim"><code class="language-vim"><span class="token comment">" ~/.vimrc</span>
+<span class="token keyword">set</span> <span class="token builtin">nocompatible</span>
+<span class="token keyword">filetype</span> plugin indent <span class="token keyword">on</span>
+<span class="token builtin">syntax</span> <span class="token keyword">on</span>
+
+<span class="token keyword">set</span> <span class="token builtin">expandtab</span> <span class="token builtin">shiftwidth</span><span class="token operator">=</span><span class="token number">4</span> <span class="token builtin">tabstop</span><span class="token operator">=</span><span class="token number">4</span> <span class="token builtin">softtabstop</span><span class="token operator">=</span><span class="token number">4</span>
+<span class="token keyword">set</span> <span class="token keyword">number</span> relativenumber
+<span class="token keyword">set</span> <span class="token builtin">ignorecase</span> <span class="token builtin">smartcase</span> <span class="token builtin">incsearch</span> <span class="token builtin">hlsearch</span>
+<span class="token keyword">set</span> <span class="token builtin">clipboard</span><span class="token operator">=</span>unnamed
+<span class="token keyword">set</span> <span class="token builtin">mouse</span><span class="token operator">=</span>a
+<span class="token keyword">set</span> <span class="token builtin">scrolloff</span><span class="token operator">=</span><span class="token number">5</span>
+<span class="token keyword">set</span> <span class="token builtin">wildmenu</span>
+<span class="token keyword">set</span> <span class="token builtin">hidden</span>
+<span class="token keyword">set</span> undofile undodir<span class="token operator">=~</span><span class="token operator">/</span><span class="token operator">.</span><span class="token keyword">vim</span><span class="token operator">/</span><span class="token keyword">undo</span>
+<span class="token keyword">set</span> <span class="token builtin">encoding</span><span class="token operator">=</span>utf<span class="token operator">-</span><span class="token number">8</span> <span class="token builtin">fileencodings</span><span class="token operator">=</span>utf<span class="token operator">-</span><span class="token number">8</span><span class="token punctuation">,</span>cp949
+
+<span class="token keyword">let</span> mapleader <span class="token operator">=</span> <span class="token string">" "</span>
+nnoremap <span class="token operator">&lt;</span>leader<span class="token operator">&gt;</span><span class="token keyword">w</span> <span class="token punctuation">:</span><span class="token keyword">w</span><span class="token operator">&lt;</span>CR<span class="token operator">&gt;</span>
+nnoremap <span class="token operator">&lt;</span>leader<span class="token operator">&gt;</span><span class="token keyword">d</span> <span class="token comment">"_dd</span>
+nnoremap <span class="token operator">&lt;</span>Esc<span class="token operator">&gt;</span><span class="token operator">&lt;</span>Esc<span class="token operator">&gt;</span> <span class="token punctuation">:</span><span class="token keyword">noh</span><span class="token operator">&lt;</span>CR<span class="token operator">&gt;</span>
+
+augroup my
+  <span class="token builtin">autocmd</span><span class="token operator">!</span>
+  <span class="token builtin">autocmd</span> FileType yaml<span class="token punctuation">,</span>json <span class="token keyword">setlocal</span> <span class="token builtin">shiftwidth</span><span class="token operator">=</span><span class="token number">2</span> <span class="token builtin">softtabstop</span><span class="token operator">=</span><span class="token number">2</span>
+  <span class="token builtin">autocmd</span> FileType <span class="token keyword">make</span> <span class="token keyword">setlocal</span> <span class="token builtin">noexpandtab</span>
+augroup END</code></pre>
+<h2 id="옵션">옵션</h2>
+<table>
+<thead>
+<tr>
+<th>옵션</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>expandtab</code> · <code>shiftwidth=4</code> · <code>tabstop=4</code> · <code>softtabstop=4</code></td>
+<td>탭 키 · <code>&gt;&gt;</code> 가 빈칸 4 칸을 넣고, 지울 때도 4 칸씩</td>
+</tr>
+<tr>
+<td><code>number</code> · <code>relativenumber</code></td>
+<td>줄 번호, 다른 줄은 지금 줄에서 몇 줄인지 (<code>5j</code> 를 셈하기 쉽다)</td>
+</tr>
+<tr>
+<td><code>ignorecase</code> · <code>smartcase</code></td>
+<td>소문자 패턴은 대소문자를 가리지 않고, 대문자가 섞이면 가린다</td>
+</tr>
+<tr>
+<td><code>incsearch</code> · <code>hlsearch</code></td>
+<td>입력하는 동안 검색하고, 찾은 곳을 하이라이트한다</td>
+</tr>
+<tr>
+<td><code>clipboard=unnamed</code></td>
+<td><code>y</code> · <code>p</code> 를 OS 클립보드로 (리눅스는 <code>unnamedplus</code>)</td>
+</tr>
+<tr>
+<td><code>mouse=a</code></td>
+<td>마우스로 커서 이동 · 창 크기 조정</td>
+</tr>
+<tr>
+<td><code>scrolloff=5</code></td>
+<td>커서 위아래로 늘 5 줄을 보인다</td>
+</tr>
+<tr>
+<td><code>wildmenu</code></td>
+<td>명령줄에서 탭으로 이름을 채울 때 목록을 보인다</td>
+</tr>
+<tr>
+<td><code>hidden</code></td>
+<td>저장하지 않은 버퍼를 두고 다른 버퍼로 간다</td>
+</tr>
+<tr>
+<td><code>undofile</code></td>
+<td>껐다 켜도 실행 취소 기록이 남는다 (<code>undodir</code> 폴더를 미리 만든다)</td>
+</tr>
+<tr>
+<td><code>fileencodings=utf-8,cp949</code></td>
+<td>파일을 열 때 UTF-8 로 읽고, 안 되면 CP949 로 (한글 윈도우 파일)</td>
+</tr>
+<tr>
+<td><code>list</code> · <code>listchars=tab:»·,trail:·</code></td>
+<td>탭 · 줄 끝 빈칸을 보인다</td>
+</tr>
+<tr>
+<td><code>paste</code></td>
+<td>붙여 넣는 동안 자동 들여쓰기를 끈다 (터미널에서 붙여 넣기)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>지금 값은 <code>:set shiftwidth?</code>, 어디서 정했는지는 <code>:verbose set shiftwidth?</code> 로 본다</li>
+<li><code>:set</code> 은 모든 창에, <code>:setlocal</code> 은 지금 버퍼에만 건다. 파일 종류마다의 설정은 <code>setlocal</code> 로 쓴다</li>
+<li><code>:set ff=unix</code> 는 줄 끝을 LF 로, <code>:set fenc=utf-8</code> 은 저장할 인코딩을 바꾼다. <code>:w</code> 해야 파일에 들어간다</li>
+</ul>
+<h2 id="키-매핑">키 매핑</h2>
+<table>
+<thead>
+<tr>
+<th>명령</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>nnoremap</code> · <code>inoremap</code> · <code>vnoremap</code> · <code>xnoremap</code></td>
+<td>노멀 · 삽입 · 비주얼과 선택 · 비주얼 모드의 매핑</td>
+</tr>
+<tr>
+<td><code>let mapleader = " "</code></td>
+<td><code>&lt;leader&gt;</code> 를 빈칸으로</td>
+</tr>
+<tr>
+<td><code>nnoremap &lt;leader&gt;w :w&lt;CR&gt;</code></td>
+<td>빈칸 w 로 저장</td>
+</tr>
+<tr>
+<td><code>inoremap jk &lt;Esc&gt;</code></td>
+<td>삽입 모드에서 <code>jk</code> 로 나오기</td>
+</tr>
+<tr>
+<td><code>nnoremap &lt;C-h&gt; &lt;C-w&gt;h</code></td>
+<td><code>Ctrl-h</code> 로 왼쪽 창</td>
+</tr>
+<tr>
+<td><code>:nmap &lt;leader&gt;</code> · <code>:verbose nmap &lt;leader&gt;w</code></td>
+<td>매핑 목록 · 그 매핑을 정한 파일과 줄</td>
+</tr>
+<tr>
+<td><code>:unmap</code> · <code>:nunmap</code></td>
+<td>매핑 삭제</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>noremap</code> 형태를 쓴다. <code>nnoremap</code> 의 <code>nore</code> 는 매핑 안의 키를 다시 매핑으로 풀지 않는다는 뜻으로, <code>nmap</code> 처럼 다른 매핑과 엉켜 반복되지 않는다</li>
+<li><code>&lt;leader&gt;</code> 는 빈칸이나 <code>,</code> 처럼 기본 명령이 없는 키로 정한다</li>
+<li>특수 키는 <code>&lt;CR&gt;</code> · <code>&lt;Esc&gt;</code> · <code>&lt;Tab&gt;</code> · <code>&lt;C-x&gt;</code>(Ctrl) · <code>&lt;M-x&gt;</code>(Alt) · <code>&lt;S-x&gt;</code>(Shift) · <code>&lt;F5&gt;</code> 로 쓴다</li>
+</ul>
+<h2 id="파일-종류마다">파일 종류마다</h2>
+<table>
+<thead>
+<tr>
+<th>명령</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>autocmd FileType python setlocal …</code></td>
+<td>그 종류의 파일을 열 때</td>
+</tr>
+<tr>
+<td><code>autocmd BufWritePre *.py %s/\s\+$//e</code></td>
+<td>저장하기 전에 줄 끝 빈칸을 삭제한다</td>
+</tr>
+<tr>
+<td><code>autocmd BufRead,BufNewFile *.conf setfiletype dosini</code></td>
+<td>파일 이름으로 종류를 정한다</td>
+</tr>
+<tr>
+<td><code>:set filetype?</code> · <code>:set ft=yaml</code></td>
+<td>지금 종류 보기 · 바꾸기</td>
+</tr>
+<tr>
+<td><code>~/.vim/after/ftplugin/python.vim</code></td>
+<td>그 종류의 설정을 파일로 따로 둔다</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>autocmd</code> 는 <code>augroup</code> 으로 감싸고 첫 줄에 <code>autocmd!</code> 를 둔다. 그래야 <code>:source ~/.vimrc</code> 로 다시 읽을 때 같은 명령이 겹쳐 쌓이지 않는다</li>
+</ul>
+<h2 id="플러그인--패키지">플러그인 — 패키지</h2>
+<p>Vim 8 부터는 플러그인 관리자 없이, 정해진 폴더에 두면 읽는다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">mkdir</span> <span class="token parameter variable">-p</span> ~/.vim/pack/plugins/start
+<span class="token function">git</span> clone https://github.com/tpope/vim-commentary ~/.vim/pack/plugins/start/vim-commentary</code></pre>
+<table>
+<thead>
+<tr>
+<th>자리</th>
+<th>읽히는 때</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>~/.vim/pack/&lt;이름&gt;/start/&lt;플러그인&gt;</code></td>
+<td>늘</td>
+</tr>
+<tr>
+<td><code>~/.vim/pack/&lt;이름&gt;/opt/&lt;플러그인&gt;</code></td>
+<td><code>:packadd &lt;플러그인&gt;</code> 할 때만</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>명령</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>:scriptnames</code></td>
+<td>읽힌 스크립트 목록 — 플러그인이 읽혔는지 본다</td>
+</tr>
+<tr>
+<td><code>:helptags ALL</code></td>
+<td>플러그인의 도움말을 <code>:help</code> 로 보게 만든다</td>
+</tr>
+<tr>
+<td><code>git pull</code> (그 폴더에서)</td>
+<td>플러그인 업데이트</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>플러그인</th>
+<th>하는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/tpope/vim-commentary">vim-commentary</a></td>
+<td><code>gcc</code> 줄 · <code>gc</code> + 이동 · 텍스트 객체로 주석 넣기 · 빼기</td>
+</tr>
+<tr>
+<td><a href="https://github.com/tpope/vim-surround">vim-surround</a></td>
+<td><code>cs"'</code> 따옴표 바꾸기 · <code>ysiw)</code> 단어를 괄호로 감싸기</td>
+</tr>
+<tr>
+<td><a href="https://github.com/junegunn/fzf.vim">fzf.vim</a></td>
+<td>파일 · 버퍼 · 글자를 퍼지 검색(fuzzy) 으로 연다</td>
+</tr>
+<tr>
+<td><a href="https://github.com/junegunn/vim-plug">vim-plug</a></td>
+<td>플러그인 관리자 — <code>vimrc</code> 에 목록을 적고 <code>:PlugInstall</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="설정-옮기기">설정 옮기기</h2>
+<ul>
+<li><code>~/.vimrc</code> 와 <code>~/.vim/</code> 를 dotfiles 저장소에 두고, 새 기계에서 받아 링크를 건다(<code>ln -s ~/dotfiles/vimrc ~/.vimrc</code>)</li>
+<li>서버에는 플러그인을 깔지 않고 옵션 몇 줄만 둔다. 손에 익은 키는 기본 키로 쓴다</li>
+<li>Neovim 은 <code>~/.config/nvim/init.vim</code>(또는 <code>init.lua</code>) 을 읽는다. <code>source ~/.vimrc</code> 한 줄로 같은 설정을 쓸 수 있다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://vimhelp.org/options.txt.html">options.txt</a> — 옵션 전부</li>
+<li><a href="https://vimhelp.org/map.txt.html">map.txt</a> — 매핑 · <code>&lt;leader&gt;</code> · <code>noremap</code></li>
+<li><a href="https://vimhelp.org/repeat.txt.html#packages">Packages</a> — <code>pack/*/start</code> · <code>opt</code> · <code>:packadd</code></li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">도구</a></li><li><a href="/docs/tool/IDE/">편집기 IDE</a></li><li><a href="/docs/tool/IDE/Vim/">Vim</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Vim/" rel="tag">Vim</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-09T16:52:25.000Z">2026-11-10</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

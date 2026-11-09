@@ -1,0 +1,129 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>경보 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">운영</span><span class="up"> / <a href="/docs/server/" title="한 단계 위로">서버</a></span></p><ul><li><a href="/docs/server/Operations/">개요</a></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/Operations/Java-앱/">Java 앱</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Operations/Java-앱/빌드와-실행/">빌드와 실행</a></li><li><a href="/docs/server/Operations/Java-앱/systemd-서비스/">systemd 서비스</a></li><li><a href="/docs/server/Operations/Java-앱/Nginx-뒤에/">Nginx 뒤에</a></li><li><a href="/docs/server/Operations/Java-앱/Docker로/">Docker로</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/Operations/Prometheus/">Prometheus</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Operations/Prometheus/설치와-수집/">설치와 수집</a></li><li><a href="/docs/server/Operations/Prometheus/PromQL/">PromQL</a></li><li><a href="/docs/server/Operations/Prometheus/앱-지표/">앱 지표</a></li><li><a href="/docs/server/Operations/Prometheus/경보/">경보</a></li></ul></details></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/server/Operations/Grafana/">Grafana</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Operations/Grafana/설치와-데이터-소스/">설치와 데이터 소스</a></li><li><a href="/docs/server/Operations/Grafana/대시보드/">대시보드</a></li><li><a href="/docs/server/Operations/Grafana/경보/" aria-current="page">경보</a></li></ul></details></li></ul></nav><article><h1 class="page-title">경보</h1><details class="sidebar-m"><summary>목록 · 운영</summary><ul><li><a href="/docs/server/Operations/">개요</a></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/Operations/Java-앱/">Java 앱</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Operations/Java-앱/빌드와-실행/">빌드와 실행</a></li><li><a href="/docs/server/Operations/Java-앱/systemd-서비스/">systemd 서비스</a></li><li><a href="/docs/server/Operations/Java-앱/Nginx-뒤에/">Nginx 뒤에</a></li><li><a href="/docs/server/Operations/Java-앱/Docker로/">Docker로</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/Operations/Prometheus/">Prometheus</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Operations/Prometheus/설치와-수집/">설치와 수집</a></li><li><a href="/docs/server/Operations/Prometheus/PromQL/">PromQL</a></li><li><a href="/docs/server/Operations/Prometheus/앱-지표/">앱 지표</a></li><li><a href="/docs/server/Operations/Prometheus/경보/">경보</a></li></ul></details></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/server/Operations/Grafana/">Grafana</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Operations/Grafana/설치와-데이터-소스/">설치와 데이터 소스</a></li><li><a href="/docs/server/Operations/Grafana/대시보드/">대시보드</a></li><li><a href="/docs/server/Operations/Grafana/경보/" aria-current="page">경보</a></li></ul></details></li></ul></details><div class="content"><p>Grafana 도 경보를 낸다. 규칙은 데이터 소스에 보낼 질의와 조건(임계값) 으로 적고, 조건이 <code>for</code> 동안 이어지면 알림 정책에 따라 연락처(contact point) 로 보낸다. Prometheus 의 규칙 · Alertmanager 와 하는 일이 같아서, 둘 중 한 곳에 두는 것이 보통이다. Grafana 쪽은 화면에서 만들기 쉽고 Prometheus 밖의 데이터 소스(로그 · DB) 에도 걸 수 있다. 규칙 · 연락처 · 정책도 설정 파일로 넣는다. 아래 예제는 <code>grafana/grafana:13.3.0</code> 에 <code>prom/prometheus:v3.13.5</code> 를 붙이고, 받은 것을 찍기만 하는 webhook 서버로 받았다.</p>
+<h2 id="설정-파일로-넣기">설정 파일로 넣기</h2>
+<pre class="language-yaml" data-language="yaml"><code class="language-yaml"><span class="token comment"># provisioning/alerting/shop.yml</span>
+<span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> <span class="token number">1</span>
+<span class="token key atrule">contactPoints</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">orgId</span><span class="token punctuation">:</span> <span class="token number">1</span>
+    <span class="token key atrule">name</span><span class="token punctuation">:</span> hook
+    <span class="token key atrule">receivers</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">uid</span><span class="token punctuation">:</span> hook
+        <span class="token key atrule">type</span><span class="token punctuation">:</span> webhook
+        <span class="token key atrule">settings</span><span class="token punctuation">:</span>
+          <span class="token key atrule">url</span><span class="token punctuation">:</span> http<span class="token punctuation">:</span>//hook<span class="token punctuation">:</span>5001/
+<span class="token key atrule">policies</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">orgId</span><span class="token punctuation">:</span> <span class="token number">1</span>
+    <span class="token key atrule">receiver</span><span class="token punctuation">:</span> hook
+    <span class="token key atrule">group_by</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>alertname<span class="token punctuation">]</span>
+    <span class="token key atrule">group_wait</span><span class="token punctuation">:</span> 10s
+    <span class="token key atrule">group_interval</span><span class="token punctuation">:</span> 1m
+<span class="token key atrule">groups</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">orgId</span><span class="token punctuation">:</span> <span class="token number">1</span>
+    <span class="token key atrule">name</span><span class="token punctuation">:</span> shop
+    <span class="token key atrule">folder</span><span class="token punctuation">:</span> 서버
+    <span class="token key atrule">interval</span><span class="token punctuation">:</span> 20s
+    <span class="token key atrule">rules</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">uid</span><span class="token punctuation">:</span> shop<span class="token punctuation">-</span>down
+        <span class="token key atrule">title</span><span class="token punctuation">:</span> ShopDown (Grafana)
+        <span class="token key atrule">condition</span><span class="token punctuation">:</span> C
+        <span class="token key atrule">data</span><span class="token punctuation">:</span>
+          <span class="token punctuation">-</span> <span class="token key atrule">refId</span><span class="token punctuation">:</span> A
+            <span class="token key atrule">relativeTimeRange</span><span class="token punctuation">:</span> <span class="token punctuation">{</span> <span class="token key atrule">from</span><span class="token punctuation">:</span> <span class="token number">300</span><span class="token punctuation">,</span> <span class="token key atrule">to</span><span class="token punctuation">:</span> <span class="token number">0</span> <span class="token punctuation">}</span>
+            <span class="token key atrule">datasourceUid</span><span class="token punctuation">:</span> prom
+            <span class="token key atrule">model</span><span class="token punctuation">:</span> <span class="token punctuation">{</span> <span class="token key atrule">refId</span><span class="token punctuation">:</span> A<span class="token punctuation">,</span> <span class="token key atrule">expr</span><span class="token punctuation">:</span> <span class="token string">'up{job="shop"}'</span><span class="token punctuation">,</span> <span class="token key atrule">instant</span><span class="token punctuation">:</span> <span class="token boolean important">true</span> <span class="token punctuation">}</span>
+          <span class="token punctuation">-</span> <span class="token key atrule">refId</span><span class="token punctuation">:</span> C
+            <span class="token key atrule">datasourceUid</span><span class="token punctuation">:</span> __expr__
+            <span class="token key atrule">model</span><span class="token punctuation">:</span>
+              <span class="token key atrule">refId</span><span class="token punctuation">:</span> C
+              <span class="token key atrule">type</span><span class="token punctuation">:</span> threshold
+              <span class="token key atrule">expression</span><span class="token punctuation">:</span> A
+              <span class="token key atrule">conditions</span><span class="token punctuation">:</span>
+                <span class="token punctuation">-</span> <span class="token key atrule">evaluator</span><span class="token punctuation">:</span> <span class="token punctuation">{</span> <span class="token key atrule">type</span><span class="token punctuation">:</span> lt<span class="token punctuation">,</span> <span class="token key atrule">params</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token punctuation">}</span>
+        <span class="token key atrule">for</span><span class="token punctuation">:</span> 30s
+        <span class="token key atrule">noDataState</span><span class="token punctuation">:</span> Alerting
+        <span class="token key atrule">execErrState</span><span class="token punctuation">:</span> Error
+        <span class="token key atrule">labels</span><span class="token punctuation">:</span> <span class="token punctuation">{</span> <span class="token key atrule">severity</span><span class="token punctuation">:</span> critical <span class="token punctuation">}</span>
+        <span class="token key atrule">annotations</span><span class="token punctuation">:</span> <span class="token punctuation">{</span> <span class="token key atrule">summary</span><span class="token punctuation">:</span> <span class="token string">"shop 이 응답하지 않는다"</span> <span class="token punctuation">}</span></code></pre>
+<ul>
+<li>규칙은 질의 단계(<code>A</code>) 와 조건 단계(<code>C</code>) 로 나뉜다. <code>A</code> 가 <code>up</code> 을 가져오고, <code>C</code> 가 "1 보다 작다" 를 본다</li>
+<li><code>noDataState: Alerting</code> 은 질의 결과가 아예 없을 때도 경보로 친다. 지표가 사라지는 장애(대상이 목록에서 빠짐) 를 놓치지 않는다</li>
+<li>넣은 것은 API 에서 <code>provenance: file</code> 로 보이고, 화면에서 고치지 못한다</li>
+</ul>
+<h2 id="간격을-틀리면-뜨지-않는다">간격을 틀리면 뜨지 않는다</h2>
+<p>처음에 <code>interval: 15s</code> 로 적었더니 Grafana 가 뜨지 않고 멈췄다(<code>Exited (1)</code>).</p>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">Error: ✗ invalid service state: … failure: alert rules: invalid alert rule:
+  interval (15s) should be non-zero and divided exactly by scheduler interval: 10</code></pre>
+<ul>
+<li>규칙의 간격은 Grafana 의 계산 간격(10 초) 으로 나눠떨어져야 한다(10 · 20 · 30 초 …). Prometheus 에 맞춰 15 초로 적으면 안 된다</li>
+<li>provisioning 파일 하나가 틀리면 Grafana 전체가 뜨지 않는다. 고친 파일은 띄우기 전에 다른 Grafana 에서 먼저 넣어 본다</li>
+</ul>
+<h2 id="경보가-오기까지">경보가 오기까지</h2>
+<p>앱을 멈추고 webhook 에 오기까지를 쟀다. 같은 때 Prometheus 의 같은 규칙(<code>for: 30s</code>) 도 돌고 있었다.</p>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">11:58:43 firing ShopDown app:8080 app:8080 가 응답하지 않는다          ← Prometheus · Alertmanager, 54 초
+11:59:00 firing ShopDown (Grafana) app:8080 shop 이 응답하지 않는다    ← Grafana, 71 초</code></pre>
+<ul>
+<li>Grafana 쪽이 17 초 늦었다. Grafana 는 Prometheus 가 모은 값을 20 초마다 다시 물어 본 뒤 <code>for</code> 를 세므로, 같은 규칙이라도 Prometheus 보다 늦게 알릴 수 있다</li>
+<li>두 곳에 같은 경보를 두면 알림이 두 번 온다. 한 곳을 정한다</li>
+</ul>
+<h2 id="어디에-둘까">어디에 둘까</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Prometheus 규칙 + Alertmanager</th>
+<th>Grafana 경보</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>규칙 쓰기</td>
+<td>YAML 에 PromQL</td>
+<td>화면에서 질의 · 조건, 또는 YAML</td>
+</tr>
+<tr>
+<td>데이터 소스</td>
+<td>Prometheus 만</td>
+<td>Prometheus · Loki · DB 등 여럿</td>
+</tr>
+<tr>
+<td>Grafana 가 죽으면</td>
+<td>그대로 알린다</td>
+<td>알리지 못한다</td>
+</tr>
+<tr>
+<td>묶기 · 막기</td>
+<td>Alertmanager</td>
+<td>Grafana 안의 알림 정책 · silence</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>서버 · 앱의 핵심 경보(죽음 · 오류율) 는 Prometheus 에 둔다. 보는 화면(Grafana) 이 죽어도 알림은 와야 한다</li>
+<li>여러 데이터 소스를 엮는 경보나 화면에서 자주 바꾸는 경보는 Grafana 에 둔다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://grafana.com/docs/grafana/latest/alerting/">Grafana Alerting</a> — 규칙 · 연락처 · 알림 정책</li>
+<li><a href="https://grafana.com/docs/grafana/latest/alerting/set-up/provision-alerting-resources/file-provisioning/">File provisioning of alerting resources</a> — 규칙 · 연락처 · 정책의 YAML</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/Operations/">운영</a></li><li><a href="/docs/server/Operations/Grafana/">Grafana</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Grafana/" rel="tag">Grafana</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-09T12:03:34.000Z">2026-11-09</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

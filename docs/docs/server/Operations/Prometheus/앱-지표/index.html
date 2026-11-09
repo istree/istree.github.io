@@ -1,0 +1,172 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>앱 지표 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">운영</span><span class="up"> / <a href="/docs/server/" title="한 단계 위로">서버</a></span></p><ul><li><a href="/docs/server/Operations/">개요</a></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/Operations/Java-앱/">Java 앱</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Operations/Java-앱/빌드와-실행/">빌드와 실행</a></li><li><a href="/docs/server/Operations/Java-앱/systemd-서비스/">systemd 서비스</a></li><li><a href="/docs/server/Operations/Java-앱/Nginx-뒤에/">Nginx 뒤에</a></li><li><a href="/docs/server/Operations/Java-앱/Docker로/">Docker로</a></li></ul></details></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/server/Operations/Prometheus/">Prometheus</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Operations/Prometheus/설치와-수집/">설치와 수집</a></li><li><a href="/docs/server/Operations/Prometheus/PromQL/">PromQL</a></li><li><a href="/docs/server/Operations/Prometheus/앱-지표/" aria-current="page">앱 지표</a></li><li><a href="/docs/server/Operations/Prometheus/경보/">경보</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/Operations/Grafana/">Grafana</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Operations/Grafana/설치와-데이터-소스/">설치와 데이터 소스</a></li><li><a href="/docs/server/Operations/Grafana/대시보드/">대시보드</a></li><li><a href="/docs/server/Operations/Grafana/경보/">경보</a></li></ul></details></li></ul></nav><article><h1 class="page-title">앱 지표</h1><details class="sidebar-m"><summary>목록 · 운영</summary><ul><li><a href="/docs/server/Operations/">개요</a></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/Operations/Java-앱/">Java 앱</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Operations/Java-앱/빌드와-실행/">빌드와 실행</a></li><li><a href="/docs/server/Operations/Java-앱/systemd-서비스/">systemd 서비스</a></li><li><a href="/docs/server/Operations/Java-앱/Nginx-뒤에/">Nginx 뒤에</a></li><li><a href="/docs/server/Operations/Java-앱/Docker로/">Docker로</a></li></ul></details></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/server/Operations/Prometheus/">Prometheus</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Operations/Prometheus/설치와-수집/">설치와 수집</a></li><li><a href="/docs/server/Operations/Prometheus/PromQL/">PromQL</a></li><li><a href="/docs/server/Operations/Prometheus/앱-지표/" aria-current="page">앱 지표</a></li><li><a href="/docs/server/Operations/Prometheus/경보/">경보</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/Operations/Grafana/">Grafana</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Operations/Grafana/설치와-데이터-소스/">설치와 데이터 소스</a></li><li><a href="/docs/server/Operations/Grafana/대시보드/">대시보드</a></li><li><a href="/docs/server/Operations/Grafana/경보/">경보</a></li></ul></details></li></ul></details><div class="content"><p>Spring Boot 앱은 Actuator 와 Micrometer 로 지표를 낸다. <code>micrometer-registry-prometheus</code> 를 넣고 <code>prometheus</code> 엔드포인트를 열면 <code>/actuator/prometheus</code> 에 JVM · Tomcat · HTTP 요청 지표가 Prometheus 형식으로 나온다. 앱만의 지표(만든 주문 수) 는 <code>MeterRegistry</code> 로 counter · gauge · timer 를 만들어 더한다. 지표는 라벨 조합마다 시계열이 하나씩 생기므로, 라벨에는 가짓수가 적은 값만 넣는다. DB · 큐처럼 남이 만든 서버는 exporter 나 그 서버의 지표 플러그인으로 모은다. 아래 예제는 Spring Boot 4.1.2 앱(<code>web</code> · <code>actuator</code> · <code>prometheus</code>) 을 Docker 로 띄우고 <code>prom/prometheus:v3.13.5</code> 로 모았다.</p>
+<h2 id="내놓기">내놓기</h2>
+<pre class="language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>org.springframework.boot<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>spring-boot-starter-actuator<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>io.micrometer<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>micrometer-registry-prometheus<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">&gt;</span></span></code></pre>
+<pre class="language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">management</span><span class="token punctuation">:</span>
+  <span class="token key atrule">endpoints</span><span class="token punctuation">:</span>
+    <span class="token key atrule">web</span><span class="token punctuation">:</span>
+      <span class="token key atrule">exposure</span><span class="token punctuation">:</span>
+        <span class="token key atrule">include</span><span class="token punctuation">:</span> health<span class="token punctuation">,</span>info<span class="token punctuation">,</span>prometheus</code></pre>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">curl</span> localhost:8080/actuator/prometheus <span class="token operator">|</span> <span class="token function">grep</span> <span class="token parameter variable">-c</span> <span class="token string">"^[a-z]"</span>     <span class="token comment"># 516 줄</span></code></pre>
+<table>
+<thead>
+<tr>
+<th>앞붙이</th>
+<th>줄 수</th>
+<th>보는 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>http_server_requests_seconds</code></td>
+<td>424</td>
+<td>주소 · 상태마다 요청 수 · 걸린 시간</td>
+</tr>
+<tr>
+<td><code>jvm_</code></td>
+<td>60</td>
+<td>힙 · GC · 스레드 · 클래스</td>
+</tr>
+<tr>
+<td><code>tomcat_</code> · <code>executor_</code></td>
+<td>13</td>
+<td>세션 · 스레드 풀</td>
+</tr>
+<tr>
+<td><code>process_</code> · <code>system_</code></td>
+<td>9</td>
+<td>CPU · 열린 파일 · 올라온 시간</td>
+</tr>
+<tr>
+<td><code>logback_</code></td>
+<td>5</td>
+<td>수준별 로그 줄 수</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>이름은 64 가지, 종류는 counter 13 · gauge 43 · histogram 2 · summary 2 였다</li>
+<li><code>/actuator/prometheus</code> 는 바깥에 열지 않는다. Nginx 에서 막거나 관리 포트를 따로 둔다(<code>management.server.port</code>)</li>
+</ul>
+<h2 id="http-요청">HTTP 요청</h2>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">http_server_requests_seconds_count{error="none",exception="none",method="GET",outcome="SUCCESS",status="200",uri="/orders/{id}"} 1
+http_server_requests_seconds_count{error="none",exception="none",method="GET",outcome="CLIENT_ERROR",status="404",uri="/**"} 1</code></pre>
+<ul>
+<li><code>uri</code> 는 실제 주소가 아니라 매핑의 틀(<code>/orders/{id}</code>) 이다. 주문 번호마다 시계열이 생기지 않는다. 없는 주소는 모두 <code>/**</code> 로 묶인다</li>
+<li>처음에는 <code>_count</code> · <code>_sum</code> · <code>_max</code> 만 나온다. 백분위를 구하려면 구간(<code>_bucket</code>) 을 켠다</li>
+</ul>
+<pre class="language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">management</span><span class="token punctuation">:</span>
+  <span class="token key atrule">metrics</span><span class="token punctuation">:</span>
+    <span class="token key atrule">distribution</span><span class="token punctuation">:</span>
+      <span class="token key atrule">percentiles-histogram</span><span class="token punctuation">:</span>
+        <span class="token key atrule">http.server.requests</span><span class="token punctuation">:</span> <span class="token boolean important">true</span></code></pre>
+<ul>
+<li>켜자 성공한 <code>/orders/{id}</code> 하나에만 <code>_bucket</code> 줄이 69 개 생겼다. 516 줄 가운데 HTTP 가 424 줄이 된 것이 이것이다. 구간은 라벨 조합마다 붙으므로, 꼭 볼 지표에만 켠다</li>
+<li>환경 변수로 줄 때 <code>percentiles-histogram</code> 의 <code>-</code> 를 <code>_</code> 로 바꾸면(<code>…_PERCENTILES_HISTOGRAM_…</code>) 앱이 <code>percentiles.histogram</code> 으로 읽어 <code>Failed to bind properties … to double[]</code> 로 뜨지 않았다. <code>MANAGEMENT_METRICS_DISTRIBUTION_PERCENTILESHISTOGRAM_HTTP_SERVER_REQUESTS=true</code> 로 붙여 쓴다</li>
+</ul>
+<h2 id="앱의-지표">앱의 지표</h2>
+<pre class="language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@RestController</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">OrderController</span> <span class="token punctuation">{</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">Counter</span> created<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">OrderController</span><span class="token punctuation">(</span><span class="token class-name">MeterRegistry</span> registry<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>created <span class="token operator">=</span> <span class="token class-name">Counter</span><span class="token punctuation">.</span><span class="token function">builder</span><span class="token punctuation">(</span><span class="token string">"shop_orders_created"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">description</span><span class="token punctuation">(</span><span class="token string">"만든 주문 수"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">register</span><span class="token punctuation">(</span>registry<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@PostMapping</span><span class="token punctuation">(</span><span class="token string">"/orders"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Object</span><span class="token punctuation">&gt;</span></span> <span class="token function">create</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        created<span class="token punctuation">.</span><span class="token function">increment</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token class-name">Map</span><span class="token punctuation">.</span><span class="token function">of</span><span class="token punctuation">(</span><span class="token string">"ok"</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext"># HELP shop_orders_total 만든 주문 수
+# TYPE shop_orders_total counter
+shop_orders_total 9.0</code></pre>
+<ul>
+<li>이름을 <code>shop_orders_created</code> 로 지었는데 <code>shop_orders_total</code> 로 나왔다. Prometheus 의 Java 클라이언트는 이름 끝의 <code>_total</code> · <code>_created</code> · <code>_bucket</code> · <code>_info</code> 를 형식이 쓰는 말로 보고 떼어 낸 뒤(<code>RESERVED_METRIC_NAME_SUFFIXES</code>), counter 에 <code>_total</code> 을 붙인다. 이름 끝에 이 말들을 쓰지 않는다(<code>shop_orders_placed</code>)</li>
+<li>이름은 <code>앱_무엇_단위</code>(<code>shop_payment_seconds</code>) 로 짓는다. 단위는 초 · 바이트로 맞춘다</li>
+<li>걸린 시간은 <code>Timer</code>, 지금 개수(큐 길이) 는 <code>Gauge</code>, 늘기만 하는 수는 <code>Counter</code> 로 만든다</li>
+</ul>
+<h2 id="라벨">라벨</h2>
+<ul>
+<li>라벨 값 하나하나가 따로 시계열이다. <code>Counter.builder("shop_orders").tag("user", userId)</code> 처럼 사용자 id · 주문 번호 · 전체 URL 을 라벨에 넣으면 사용자 수만큼 시계열이 생겨 Prometheus 의 메모리 · 디스크가 늘어난다</li>
+<li>라벨에는 가짓수가 정해진 것(상태 코드 · 결제 수단 · 결과 <code>SUCCESS</code>/<code>FAIL</code>) 만 넣는다. 한 사용자의 일은 로그로 본다</li>
+<li>시계열이 많은 지표는 Prometheus 에서 찾는다. <code>topk(3, count by (__name__) ({job="shop"}))</code> 는 <code>http_server_requests_seconds_bucket</code> 345 · <code>http_server_requests_active_seconds_bucket</code> 58 · <code>jvm_memory_max_bytes</code> 8 이었다</li>
+</ul>
+<h2 id="jvm-메모리">JVM 메모리</h2>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">jvm_memory_max_bytes{area="heap",id="G1 Eden Space"} -1.0
+jvm_memory_max_bytes{area="heap",id="G1 Old Gen"} 3.07232768E9
+jvm_memory_max_bytes{area="heap",id="G1 Survivor Space"} -1.0</code></pre>
+<ul>
+<li>G1 의 Eden · Survivor 는 최대값이 정해져 있지 않아 <code>-1</code> 이다. 힙 쓴 비율을 <code>sum(used) / sum(max)</code> 로 내면 <code>-1</code> 이 섞여 0.0087 처럼 틀린 값이 나왔다</li>
+<li>최대값은 Old Gen 의 것(<code>id="G1 Old Gen"</code>) 을 쓰거나, 쓴 양을 JVM 옵션으로 정한 힙(<code>-Xmx</code>) 과 견준다</li>
+</ul>
+<h2 id="다른-서버의-지표">다른 서버의 지표</h2>
+<table>
+<thead>
+<tr>
+<th>대상</th>
+<th>모으는 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>리눅스 서버</td>
+<td>node_exporter (9100)</td>
+</tr>
+<tr>
+<td>RabbitMQ</td>
+<td>들어 있는 플러그인 <code>rabbitmq_prometheus</code> — <code>http://rabbitmq:15692/metrics</code></td>
+</tr>
+<tr>
+<td>MySQL · PostgreSQL · Redis</td>
+<td><code>mysqld_exporter</code> · <code>postgres_exporter</code> · <code>redis_exporter</code> 를 옆에 띄운다</td>
+</tr>
+<tr>
+<td>Kafka</td>
+<td>JMX 를 내놓는 <code>jmx_exporter</code> 를 브로커에 붙인다</td>
+</tr>
+<tr>
+<td>Nginx</td>
+<td><code>nginx-prometheus-exporter</code> (<code>stub_status</code> 를 읽는다)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>rabbitmq:4.4-management</code> 에 바로 붙자 <code>rabbitmq_connections_opened_total</code> · <code>rabbitmq_queues_declared_total</code> 같은 287 줄이 나왔다. exporter 를 따로 띄우지 않는다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://docs.spring.io/spring-boot/reference/actuator/metrics.html">Spring Boot Metrics</a> — 기본 지표 · 히스토그램 켜기 · 직접 만들기</li>
+<li><a href="https://docs.micrometer.io/micrometer/reference/implementations/prometheus.html">Micrometer Prometheus</a> — 이름 바꾸기 규칙(<code>_total</code>) · 설정</li>
+<li><a href="https://prometheus.io/docs/practices/instrumentation/">Instrumentation</a> — 무엇을 지표로 낼까 · 라벨 수</li>
+<li><a href="https://prometheus.io/docs/instrumenting/exporters/">Exporters and integrations</a> — exporter 목록</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/Operations/">운영</a></li><li><a href="/docs/server/Operations/Prometheus/">Prometheus</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Prometheus/" rel="tag">Prometheus</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-09T12:19:26.000Z">2026-11-09</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

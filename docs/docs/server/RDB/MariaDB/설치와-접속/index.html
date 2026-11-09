@@ -1,0 +1,188 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>설치와 접속 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">관계형 DB</span><span class="up"> / <a href="/docs/server/" title="한 단계 위로">서버</a></span></p><ul><li><a href="/docs/server/RDB/">개요</a></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/RDB/MySQL/">MySQL</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/RDB/MySQL/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/RDB/MySQL/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/RDB/MySQL/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/server/RDB/MariaDB/">MariaDB</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/RDB/MariaDB/설치와-접속/" aria-current="page">설치와 접속</a></li><li><a href="/docs/server/RDB/MariaDB/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/RDB/MariaDB/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/RDB/PostgreSQL/">PostgreSQL</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/RDB/PostgreSQL/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/RDB/PostgreSQL/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/RDB/PostgreSQL/백업과-복원/">백업과 복원</a></li><li><a href="/docs/server/RDB/PostgreSQL/MySQL과-다른-것/">MySQL과 다른 것</a></li></ul></details></li></ul></nav><article><h1 class="page-title">설치와 접속</h1><details class="sidebar-m"><summary>목록 · 관계형 DB</summary><ul><li><a href="/docs/server/RDB/">개요</a></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/RDB/MySQL/">MySQL</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/RDB/MySQL/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/RDB/MySQL/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/RDB/MySQL/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/server/RDB/MariaDB/">MariaDB</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/RDB/MariaDB/설치와-접속/" aria-current="page">설치와 접속</a></li><li><a href="/docs/server/RDB/MariaDB/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/RDB/MariaDB/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/RDB/PostgreSQL/">PostgreSQL</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/RDB/PostgreSQL/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/RDB/PostgreSQL/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/RDB/PostgreSQL/백업과-복원/">백업과 복원</a></li><li><a href="/docs/server/RDB/PostgreSQL/MySQL과-다른-것/">MySQL과 다른 것</a></li></ul></details></li></ul></details><div class="content"><p>MariaDB 는 Ubuntu 패키지(<code>mariadb-server</code>) 로 서버에 바로 깔거나, Docker 이미지(<code>mariadb</code>) 로 띄운다. 둘은 root 로 들어가는 법이 다르다 — Ubuntu 패키지의 root 는 비밀번호 없이 OS 의 root 로만 들어오고, Docker 이미지는 띄울 때 준 비밀번호를 쓴다. 명령 이름은 <code>mariadb</code> · <code>mariadb-dump</code> 이고, MySQL 의 이름(<code>mysql</code> · <code>mysqldump</code>) 은 판과 설치 방법에 따라 있기도 하고 없기도 하다. 아래 예제는 <code>ubuntu:24.04</code> 에 apt 로 깐 MariaDB 10.11.14 와 <code>mariadb:12.3</code>(12.3.3, LTS) 컨테이너에서 돌렸다.</p>
+<h2 id="ubuntu-패키지">Ubuntu 패키지</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> <span class="token function">apt</span> <span class="token function">install</span> mariadb-server
+mariadbd <span class="token parameter variable">--version</span>   <span class="token comment"># mariadbd  Ver 10.11.14-MariaDB-0ubuntu0.24.04.1 for debian-linux-gnu on aarch64 (Ubuntu 24.04)</span>
+<span class="token function">sudo</span> mariadb         <span class="token comment"># 비밀번호 없이 root 로 들어간다</span></code></pre>
+<pre class="language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SHOW</span> <span class="token keyword">CREATE</span> <span class="token keyword">USER</span> root<span class="token variable">@localhost</span><span class="token punctuation">;</span></code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">CREATE USER `root`@`localhost` IDENTIFIED VIA mysql_native_password USING 'invalid' OR unix_socket</code></pre>
+<ul>
+<li>root 는 비밀번호 방식과 <code>unix_socket</code> 방식 가운데 하나로 들어온다. 비밀번호 자리에는 맞을 수 없는 값(<code>invalid</code>) 이 들어 있어, 실제로는 "접속한 OS 사용자가 root 인가" 만 본다. <code>sudo mariadb</code> 는 들어가고, 일반 사용자의 <code>mariadb -u root</code> 는 <code>ERROR 1698 (28000): Access denied for user 'root'@'localhost'</code> 로 막힌다</li>
+<li><code>mysql.user</code> 는 표가 아니라 보기(view) 다. 계정은 <code>mysql.global_priv</code> 에 JSON 으로 담기고, <code>mysql.user</code> 의 <code>plugin</code> 열은 첫 방식(<code>mysql_native_password</code>) 만 보인다. 계정의 방식은 <code>SHOW CREATE USER</code> 로 본다</li>
+<li><code>mysql</code> · <code>mysqldump</code> 는 <code>mariadb</code> · <code>mariadb-dump</code> 를 가리키는 링크로 들어 있다</li>
+<li><code>sudo mariadb-secure-installation</code> 은 익명 사용자와 <code>test</code> DB 를 지우고 root 의 원격 로그인을 막는다. Ubuntu 패키지는 처음부터 익명 사용자 · <code>test</code> DB 가 없었다</li>
+<li>서비스는 <code>systemctl status mariadb</code> 다. 설정에서 <code>log_error</code> 줄이 주석이라 로그는 파일이 아니라 저널(<code>journalctl -u mariadb</code>) 로 간다</li>
+<li>파일 백업 도구 <code>mariadb-backup</code> 은 따로 깐다(<code>sudo apt install mariadb-backup</code>)</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>자리 · 값</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>서버 설정</td>
+<td><code>/etc/mysql/mariadb.conf.d/50-server.cnf</code></td>
+</tr>
+<tr>
+<td>자료</td>
+<td><code>/var/lib/mysql/</code></td>
+</tr>
+<tr>
+<td>소켓</td>
+<td><code>/run/mysqld/mysqld.sock</code></td>
+</tr>
+<tr>
+<td>듣는 주소</td>
+<td><code>bind-address = 127.0.0.1</code></td>
+</tr>
+<tr>
+<td>문자셋 · 정렬</td>
+<td><code>utf8mb4</code> · <code>utf8mb4_general_ci</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="docker">Docker</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">docker</span> run <span class="token parameter variable">-d</span> <span class="token parameter variable">--name</span> mdb <span class="token punctuation">\</span>
+  <span class="token parameter variable">-e</span> <span class="token assign-left variable">MARIADB_ROOT_PASSWORD</span><span class="token operator">=</span>Root-pass-1 <span class="token punctuation">\</span>
+  <span class="token parameter variable">-v</span> mariadb-data:/var/lib/mysql <span class="token punctuation">\</span>
+  <span class="token parameter variable">-p</span> <span class="token number">127.0</span>.0.1:3306:3306 <span class="token punctuation">\</span>
+  mariadb:12.3
+<span class="token function">docker</span> logs mdb <span class="token operator"><span class="token file-descriptor important">2</span>&gt;</span><span class="token file-descriptor important">&amp;1</span> <span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">"init process done"</span>
+<span class="token function">docker</span> <span class="token builtin class-name">exec</span> <span class="token parameter variable">-it</span> mdb mariadb <span class="token parameter variable">-uroot</span> <span class="token parameter variable">-p</span></code></pre>
+<ul>
+<li>처음 띄울 때 임시 서버로 root 비밀번호 · DB 를 만든 뒤 다시 뜬다. 로그에 <code>MariaDB init process done. Ready for start up.</code> 이 나오고 <code>ready for connections.</code> 가 한 번 더 나온 뒤에 붙는다</li>
+<li><code>MARIADB_DATABASE</code> · <code>MARIADB_USER</code> · <code>MARIADB_PASSWORD</code> 를 주면 앱용 DB 와 사용자까지 만든다. 자료 폴더가 비어 있을 때 한 번만 쓰인다</li>
+<li>11.8 · 12.3 이미지에는 <code>mysql</code> · <code>mysqldump</code> 이름이 없다. <code>docker exec mdb mysql …</code> 은 <code>exec: "mysql": executable file not found in $PATH</code> 다. 스크립트에 옛 이름이 있으면 <code>mariadb</code> · <code>mariadb-dump</code> 로 바꾼다</li>
+<li>이미지는 <code>bind-address</code> 를 정하지 않아 컨테이너 안의 모든 주소에서 듣는다. 바깥에 열지 않으려면 위처럼 <code>-p 127.0.0.1:…</code> 로 붙인다</li>
+<li>root 는 <code>root@localhost</code> 와 <code>root@%</code> 둘이 만들어진다. 건강 검사용 <code>healthcheck</code> 사용자도 함께 생긴다</li>
+<li><code>mariadb:lts</code> 태그는 지금의 LTS(12.3) 를 가리킨다. 판이 바뀌면 따라 바뀌므로 운영에서는 <code>12.3</code> 처럼 판을 적는다</li>
+</ul>
+<p>건강 검사는 이미지에 든 <code>healthcheck.sh</code> 로 한다. 2 초마다 검사하게 띄우자 4 초쯤 뒤 <code>healthy</code> 가 됐다.</p>
+<pre class="language-yaml" data-language="yaml"><code class="language-yaml"><span class="token comment"># compose.yaml</span>
+<span class="token key atrule">services</span><span class="token punctuation">:</span>
+  <span class="token key atrule">db</span><span class="token punctuation">:</span>
+    <span class="token key atrule">image</span><span class="token punctuation">:</span> mariadb<span class="token punctuation">:</span><span class="token number">12.3</span>
+    <span class="token key atrule">environment</span><span class="token punctuation">:</span>
+      <span class="token key atrule">MARIADB_ROOT_PASSWORD</span><span class="token punctuation">:</span> Root<span class="token punctuation">-</span>pass<span class="token punctuation">-</span><span class="token number">1</span>
+    <span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> mariadb<span class="token punctuation">-</span>data<span class="token punctuation">:</span>/var/lib/mysql
+    <span class="token key atrule">healthcheck</span><span class="token punctuation">:</span>
+      <span class="token key atrule">test</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">"CMD"</span><span class="token punctuation">,</span> <span class="token string">"healthcheck.sh"</span><span class="token punctuation">,</span> <span class="token string">"--connect"</span><span class="token punctuation">,</span> <span class="token string">"--innodb_initialized"</span><span class="token punctuation">]</span>
+      <span class="token key atrule">interval</span><span class="token punctuation">:</span> 10s
+      <span class="token key atrule">retries</span><span class="token punctuation">:</span> <span class="token number">5</span>
+<span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+  mariadb<span class="token punctuation">-</span>data<span class="token punctuation">:</span></code></pre>
+<ul>
+<li><code>healthcheck.sh</code> 는 <code>/var/lib/mysql/.my-healthcheck.cnf</code> 의 <code>healthcheck</code> 사용자로 붙는다. 앱 컨테이너에 <code>depends_on: db: condition: service_healthy</code> 를 주면 DB 가 준비된 뒤에 뜬다</li>
+</ul>
+<h2 id="문자셋">문자셋</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>정렬 규칙 기본값</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MySQL 8.4</td>
+<td><code>utf8mb4_0900_ai_ci</code></td>
+</tr>
+<tr>
+<td>MariaDB 10.11 (Ubuntu 패키지)</td>
+<td><code>utf8mb4_general_ci</code></td>
+</tr>
+<tr>
+<td>MariaDB 12.3 (Docker 이미지)</td>
+<td><code>utf8mb4_uca1400_ai_ci</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>셋 다 대소문자 · 악센트를 가리지 않는다(<code>ai_ci</code>). 다만 이름이 달라 덤프를 옮길 때 걸린다 — 덤프의 표마다 <code>COLLATE=…</code> 가 적혀 있다</li>
+<li>클라이언트 문자셋은 <code>LANG</code> 을 보고 정한다. <code>LANG</code> 이 없으면 둘 다 <code>latin1</code> 이고, <code>LANG=C.UTF-8</code> 이면 12.3 은 <code>utf8mb4</code>, 10.11 은 <code>utf8mb3</code> 였다</li>
+<li>10.11 클라이언트가 <code>utf8mb3</code> 로 붙으면 한글은 들어가지만 이모지는 <code>ERROR 1366 (22007): Incorrect string value: '\xF0\x9F\x98\x80' for column …</code> 로 막힌다. <code>--default-character-set=utf8mb4</code> 를 주면 들어간다</li>
+<li>클라이언트 설정 파일에 적어 두면 <code>LANG</code> 과 상관없이 <code>utf8mb4</code> 로 붙는다</li>
+</ul>
+<pre class="language-ini" data-language="ini"><code class="language-ini"><span class="token comment"># /etc/mysql/mariadb.conf.d/50-client.cnf</span>
+<span class="token section"><span class="token punctuation">[</span><span class="token section-name selector">client</span><span class="token punctuation">]</span></span>
+<span class="token key attr-name">default-character-set</span> <span class="token punctuation">=</span> <span class="token value attr-value">utf8mb4</span></code></pre>
+<h2 id="바깥에서-접속">바깥에서 접속</h2>
+<p>Ubuntu 패키지는 <code>127.0.0.1</code> 에서만 듣는다. 다른 서버에서 붙으면 <code>ERROR 2002 (HY000): Can't connect to server on 'ua' (115)</code> 다.</p>
+<pre class="language-ini" data-language="ini"><code class="language-ini"><span class="token comment"># /etc/mysql/mariadb.conf.d/50-server.cnf</span>
+<span class="token key attr-name">bind-address</span> <span class="token punctuation">=</span> <span class="token value attr-value">0.0.0.0</span></code></pre>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> systemctl restart mariadb</code></pre>
+<ul>
+<li>붙을 사용자는 그 주소에서 들어오는 계정이어야 한다(<code>'app'@'%'</code> · <code>'app'@'10.0.0.%'</code>). <code>root@localhost</code> 로는 바깥에서 들어오지 못한다</li>
+<li>인터넷에 3306 을 열지 않는다. 방화벽에서 앱 서버에만 열고, 내 컴퓨터에서 볼 때는 SSH 터널(<code>ssh -L 3306:127.0.0.1:3306 서버</code>) 로 붙는다</li>
+</ul>
+<h2 id="접속-암호화-114-부터">접속 암호화 (11.4 부터)</h2>
+<p>11.4 부터 서버는 인증서를 정하지 않아도 스스로 만든 인증서로 TLS 를 켜고, 클라이언트는 서버 인증서를 확인하는 것이 기본이다. 그래서 옛 서버 · MySQL 서버에 새 클라이언트로 붙으면 막힌다.</p>
+<table>
+<thead>
+<tr>
+<th>클라이언트 → 서버</th>
+<th>결과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>12.3 → 10.11 (Ubuntu 패키지, TLS 없음)</td>
+<td><code>ERROR 2026 (HY000): TLS/SSL error: SSL is required, but the server does not support it</code></td>
+</tr>
+<tr>
+<td>12.3 → MySQL 8.4</td>
+<td><code>ERROR 2026 (HY000): TLS/SSL error: self-signed certificate in certificate chain</code></td>
+</tr>
+<tr>
+<td>12.3 → 12.3</td>
+<td>TLSv1.3 으로 붙는다</td>
+</tr>
+<tr>
+<td>10.11 → 12.3</td>
+<td>TLSv1.3 으로 붙는다</td>
+</tr>
+<tr>
+<td>MySQL 8.4 → 12.3 · 10.11</td>
+<td>붙는다</td>
+</tr>
+</tbody>
+</table>
+<pre class="language-sh" data-language="sh"><code class="language-sh">mariadb <span class="token parameter variable">-h</span> old-db <span class="token parameter variable">-u</span> app <span class="token parameter variable">-p</span> --skip-ssl                      <span class="token comment"># TLS 가 없는 옛 서버</span>
+mariadb <span class="token parameter variable">-h</span> mysql-db <span class="token parameter variable">-u</span> app <span class="token parameter variable">-p</span> --skip-ssl-verify-server-cert <span class="token comment"># 인증서를 확인하지 않는다</span></code></pre>
+<ul>
+<li>12.3 끼리는 인증서를 정하지 않았는데도 확인을 통과했다. 비밀번호를 아는 클라이언트가 인증서의 지문을 비밀번호로 확인하는 방식이라, 비밀번호 방식(<code>mysql_native_password</code> · <code>ed25519</code>) 계정에서 된다</li>
+<li><code>--skip-ssl</code> 로 붙으면 오가는 자료가 암호화되지 않는다. 옛 서버에는 인증서를 정해 TLS 를 켜는 편이 낫다</li>
+<li>접속 상태는 <code>SHOW SESSION STATUS LIKE 'Ssl_version'</code> 으로 본다(<code>TLSv1.3</code>)</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://mariadb.com/docs/server/server-management/install-and-upgrade-mariadb/installing-mariadb/binary-packages/installing-mariadb-deb-files">Installing MariaDB on Ubuntu</a> — 패키지 · 저장소</li>
+<li><a href="https://hub.docker.com/_/mariadb">mariadb (Docker Official Image)</a> — 환경 변수 · <code>healthcheck.sh</code></li>
+<li><a href="https://mariadb.org/mission-impossible-zero-configuration-ssl/">Mission Impossible: Zero-Configuration SSL</a> — 11.4 의 TLS 기본값 · 지문 확인 방식</li>
+<li><a href="https://mariadb.com/docs/server/security/securing-mariadb/encryption/data-in-transit-encryption/securing-connections-for-client-and-server">Securing Connections for Client and Server</a> — 인증서 정하기</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/RDB/">관계형 DB</a></li><li><a href="/docs/server/RDB/MariaDB/">MariaDB</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/MariaDB/" rel="tag">MariaDB</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-09T04:00:23.000Z">2026-11-09</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

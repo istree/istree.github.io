@@ -1,0 +1,455 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>이동과 편집 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">편집기 IDE</span><span class="up"> / <a href="/docs/" title="한 단계 위로">도구</a></span></p><ul><li><a href="/docs/tool/IDE/">개요</a></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/tool/IDE/Vim/">Vim</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/tool/IDE/Vim/이동과-편집/" aria-current="page">이동과 편집</a></li><li><a href="/docs/tool/IDE/Vim/검색과-바꾸기/">검색과 바꾸기</a></li><li><a href="/docs/tool/IDE/Vim/레지스터와-매크로/">레지스터와 매크로</a></li><li><a href="/docs/tool/IDE/Vim/설정/">설정</a></li></ul></details></li><li><a href="/docs/tool/IDE/Visual-Studio-Code/">Visual Studio Code</a></li><li><a href="/docs/tool/IDE/Visual-Studio/">Visual Studio</a></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/tool/IDE/IntelliJ/">IntelliJ</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/tool/IDE/IntelliJ/터미널에서-실행(IntelliJ)/">터미널에서 실행(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/JetBrains-IDE를-사용한다면-기억하고-싶은-10-tips/">JetBrains IDE를 사용한다면 기억하고 싶은 10 tips(JP)</a></li><li><a href="/docs/tool/IDE/IntelliJ/단축키(IntelliJ)/">단축키(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/응용프로그램-실행-설정(IntelliJ)/">응용프로그램 실행 설정(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/코드스니펫(IntelliJ)/">코드스니펫(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/톰켓설정(IntelliJ)/">톰켓설정(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/파일-확장자-인식-오류(IntelliJ)/">파일 확장자 인식 오류(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/환경설정(IntelliJ)/">환경설정(IntelliJ)</a></li></ul></details></li><li><a href="/docs/tool/IDE/Eclipse/">Eclipse</a></li></ul></nav><article><h1 class="page-title">이동과 편집</h1><details class="sidebar-m"><summary>목록 · 편집기 IDE</summary><ul><li><a href="/docs/tool/IDE/">개요</a></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/tool/IDE/Vim/">Vim</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/tool/IDE/Vim/이동과-편집/" aria-current="page">이동과 편집</a></li><li><a href="/docs/tool/IDE/Vim/검색과-바꾸기/">검색과 바꾸기</a></li><li><a href="/docs/tool/IDE/Vim/레지스터와-매크로/">레지스터와 매크로</a></li><li><a href="/docs/tool/IDE/Vim/설정/">설정</a></li></ul></details></li><li><a href="/docs/tool/IDE/Visual-Studio-Code/">Visual Studio Code</a></li><li><a href="/docs/tool/IDE/Visual-Studio/">Visual Studio</a></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/tool/IDE/IntelliJ/">IntelliJ</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/tool/IDE/IntelliJ/터미널에서-실행(IntelliJ)/">터미널에서 실행(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/JetBrains-IDE를-사용한다면-기억하고-싶은-10-tips/">JetBrains IDE를 사용한다면 기억하고 싶은 10 tips(JP)</a></li><li><a href="/docs/tool/IDE/IntelliJ/단축키(IntelliJ)/">단축키(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/응용프로그램-실행-설정(IntelliJ)/">응용프로그램 실행 설정(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/코드스니펫(IntelliJ)/">코드스니펫(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/톰켓설정(IntelliJ)/">톰켓설정(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/파일-확장자-인식-오류(IntelliJ)/">파일 확장자 인식 오류(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/환경설정(IntelliJ)/">환경설정(IntelliJ)</a></li></ul></details></li><li><a href="/docs/tool/IDE/Eclipse/">Eclipse</a></li></ul></details><div class="content"><p>Vim 은 모드를 오가며 쓴다. 노멀 모드에서는 키가 곧 명령이고, <code>i</code> · <code>a</code> · <code>o</code> 로 삽입 모드에 들어가 글자를 넣은 뒤 <code>Esc</code> 로 돌아온다. 편집 명령은 연산자(operator) 와 대상으로 이루어진다. 연산자(<code>d</code> 삭제 · <code>c</code> 변경 · <code>y</code> 복사) 뒤에 이동 명령(<code>w</code> · <code>$</code> · <code>f;</code>) 이나 텍스트 객체(<code>iw</code> · <code>i"</code> · <code>a(</code>) 를 붙이면 그 범위에 연산자가 적용되고, 앞에 숫자를 붙이면 그 수만큼 반복한다. 마지막 편집은 <code>.</code> 으로 반복한다.</p>
+<h2 id="모드">모드</h2>
+<table>
+<thead>
+<tr>
+<th>키</th>
+<th>들어가는 곳</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>i</code> · <code>a</code></td>
+<td>커서 앞 · 뒤에 삽입</td>
+</tr>
+<tr>
+<td><code>I</code> · <code>A</code></td>
+<td>줄의 첫 글자 앞 · 줄 끝에 삽입</td>
+</tr>
+<tr>
+<td><code>o</code> · <code>O</code></td>
+<td>아래 · 위에 새 줄을 넣고 삽입</td>
+</tr>
+<tr>
+<td><code>s</code> · <code>S</code></td>
+<td>글자 하나 · 줄을 지우고 삽입</td>
+</tr>
+<tr>
+<td><code>v</code> · <code>V</code> · <code>Ctrl-v</code></td>
+<td>글자 · 줄 · 블록 단위 비주얼 모드</td>
+</tr>
+<tr>
+<td><code>R</code></td>
+<td>바꾸기 모드 (덮어쓰기)</td>
+</tr>
+<tr>
+<td><code>:</code></td>
+<td>명령줄</td>
+</tr>
+<tr>
+<td><code>Esc</code> · <code>Ctrl-[</code></td>
+<td>노멀 모드로</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>명령</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>:w</code> · <code>:w 이름</code></td>
+<td>저장 · 다른 이름으로 저장</td>
+</tr>
+<tr>
+<td><code>:q</code> · <code>:q!</code> · <code>:wq</code> · <code>:x</code></td>
+<td>끝내기 · 버리고 끝내기 · 저장하고 끝내기 · 바뀐 것이 있으면 저장하고 끝내기</td>
+</tr>
+<tr>
+<td><code>:e!</code></td>
+<td>저장한 상태로 되돌린다</td>
+</tr>
+<tr>
+<td><code>:w !sudo tee %</code></td>
+<td>권한 없이 연 파일을 sudo 로 저장</td>
+</tr>
+</tbody>
+</table>
+<h2 id="이동">이동</h2>
+<table>
+<thead>
+<tr>
+<th>키</th>
+<th>이동하는 곳</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>h</code> <code>j</code> <code>k</code> <code>l</code></td>
+<td>왼쪽 · 아래 · 위 · 오른쪽</td>
+</tr>
+<tr>
+<td><code>w</code> · <code>b</code> · <code>e</code> · <code>ge</code></td>
+<td>다음 단어 처음 · 앞 단어 처음 · 단어 끝 · 앞 단어 끝</td>
+</tr>
+<tr>
+<td><code>W</code> · <code>B</code> · <code>E</code></td>
+<td>빈칸으로만 나눈 단어(WORD) 로 같은 일</td>
+</tr>
+<tr>
+<td><code>0</code> · <code>^</code> · <code>$</code></td>
+<td>줄의 맨 앞 · 첫 글자 · 끝</td>
+</tr>
+<tr>
+<td><code>f;</code> · <code>t;</code> · <code>F;</code> · <code>T;</code></td>
+<td>줄 안의 다음 <code>;</code> 로 · 그 앞으로 · 거꾸로 (<code>;</code> · <code>,</code> 로 반복)</td>
+</tr>
+<tr>
+<td><code>gg</code> · <code>G</code> · <code>12G</code> · <code>:12</code></td>
+<td>첫 줄 · 끝 줄 · 12 번째 줄</td>
+</tr>
+<tr>
+<td><code>{</code> · <code>}</code></td>
+<td>이전 · 다음 단락 (빈 줄)</td>
+</tr>
+<tr>
+<td><code>%</code></td>
+<td>짝이 맞는 괄호로</td>
+</tr>
+<tr>
+<td><code>*</code> · <code>#</code></td>
+<td>커서 아래 단어를 아래로 · 위로 검색</td>
+</tr>
+<tr>
+<td><code>H</code> · <code>M</code> · <code>L</code></td>
+<td>화면의 위 · 가운데 · 아래 줄</td>
+</tr>
+<tr>
+<td><code>Ctrl-d</code> · <code>Ctrl-u</code> · <code>Ctrl-f</code> · <code>Ctrl-b</code></td>
+<td>반 화면 아래 · 위, 한 화면 아래 · 위</td>
+</tr>
+<tr>
+<td><code>zz</code> · <code>zt</code> · <code>zb</code></td>
+<td>지금 줄을 화면 가운데 · 위 · 아래로</td>
+</tr>
+<tr>
+<td><code> </code> `` · <code>Ctrl-o</code> · <code>Ctrl-i</code></td>
+<td>최근 점프 전 자리 · 점프 목록의 이전 · 다음 자리</td>
+</tr>
+<tr>
+<td><code>ma</code> · <code>`a</code></td>
+<td>지금 자리를 마크 <code>a</code> 로 · 마크 <code>a</code> 로 점프</td>
+</tr>
+<tr>
+<td><code>gd</code></td>
+<td>커서 아래 이름이 정의된 곳</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>w</code> 는 기호도 한 단어로 본다. <code>msg = "hello, " + name</code> 에서 <code>msg</code> 다음 <code>w</code> 는 <code>=</code> 에 선다</li>
+<li><code>W</code> 는 빈칸만 단어의 경계로 본다. <code>"hello,</code> 위에서 <code>dw</code> 는 <code>"</code> 하나를, <code>dW</code> 는 <code>"hello, </code> 를 삭제한다</li>
+</ul>
+<h2 id="연산자">연산자</h2>
+<table>
+<thead>
+<tr>
+<th>연산자</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>d</code></td>
+<td>삭제 (삭제한 것은 <code>p</code> 로 붙여 넣는다)</td>
+</tr>
+<tr>
+<td><code>c</code></td>
+<td>변경 — 삭제하고 삽입 모드로</td>
+</tr>
+<tr>
+<td><code>y</code></td>
+<td>복사</td>
+</tr>
+<tr>
+<td><code>&gt;</code> · <code>&lt;</code> · <code>=</code></td>
+<td>들여쓰기 · 내어쓰기 · 자동 정렬</td>
+</tr>
+<tr>
+<td><code>gU</code> · <code>gu</code> · <code>g~</code></td>
+<td>대문자 · 소문자 · 대소문자 전환</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>연산자를 두 번 쓰면(<code>dd</code> · <code>cc</code> · <code>yy</code> · <code>&gt;&gt;</code> · <code>==</code>) 지금 줄이 대상이다</li>
+<li><code>D</code> · <code>C</code> 는 줄 끝까지(<code>d$</code> · <code>c$</code>), <code>Y</code> 는 줄 전체(<code>yy</code>) 다</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>키</th>
+<th>하는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>d2w</code> · <code>2dw</code></td>
+<td>단어 둘을 삭제한다. <code>2d3w</code> 는 여섯 (숫자는 곱해진다)</td>
+</tr>
+<tr>
+<td><code>dt;</code> · <code>df;</code></td>
+<td><code>;</code> 앞까지 · <code>;</code> 까지 삭제한다</td>
+</tr>
+<tr>
+<td><code>dj</code> · <code>3dd</code></td>
+<td>지금 줄과 아래 줄 · 세 줄을 삭제한다</td>
+</tr>
+<tr>
+<td><code>gUiw</code></td>
+<td>단어를 대문자로 (<code>name</code> → <code>NAME</code>)</td>
+</tr>
+<tr>
+<td><code>xp</code> · <code>ddp</code></td>
+<td>두 글자 · 두 줄을 맞바꾼다</td>
+</tr>
+<tr>
+<td><code>yyp</code></td>
+<td>줄을 바로 아래에 복제</td>
+</tr>
+<tr>
+<td><code>&gt;G</code> · <code>=G</code></td>
+<td>끝 줄까지 들여쓰기 · 자동 정렬</td>
+</tr>
+</tbody>
+</table>
+<h2 id="그-밖의-편집">그 밖의 편집</h2>
+<table>
+<thead>
+<tr>
+<th>키</th>
+<th>하는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>p</code> · <code>P</code></td>
+<td>커서 뒤 · 앞에 붙여넣기 (줄을 복사했으면 아래 · 위 줄로)</td>
+</tr>
+<tr>
+<td><code>x</code> · <code>X</code></td>
+<td>커서 글자 · 앞 글자 삭제</td>
+</tr>
+<tr>
+<td><code>r</code></td>
+<td>글자 하나 바꾸기 (<code>r9</code>)</td>
+</tr>
+<tr>
+<td><code>J</code> · <code>gJ</code></td>
+<td>다음 줄과 연결 · 빈칸 없이 연결</td>
+</tr>
+<tr>
+<td><code>~</code></td>
+<td>커서 글자의 대소문자 전환</td>
+</tr>
+</tbody>
+</table>
+<h2 id="텍스트-객체">텍스트 객체</h2>
+<p>연산자 뒤에 <code>i</code>(안쪽) · <code>a</code>(둘레까지) 와 객체를 쓰면, 커서가 객체 안 어디에 있든 객체 전체가 대상이다.</p>
+<table>
+<thead>
+<tr>
+<th>객체</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>w</code> · <code>W</code></td>
+<td>단어</td>
+</tr>
+<tr>
+<td><code>s</code> · <code>p</code></td>
+<td>문장 · 단락 (빈 줄로 나뉜 덩어리)</td>
+</tr>
+<tr>
+<td><code>"</code> · <code>'</code> · <code>`</code></td>
+<td>따옴표</td>
+</tr>
+<tr>
+<td><code>(</code> <code>)</code> <code>b</code> · <code>{</code> <code>}</code> <code>B</code> · <code>[</code> · <code>&lt;</code></td>
+<td>괄호</td>
+</tr>
+<tr>
+<td><code>t</code></td>
+<td>HTML · XML 태그</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>커서 자리 · 키</th>
+<th>전 → 후</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>(name, age)</code> 안 · <code>ci(</code> + <code>who</code></td>
+<td><code>greet(name, age)</code> → <code>greet(who)</code></td>
+</tr>
+<tr>
+<td><code>(name, age)</code> 안 · <code>da(</code></td>
+<td><code>greet(name, age):</code> → <code>greet:</code></td>
+</tr>
+<tr>
+<td><code>"hello, "</code> 안 · <code>ci"</code> + <code>bye</code></td>
+<td><code>msg = "hello, " + name</code> → <code>msg = "bye" + name</code></td>
+</tr>
+<tr>
+<td><code>"hello, "</code> 안 · <code>da"</code></td>
+<td><code>msg = "hello, " + name</code> → <code>msg = + name</code> (뒤 빈칸도)</td>
+</tr>
+<tr>
+<td><code>msg</code> 위 · <code>diw</code> · <code>daw</code></td>
+<td>단어만 · 단어와 뒤 빈칸</td>
+</tr>
+<tr>
+<td>단락 안 · <code>dap</code></td>
+<td>단락과 뒤 빈 줄</td>
+</tr>
+<tr>
+<td><code>&lt;b&gt;x&lt;/b&gt;</code> 안 · <code>cit</code></td>
+<td>태그 안을 바꾼다</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>ci"</code> · <code>ci(</code> 는 커서가 따옴표 · 괄호 앞(같은 줄) 에 있어도 그 줄의 다음 것으로 건너가 바꾼다</li>
+<li>「안쪽 변경」(<code>ci…</code>) 을 가장 자주 쓴다</li>
+</ul>
+<h2 id="반복--실행-취소">반복 · 실행 취소</h2>
+<table>
+<thead>
+<tr>
+<th>키</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.</code> · <code>3.</code></td>
+<td>마지막 편집을 반복 · 세 번 반복</td>
+</tr>
+<tr>
+<td><code>u</code> · <code>U</code> · <code>Ctrl-r</code></td>
+<td>실행 취소 · 그 줄의 변경을 모두 취소 · 다시 실행</td>
+</tr>
+<tr>
+<td><code>&amp;</code></td>
+<td>마지막 <code>:s</code> 를 지금 줄에 반복</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>한 번 고친 뒤 자리를 옮겨 <code>.</code> 을 누르는 방식으로 많이 쓴다. <code>&gt;&gt;</code> 뒤 <code>j.</code> 는 다음 줄도 들여쓴다</li>
+<li>설정 없이는 <code>&gt;&gt;</code> 가 탭 하나(8 칸) 를 넣는다. 빈칸 4 칸은 <code>set expandtab shiftwidth=4</code> 다</li>
+</ul>
+<h2 id="비주얼-모드">비주얼 모드</h2>
+<table>
+<thead>
+<tr>
+<th>키</th>
+<th>하는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>v</code> + 이동 → 연산자</td>
+<td>선택한 곳에 연산자를 적용한다 (<code>d</code> · <code>y</code> · <code>c</code> · <code>&gt;</code> · <code>~</code> · <code>gU</code>)</td>
+</tr>
+<tr>
+<td><code>V</code></td>
+<td>줄 단위</td>
+</tr>
+<tr>
+<td><code>Ctrl-v</code> → <code>I</code> 글자 <code>Esc</code></td>
+<td>여러 줄 앞에 한꺼번에 삽입 (<code>Ctrl-v 2j I# Esc</code> → 세 줄 앞에 <code># </code>)</td>
+</tr>
+<tr>
+<td><code>Ctrl-v</code> → <code>$</code> <code>A</code> 글자 <code>Esc</code></td>
+<td>여러 줄 끝에 한꺼번에 추가</td>
+</tr>
+<tr>
+<td><code>gv</code></td>
+<td>마지막 선택 영역을 다시 선택한다</td>
+</tr>
+<tr>
+<td><code>o</code></td>
+<td>선택 영역의 반대쪽 끝으로</td>
+</tr>
+<tr>
+<td><code>:</code></td>
+<td>선택한 줄에 명령 (<code>:'&lt;,'&gt;</code> 가 저절로 들어간다)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>블록 삽입(<code>I</code> · <code>A</code>) 은 <code>Esc</code> 를 누른 뒤에 다른 줄에도 들어간다</li>
+</ul>
+<h2 id="창--버퍼--탭">창 · 버퍼 · 탭</h2>
+<table>
+<thead>
+<tr>
+<th>명령</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>:e 파일</code> · <code>:e .</code></td>
+<td>다른 파일 열기 · 폴더 목록</td>
+</tr>
+<tr>
+<td><code>:ls</code> · <code>:b 2</code> · <code>:bn</code> · <code>:bp</code> · <code>:bd</code></td>
+<td>버퍼 목록 · 2 번 버퍼로 · 다음 · 앞 · 닫기</td>
+</tr>
+<tr>
+<td><code>:sp</code> · <code>:vs</code> · <code>Ctrl-w s</code> · <code>Ctrl-w v</code></td>
+<td>상하 · 좌우로 창 분할</td>
+</tr>
+<tr>
+<td><code>Ctrl-w w</code> · <code>Ctrl-w h</code> <code>j</code> <code>k</code> <code>l</code></td>
+<td>다음 창 · 그쪽 창으로</td>
+</tr>
+<tr>
+<td><code>Ctrl-w =</code> · <code>Ctrl-w _</code> · <code>Ctrl-w o</code></td>
+<td>창 크기를 같게 · 지금 창 크게 · 지금 창만 남기기</td>
+</tr>
+<tr>
+<td><code>:tabnew</code> · <code>gt</code> · <code>gT</code></td>
+<td>새 탭 · 다음 · 앞 탭</td>
+</tr>
+</tbody>
+</table>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://vimhelp.org/motion.txt.html">motion.txt</a> — 이동 명령 · 텍스트 객체 전부</li>
+<li><a href="https://vimhelp.org/change.txt.html">change.txt</a> — 삭제 · 변경 · 복사 · 붙여넣기</li>
+<li><a href="https://vimhelp.org/usr_toc.txt.html">User manual</a> — 처음부터 차례로 읽는 사용자 설명서</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">도구</a></li><li><a href="/docs/tool/IDE/">편집기 IDE</a></li><li><a href="/docs/tool/IDE/Vim/">Vim</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Vim/" rel="tag">Vim</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-09T16:52:25.000Z">2026-11-10</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

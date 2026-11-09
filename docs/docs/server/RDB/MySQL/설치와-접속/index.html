@@ -1,0 +1,118 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>설치와 접속 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">관계형 DB</span><span class="up"> / <a href="/docs/server/" title="한 단계 위로">서버</a></span></p><ul><li><a href="/docs/server/RDB/">개요</a></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/server/RDB/MySQL/">MySQL</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/RDB/MySQL/설치와-접속/" aria-current="page">설치와 접속</a></li><li><a href="/docs/server/RDB/MySQL/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/RDB/MySQL/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/RDB/MariaDB/">MariaDB</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/RDB/MariaDB/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/RDB/MariaDB/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/RDB/MariaDB/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/RDB/PostgreSQL/">PostgreSQL</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/RDB/PostgreSQL/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/RDB/PostgreSQL/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/RDB/PostgreSQL/백업과-복원/">백업과 복원</a></li><li><a href="/docs/server/RDB/PostgreSQL/MySQL과-다른-것/">MySQL과 다른 것</a></li></ul></details></li></ul></nav><article><h1 class="page-title">설치와 접속</h1><details class="sidebar-m"><summary>목록 · 관계형 DB</summary><ul><li><a href="/docs/server/RDB/">개요</a></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/server/RDB/MySQL/">MySQL</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/RDB/MySQL/설치와-접속/" aria-current="page">설치와 접속</a></li><li><a href="/docs/server/RDB/MySQL/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/RDB/MySQL/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/RDB/MariaDB/">MariaDB</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/RDB/MariaDB/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/RDB/MariaDB/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/RDB/MariaDB/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/RDB/PostgreSQL/">PostgreSQL</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/RDB/PostgreSQL/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/RDB/PostgreSQL/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/RDB/PostgreSQL/백업과-복원/">백업과 복원</a></li><li><a href="/docs/server/RDB/PostgreSQL/MySQL과-다른-것/">MySQL과 다른 것</a></li></ul></details></li></ul></details><div class="content"><p>MySQL 은 Ubuntu 패키지(<code>mysql-server</code>) 로 서버에 바로 깔거나, Docker 이미지(<code>mysql</code>) 로 띄운다. 둘은 root 로 들어가는 법이 다르다 — Ubuntu 패키지의 root 는 비밀번호 없이 OS 의 root 로만 들어오고, Docker 이미지는 띄울 때 준 비밀번호를 쓴다. 처음 띄운 뒤에는 앱이 쓸 DB 와 사용자를 따로 만들고, 바깥에서 접속하게 할지 정한다. 아래 예제는 <code>ubuntu:24.04</code> 에 apt 로 깐 MySQL 8.0.46 과 <code>mysql:8.4</code>(8.4.13) 컨테이너에서 돌렸다.</p>
+<h2 id="ubuntu-패키지">Ubuntu 패키지</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> <span class="token function">apt</span> <span class="token function">install</span> mysql-server
+mysqld <span class="token parameter variable">--version</span>     <span class="token comment"># /usr/sbin/mysqld  Ver 8.0.46-0ubuntu0.24.04.4 for Linux on aarch64 ((Ubuntu))</span>
+<span class="token function">sudo</span> mysql           <span class="token comment"># 비밀번호 없이 root 로 들어간다</span></code></pre>
+<pre class="language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> <span class="token keyword">user</span><span class="token punctuation">,</span> host<span class="token punctuation">,</span> plugin <span class="token keyword">FROM</span> mysql<span class="token punctuation">.</span><span class="token keyword">user</span><span class="token punctuation">;</span></code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">user              host       plugin
+debian-sys-maint  localhost  caching_sha2_password
+mysql.infoschema  localhost  caching_sha2_password
+mysql.session     localhost  caching_sha2_password
+mysql.sys         localhost  caching_sha2_password
+root              localhost  auth_socket</code></pre>
+<ul>
+<li>root 는 <code>auth_socket</code> 이라 비밀번호 대신 "접속한 OS 사용자가 root 인가" 를 본다. <code>sudo mysql</code> 로는 들어가고, 일반 사용자의 <code>mysql -u root -p</code> 는 막힌다</li>
+<li>root 에 비밀번호를 주려면 <code>ALTER USER root@localhost IDENTIFIED WITH caching_sha2_password BY '…';</code> 이다. 그 뒤로는 <code>sudo mysql</code> 도 <code>Access denied for user 'root'@'localhost' (using password: NO)</code> 로 막히고 <code>mysql -u root -p</code> 로 들어간다. 앱용 사용자를 따로 만들고 root 는 그대로 두는 편이 낫다</li>
+<li><code>sudo mysql_secure_installation</code> 은 익명 사용자 · 시험 DB 를 지우고 root 의 원격 로그인을 막는다. 처음 깐 뒤 한 번 돌린다</li>
+<li>설정 파일은 <code>/etc/mysql/mysql.conf.d/mysqld.cnf</code>, 자료는 <code>/var/lib/mysql/</code>, 포트는 3306, 기본 문자셋은 <code>utf8mb4</code> 다</li>
+</ul>
+<h2 id="docker">Docker</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">docker</span> run <span class="token parameter variable">-d</span> <span class="token parameter variable">--name</span> my <span class="token punctuation">\</span>
+  <span class="token parameter variable">-e</span> <span class="token assign-left variable">MYSQL_ROOT_PASSWORD</span><span class="token operator">=</span>Root-pass-1 <span class="token punctuation">\</span>
+  <span class="token parameter variable">-v</span> mysql-data:/var/lib/mysql <span class="token punctuation">\</span>
+  <span class="token parameter variable">-p</span> <span class="token number">127.0</span>.0.1:3306:3306 <span class="token punctuation">\</span>
+  mysql:8.4
+<span class="token function">docker</span> logs my <span class="token operator"><span class="token file-descriptor important">2</span>&gt;</span><span class="token file-descriptor important">&amp;1</span> <span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">"ready for connections"</span>
+<span class="token function">docker</span> <span class="token builtin class-name">exec</span> <span class="token parameter variable">-it</span> my mysql <span class="token parameter variable">-uroot</span> <span class="token parameter variable">-p</span></code></pre>
+<ul>
+<li>처음 띄울 때 임시 서버로 root 비밀번호 · DB 를 만든 뒤 다시 뜬다. 로그에 <code>ready for connections … port: 3306</code> 이 나오기 전에 붙으면 <code>Access denied</code> 가 날 수 있다 (<code>mysqladmin ping</code> 은 임시 서버에서 먼저 성공해 기다리기에 쓸 수 없었다)</li>
+<li><code>MYSQL_DATABASE</code> · <code>MYSQL_USER</code> · <code>MYSQL_PASSWORD</code> 를 함께 주면 앱용 DB 와 사용자까지 만든다</li>
+<li>이 환경 변수는 자료 폴더가 비어 있을 때 한 번만 쓰인다. 볼륨이 남아 있으면 비밀번호를 바꿔 띄워도 옛 비밀번호 그대로다</li>
+<li><code>mysql:5.7</code> 은 arm64 판이 없어 M1 맥에서는 <code>--platform linux/amd64</code> 로 돌려야 한다. 새로 쓸 때는 8.4(LTS) 를 쓴다</li>
+</ul>
+<h2 id="클라이언트">클라이언트</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh">mysql <span class="token parameter variable">-h</span> <span class="token number">127.0</span>.0.1 <span class="token parameter variable">-P</span> <span class="token number">3306</span> <span class="token parameter variable">-u</span> app <span class="token parameter variable">-p</span> shop      <span class="token comment"># 호스트 · 포트 · 사용자 · 비밀번호 묻기 · DB</span>
+mysql <span class="token parameter variable">-u</span> app <span class="token parameter variable">-p</span> <span class="token parameter variable">-e</span> <span class="token string">"SELECT NOW()"</span>              <span class="token comment"># 명령 하나만</span>
+mysql <span class="token parameter variable">-u</span> app <span class="token parameter variable">-p</span> shop <span class="token operator">&lt;</span> schema.sql              <span class="token comment"># 파일을 돌린다</span></code></pre>
+<table>
+<thead>
+<tr>
+<th>옵션</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-h</code></td>
+<td>호스트. <code>localhost</code> 면 소켓 파일로, <code>127.0.0.1</code> 이면 TCP 로 붙는다</td>
+</tr>
+<tr>
+<td><code>-u</code> · <code>-p</code></td>
+<td>사용자 · 비밀번호 (<code>-p</code> 뒤에 붙여 쓰면 묻지 않지만 기록에 남는다)</td>
+</tr>
+<tr>
+<td><code>-e</code></td>
+<td>SQL 하나를 돌리고 끝낸다</td>
+</tr>
+<tr>
+<td><code>-t</code> · <code>-B</code></td>
+<td>표 모양 · 탭으로 나눈 출력</td>
+</tr>
+<tr>
+<td><code>--default-character-set=utf8mb4</code></td>
+<td>클라이언트 문자셋</td>
+</tr>
+</tbody>
+</table>
+<p>비밀번호를 매번 치지 않으려면 <code>~/.my.cnf</code>(권한 <code>600</code>) 에 둔다. <code>mysql</code> · <code>mysqldump</code> 가 함께 읽는다.</p>
+<pre class="language-ini" data-language="ini"><code class="language-ini"><span class="token section"><span class="token punctuation">[</span><span class="token section-name selector">client</span><span class="token punctuation">]</span></span>
+<span class="token key attr-name">user</span><span class="token punctuation">=</span><span class="token value attr-value">root</span>
+<span class="token key attr-name">password</span><span class="token punctuation">=</span><span class="token value attr-value">Root-pass-1</span></code></pre>
+<h2 id="한글이-깨질-때">한글이 깨질 때</h2>
+<p><code>mysql:8.4</code> 컨테이너 안에서 <code>docker exec … mysql</code> 로 한글을 넣었더니, 화면에는 바르게 보였지만 덤프에서 깨졌다.</p>
+<pre class="language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> @<span class="token variable">@character_set_client</span><span class="token punctuation">;</span>                 <span class="token comment">-- latin1</span>
+<span class="token keyword">SELECT</span> item<span class="token punctuation">,</span> HEX<span class="token punctuation">(</span>item<span class="token punctuation">)</span><span class="token punctuation">,</span> CHAR_LENGTH<span class="token punctuation">(</span>item<span class="token punctuation">)</span> <span class="token keyword">FROM</span> shop<span class="token punctuation">.</span>orders<span class="token punctuation">;</span>
+<span class="token comment">-- 사과  C3ACE2809AC2ACC3AAC2B3C2BC  6</span></code></pre>
+<ul>
+<li>컨테이너에 <code>LANG</code> 이 없어 클라이언트가 <code>latin1</code> 로 붙었고, UTF-8 글자를 latin1 로 읽어 한 번 더 바꿔 저장했다(<code>사과</code> 가 6 글자). 같은 latin1 클라이언트로 읽으면 거꾸로 풀려 바르게 보여 알아채기 어렵다</li>
+<li><code>--default-character-set=utf8mb4</code> 를 주거나 <code>docker exec -e LANG=C.UTF-8</code> 로 붙으면 <code>utf8mb4</code> 가 되어 <code>EC82ACEAB3BC</code>(2 글자) 로 바르게 들어간다</li>
+<li>앱의 접속 설정에도 문자셋을 적는다 (JDBC <code>characterEncoding=UTF-8</code>, 그 밖에는 <code>charset=utf8mb4</code>)</li>
+</ul>
+<h2 id="바깥에서-접속">바깥에서 접속</h2>
+<p>Ubuntu 패키지는 <code>127.0.0.1</code> 에서만 듣는다.</p>
+<pre class="language-ini" data-language="ini"><code class="language-ini"><span class="token comment"># /etc/mysql/mysql.conf.d/mysqld.cnf</span>
+<span class="token key attr-name">bind-address</span> <span class="token punctuation">=</span> <span class="token value attr-value">127.0.0.1      # 이대로면 다른 서버에서 ERROR 2003 (HY000): Can't connect to MySQL server on 'umy:3306' (111)</span></code></pre>
+<ul>
+<li>다른 서버의 앱이 붙어야 하면 <code>bind-address = 0.0.0.0</code> 으로 바꾸고 <code>sudo systemctl restart mysql</code> 한다. 바꾼 뒤 같은 사용자(<code>app@%</code>) 로 붙었다</li>
+<li>사용자도 그 호스트에서 들어올 수 있게 만들어야 한다(<code>'app'@'10.0.0.%'</code>). 방화벽에서는 3306 을 앱 서버에만 연다</li>
+<li>인터넷에 3306 을 열지 않는다. 내 컴퓨터에서 볼 때는 SSH 터널(<code>ssh -L 3306:127.0.0.1:3306 서버</code>) 로 붙는다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://dev.mysql.com/doc/refman/8.4/en/">MySQL 8.4 Reference Manual</a> — 설치 · 설정 · SQL</li>
+<li><a href="https://dev.mysql.com/doc/refman/8.4/en/mysql.html">mysql — The MySQL Command-Line Client</a> — 클라이언트 옵션</li>
+<li><a href="https://hub.docker.com/_/mysql">mysql (Docker Official Image)</a> — 환경 변수 · 볼륨</li>
+<li><a href="https://documentation.ubuntu.com/server/how-to/databases/install-mysql/">Ubuntu Server — Install MySQL</a> — Ubuntu 문서</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/RDB/">관계형 DB</a></li><li><a href="/docs/server/RDB/MySQL/">MySQL</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/MySQL/" rel="tag">MySQL</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-08T10:25:59.000Z">2026-11-08</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

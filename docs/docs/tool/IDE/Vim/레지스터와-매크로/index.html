@@ -1,0 +1,204 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>레지스터와 매크로 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">편집기 IDE</span><span class="up"> / <a href="/docs/" title="한 단계 위로">도구</a></span></p><ul><li><a href="/docs/tool/IDE/">개요</a></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/tool/IDE/Vim/">Vim</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/tool/IDE/Vim/이동과-편집/">이동과 편집</a></li><li><a href="/docs/tool/IDE/Vim/검색과-바꾸기/">검색과 바꾸기</a></li><li><a href="/docs/tool/IDE/Vim/레지스터와-매크로/" aria-current="page">레지스터와 매크로</a></li><li><a href="/docs/tool/IDE/Vim/설정/">설정</a></li></ul></details></li><li><a href="/docs/tool/IDE/Visual-Studio-Code/">Visual Studio Code</a></li><li><a href="/docs/tool/IDE/Visual-Studio/">Visual Studio</a></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/tool/IDE/IntelliJ/">IntelliJ</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/tool/IDE/IntelliJ/터미널에서-실행(IntelliJ)/">터미널에서 실행(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/JetBrains-IDE를-사용한다면-기억하고-싶은-10-tips/">JetBrains IDE를 사용한다면 기억하고 싶은 10 tips(JP)</a></li><li><a href="/docs/tool/IDE/IntelliJ/단축키(IntelliJ)/">단축키(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/응용프로그램-실행-설정(IntelliJ)/">응용프로그램 실행 설정(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/코드스니펫(IntelliJ)/">코드스니펫(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/톰켓설정(IntelliJ)/">톰켓설정(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/파일-확장자-인식-오류(IntelliJ)/">파일 확장자 인식 오류(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/환경설정(IntelliJ)/">환경설정(IntelliJ)</a></li></ul></details></li><li><a href="/docs/tool/IDE/Eclipse/">Eclipse</a></li></ul></nav><article><h1 class="page-title">레지스터와 매크로</h1><details class="sidebar-m"><summary>목록 · 편집기 IDE</summary><ul><li><a href="/docs/tool/IDE/">개요</a></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/tool/IDE/Vim/">Vim</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/tool/IDE/Vim/이동과-편집/">이동과 편집</a></li><li><a href="/docs/tool/IDE/Vim/검색과-바꾸기/">검색과 바꾸기</a></li><li><a href="/docs/tool/IDE/Vim/레지스터와-매크로/" aria-current="page">레지스터와 매크로</a></li><li><a href="/docs/tool/IDE/Vim/설정/">설정</a></li></ul></details></li><li><a href="/docs/tool/IDE/Visual-Studio-Code/">Visual Studio Code</a></li><li><a href="/docs/tool/IDE/Visual-Studio/">Visual Studio</a></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/tool/IDE/IntelliJ/">IntelliJ</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/tool/IDE/IntelliJ/터미널에서-실행(IntelliJ)/">터미널에서 실행(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/JetBrains-IDE를-사용한다면-기억하고-싶은-10-tips/">JetBrains IDE를 사용한다면 기억하고 싶은 10 tips(JP)</a></li><li><a href="/docs/tool/IDE/IntelliJ/단축키(IntelliJ)/">단축키(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/응용프로그램-실행-설정(IntelliJ)/">응용프로그램 실행 설정(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/코드스니펫(IntelliJ)/">코드스니펫(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/톰켓설정(IntelliJ)/">톰켓설정(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/파일-확장자-인식-오류(IntelliJ)/">파일 확장자 인식 오류(IntelliJ)</a></li><li><a href="/docs/tool/IDE/IntelliJ/환경설정(IntelliJ)/">환경설정(IntelliJ)</a></li></ul></details></li><li><a href="/docs/tool/IDE/Eclipse/">Eclipse</a></li></ul></details><div class="content"><p>Vim 에서 삭제 · 복사한 글자는 레지스터에 담긴다. 이름 없는 레지스터(<code>""</code>) 하나만 쓰면 삭제할 때마다 복사한 것이 덮이므로, 이름 붙은 레지스터(<code>"a</code> ~ <code>"z</code>) 에 따로 담거나 복사한 것만 남는 <code>"0</code> 에서 꺼낸다. <code>"+</code> 는 OS 의 클립보드다. 매크로는 누른 키를 레지스터에 기록해 두었다가 반복하는 것으로, 여러 줄을 같은 방식으로 한 번에 고친다.</p>
+<h2 id="레지스터">레지스터</h2>
+<table>
+<thead>
+<tr>
+<th>레지스터</th>
+<th>담기는 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>""</code></td>
+<td>마지막으로 삭제하거나 복사한 것 (<code>p</code> 가 붙여 넣는 것)</td>
+</tr>
+<tr>
+<td><code>"0</code></td>
+<td>마지막으로 <strong>복사한</strong> 것 (삭제해도 덮이지 않는다)</td>
+</tr>
+<tr>
+<td><code>"1</code> ~ <code>"9</code></td>
+<td>삭제한 줄, 최근 것부터</td>
+</tr>
+<tr>
+<td><code>"-</code></td>
+<td>줄 안에서 삭제한 짧은 것</td>
+</tr>
+<tr>
+<td><code>"a</code> ~ <code>"z</code> · <code>"A</code> ~ <code>"Z</code></td>
+<td>이름 붙여 담기 · 대문자면 뒤에 덧붙이기</td>
+</tr>
+<tr>
+<td><code>"_</code></td>
+<td>블랙홀 — 담지 않고 버린다</td>
+</tr>
+<tr>
+<td><code>"+</code> · <code>"*</code></td>
+<td>OS 클립보드</td>
+</tr>
+<tr>
+<td><code>".</code> · <code>":</code> · <code>"/</code> · <code>"%</code></td>
+<td>최근 삽입한 글자 · 최근 명령줄 · 최근 검색 패턴 · 현재 파일 이름</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>키</th>
+<th>하는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>"ayy</code> · <code>"ap</code></td>
+<td>줄을 <code>a</code> 에 복사 · <code>a</code> 를 붙여넣기</td>
+</tr>
+<tr>
+<td><code>"Ayy</code></td>
+<td><code>a</code> 의 뒤에 줄을 덧붙인다</td>
+</tr>
+<tr>
+<td><code>"0p</code></td>
+<td>그 뒤에 무엇을 삭제했든, 마지막으로 복사한 것을 붙여 넣는다</td>
+</tr>
+<tr>
+<td><code>"_dd</code></td>
+<td>레지스터를 건드리지 않고 삭제한다</td>
+</tr>
+<tr>
+<td><code>"1p</code> <code>.</code> <code>.</code></td>
+<td>삭제한 것을 최근 것부터 차례로 붙여 넣는다 (<code>.</code> 마다 <code>"2</code> · <code>"3</code>)</td>
+</tr>
+<tr>
+<td><code>"+yy</code> · <code>"+p</code></td>
+<td>클립보드로 복사 · 클립보드에서 붙여넣기</td>
+</tr>
+<tr>
+<td><code>Ctrl-r a</code> (삽입 모드 · 명령줄에서)</td>
+<td>레지스터 <code>a</code> 를 그 자리에 넣는다 (<code>Ctrl-r +</code> · <code>Ctrl-r /</code>)</td>
+</tr>
+<tr>
+<td><code>:reg</code> · <code>:reg a</code></td>
+<td>담긴 것 보기</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>복사한 것을 여러 곳에 바꿔 붙여 넣을 때 자주 걸린다. 붙여 넣을 곳의 글자를 삭제하는 순간 <code>""</code> 가 삭제한 것으로 바뀐다. <code>"0p</code> 로 붙이거나 지울 때 <code>"_d</code> 를 쓴다</li>
+<li><code>:reg a</code> 의 <code>l  "a   apple^J</code> 에서 <code>l</code> 은 줄 단위, <code>^J</code> 는 줄바꿈이다</li>
+</ul>
+<h2 id="클립보드">클립보드</h2>
+<table>
+<thead>
+<tr>
+<th>경우</th>
+<th>쓰는 법</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>macOS 의 Vim (<code>+clipboard</code>)</td>
+<td><code>"+y</code> · <code>"+p</code>. <code>set clipboard=unnamed</code> 면 그냥 <code>y</code> · <code>p</code> 가 클립보드다</td>
+</tr>
+<tr>
+<td>리눅스 데스크톱</td>
+<td><code>"+</code>(Ctrl-c 쪽) · <code>"*</code>(마우스로 선택한 쪽) 둘이 다르다. <code>vim-gtk3</code> 같은 <code>+clipboard</code> 판을 깐다</td>
+</tr>
+<tr>
+<td><code>-clipboard</code> 빌드</td>
+<td><code>"+</code> 가 없다. <code>:w !pbcopy</code> · <code>:r !pbpaste</code>(맥) 처럼 외부 명령으로</td>
+</tr>
+<tr>
+<td>SSH 로 들어간 서버</td>
+<td>서버의 Vim 은 내 컴퓨터의 클립보드에 닿지 않는다. 터미널에서 마우스로 선택해 복사하거나, 터미널이 지원하면 OSC 52 플러그인을 쓴다</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>vim --version | grep clipboard</code> 로 <code>+clipboard</code> 인지 본다</li>
+</ul>
+<h2 id="매크로">매크로</h2>
+<table>
+<thead>
+<tr>
+<th>키</th>
+<th>하는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>qa</code> … <code>q</code></td>
+<td>레지스터 <code>a</code> 에 기록 시작 · 끝</td>
+</tr>
+<tr>
+<td><code>@a</code> · <code>3@a</code></td>
+<td>한 번 · 세 번 실행</td>
+</tr>
+<tr>
+<td><code>@@</code></td>
+<td>최근 실행한 매크로를 다시 실행</td>
+</tr>
+<tr>
+<td><code>:%normal @a</code> · <code>:'&lt;,'&gt;normal @a</code></td>
+<td>줄마다 실행</td>
+</tr>
+<tr>
+<td><code>:let @a = "I- \&lt;Esc&gt;j"</code></td>
+<td>매크로를 글자로 바로 넣는다</td>
+</tr>
+<tr>
+<td><code>"ap</code> → 고침 → <code>0"ay$</code></td>
+<td>매크로를 붙여 넣어 고친 뒤 다시 담는다</td>
+</tr>
+</tbody>
+</table>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">qa          a 에 기록 시작
+I- &lt;Esc&gt;    줄 앞에 '- '
+j           다음 줄로
+q           기록 끝
+100@a       끝까지</code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">apple          - apple
+banana    →    - banana
+cherry         - cherry</code></pre>
+<ul>
+<li>끝에 다음 줄로 가는 이동(<code>j</code>) 을 넣어 두면 <code>100@a</code> 로 끝까지 실행한다. 이동이나 검색이 실패하는 줄에서 멈춘다</li>
+<li><code>:%normal @a</code> 는 줄마다 따로 실행해, 한 줄에서 실패해도 다음 줄로 넘어간다. 예를 들어 <code>,</code> 를 <code>;</code> 로 바꾸는 매크로(<code>0f,r;</code>) 를 <code>a,1</code> · <code>b</code> · <code>c,3</code> 에 실행하면, <code>100@a</code> 는 <code>b</code> 에서 멈추고 <code>:%normal @a</code> 는 <code>b</code> 만 건너뛰고 <code>c;3</code> 까지 바꾼다</li>
+<li>기록하기 전에 커서를 줄의 같은 자리(<code>0</code> · <code>^</code>) 에 두는 키부터 넣으면, 어느 자리에서 실행해도 같은 결과다</li>
+</ul>
+<h2 id="예-csv-를-sql-로">예: CSV 를 SQL 로</h2>
+<pre class="language-vim" data-language="vim"><code class="language-vim"><span class="token punctuation">:</span><span class="token keyword">let</span> @<span class="token keyword">q</span> <span class="token operator">=</span> <span class="token string">"0iINSERT INTO t VALUES (\&lt;Esc&gt;A);\&lt;Esc&gt;"</span>
+<span class="token punctuation">:</span><span class="token number">2</span><span class="token punctuation">,</span>$normal @<span class="token keyword">q</span></code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">id,name             id,name
+1,kim        →      INSERT INTO t VALUES (1,kim);
+2,lee               INSERT INTO t VALUES (2,lee);</code></pre>
+<ul>
+<li>줄마다 형태가 같으면 <code>:s</code> 로도 된다(<code>:2,$s/.*/INSERT INTO t VALUES (&amp;);/</code>). 매크로는 검색 · 이동 · 여러 줄에 걸친 편집처럼 정규식 하나로 적기 어려운 일에 쓴다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://vimhelp.org/change.txt.html#registers">Registers</a> — 레지스터의 종류와 채워지는 때</li>
+<li><a href="https://vimhelp.org/repeat.txt.html">repeat.txt</a> — 반복(<code>.</code>) · 매크로(<code>q</code> · <code>@</code>) · <code>:normal</code></li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">도구</a></li><li><a href="/docs/tool/IDE/">편집기 IDE</a></li><li><a href="/docs/tool/IDE/Vim/">Vim</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Vim/" rel="tag">Vim</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-09T16:52:25.000Z">2026-11-10</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

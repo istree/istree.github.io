@@ -1,0 +1,37 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>NoSQL | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">NoSQL</span><span class="up"> / <a href="/docs/server/" title="한 단계 위로">서버</a></span></p><ul><li><a href="/docs/server/NoSQL/" aria-current="page">개요</a></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/NoSQL/Redis/">Redis</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/NoSQL/Redis/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/NoSQL/Redis/자료형/">자료형</a></li><li><a href="/docs/server/NoSQL/Redis/캐시/">캐시</a></li><li><a href="/docs/server/NoSQL/Redis/저장/">저장</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/NoSQL/MongoDB/">MongoDB</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/NoSQL/MongoDB/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/NoSQL/MongoDB/문서와-쿼리/">문서와 쿼리</a></li><li><a href="/docs/server/NoSQL/MongoDB/복제-세트/">복제 세트</a></li><li><a href="/docs/server/NoSQL/MongoDB/샤딩/">샤딩</a></li><li><a href="/docs/server/NoSQL/MongoDB/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/NoSQL/Cassandra/">Cassandra</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/NoSQL/Cassandra/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/NoSQL/Cassandra/데이터-모델/">데이터 모델</a></li><li><a href="/docs/server/NoSQL/Cassandra/클러스터/">클러스터</a></li><li><a href="/docs/server/NoSQL/Cassandra/백업/">백업</a></li></ul></details></li></ul></nav><article><h1 class="page-title">NoSQL</h1><details class="sidebar-m"><summary>목록 · NoSQL</summary><ul><li><a href="/docs/server/NoSQL/" aria-current="page">개요</a></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/NoSQL/Redis/">Redis</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/NoSQL/Redis/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/NoSQL/Redis/자료형/">자료형</a></li><li><a href="/docs/server/NoSQL/Redis/캐시/">캐시</a></li><li><a href="/docs/server/NoSQL/Redis/저장/">저장</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/NoSQL/MongoDB/">MongoDB</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/NoSQL/MongoDB/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/NoSQL/MongoDB/문서와-쿼리/">문서와 쿼리</a></li><li><a href="/docs/server/NoSQL/MongoDB/복제-세트/">복제 세트</a></li><li><a href="/docs/server/NoSQL/MongoDB/샤딩/">샤딩</a></li><li><a href="/docs/server/NoSQL/MongoDB/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/NoSQL/Cassandra/">Cassandra</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/NoSQL/Cassandra/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/NoSQL/Cassandra/데이터-모델/">데이터 모델</a></li><li><a href="/docs/server/NoSQL/Cassandra/클러스터/">클러스터</a></li><li><a href="/docs/server/NoSQL/Cassandra/백업/">백업</a></li></ul></details></li></ul></details><div class="content"><p>NoSQL 은 자료를 표가 아닌 형태로 담는 데이터베이스를 함께 부르는 말이다("Not only SQL"). 형태마다 잘하는 일이 다르다. 키-값(Redis) 은 키 하나로 값을 바로 꺼내 캐시 · 세션 · 카운터에 쓰고, 문서(MongoDB) 는 모양이 제각각인 객체를 JSON 형태 그대로 담고, 넓은 열(Cassandra) 은 서버를 늘려 가며 많은 쓰기를 받는다. 대개 처음부터 여러 서버에 나눠 담고 복제하도록 만들어져, 서버가 죽거나 네트워크가 끊길 때 쓰기를 멈출지(일관성) 받고 나중에 맞출지(가용성) 가 제품 · 설정마다 다르다. 조인 · 여러 표에 걸친 트랜잭션은 약하거나 없으므로, 앱이 할 질의에 맞춰 자료의 형태를 먼저 정한다.</p>
+<h2 id="정보">정보</h2>
+<ul>
+<li><a href="https://jepsen.io/analyses">Jepsen</a> — 분산 DB 가 장애 때 약속한 일관성을 지키는지 시험한 분석 모음</li>
+<li><a href="https://jepsen.io/consistency">Jepsen — Consistency Models</a> — 일관성 모델의 종류와 관계</li>
+</ul>
+<h2 id="문서">문서</h2>
+<ul>
+<li><a href="https://martinfowler.com/nosql.html">NoSQL Guide</a> — Martin Fowler 가 정리한 NoSQL 의 종류 · 쓰임 · 글 모음</li>
+</ul>
+<h2 id="책">책</h2>
+<ul>
+<li><a href="https://martinfowler.com/books/nosql.html">NoSQL Distilled</a> (2012) — Pramod J. Sadalage, Martin Fowler.</li>
+<li><a href="https://www.databass.dev/">Database Internals</a> (2019) — Alex Petrov.</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-09T12:19:26.000Z">2026-11-09</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>사용자와 권한 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">관계형 DB</span><span class="up"> / <a href="/docs/server/" title="한 단계 위로">서버</a></span></p><ul><li><a href="/docs/server/RDB/">개요</a></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/RDB/MySQL/">MySQL</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/RDB/MySQL/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/RDB/MySQL/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/RDB/MySQL/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/server/RDB/MariaDB/">MariaDB</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/RDB/MariaDB/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/RDB/MariaDB/사용자와-권한/" aria-current="page">사용자와 권한</a></li><li><a href="/docs/server/RDB/MariaDB/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/RDB/PostgreSQL/">PostgreSQL</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/RDB/PostgreSQL/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/RDB/PostgreSQL/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/RDB/PostgreSQL/백업과-복원/">백업과 복원</a></li><li><a href="/docs/server/RDB/PostgreSQL/MySQL과-다른-것/">MySQL과 다른 것</a></li></ul></details></li></ul></nav><article><h1 class="page-title">사용자와 권한</h1><details class="sidebar-m"><summary>목록 · 관계형 DB</summary><ul><li><a href="/docs/server/RDB/">개요</a></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/RDB/MySQL/">MySQL</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/RDB/MySQL/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/RDB/MySQL/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/RDB/MySQL/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/server/RDB/MariaDB/">MariaDB</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/RDB/MariaDB/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/RDB/MariaDB/사용자와-권한/" aria-current="page">사용자와 권한</a></li><li><a href="/docs/server/RDB/MariaDB/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/RDB/PostgreSQL/">PostgreSQL</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/RDB/PostgreSQL/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/RDB/PostgreSQL/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/RDB/PostgreSQL/백업과-복원/">백업과 복원</a></li><li><a href="/docs/server/RDB/PostgreSQL/MySQL과-다른-것/">MySQL과 다른 것</a></li></ul></details></li></ul></details><div class="content"><p>MariaDB 의 사용자는 MySQL 과 같이 이름과 접속하는 호스트를 묶은 <code>'이름'@'호스트'</code> 하나다. <code>CREATE USER</code> · <code>GRANT</code> · <code>SHOW GRANTS</code> 도 같은 문법으로 쓴다. 다른 곳은 셋이다 — <code>GRANT … IDENTIFIED BY</code> 가 아직 사용자를 만들고, 역할(role) 은 기본 역할로 정해야 로그인할 때 켜지고, 비밀번호의 기본 방식이 <code>mysql_native_password</code> 다. 아래 예제는 <code>mariadb:12.3</code>(12.3.3) 컨테이너에 root 로 들어가 만들고, 같은 Docker 네트워크의 다른 컨테이너에서 붙어 확인했다.</p>
+<h2 id="만들기와-권한">만들기와 권한</h2>
+<pre class="language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">DATABASE</span> shop<span class="token punctuation">;</span>
+<span class="token keyword">CREATE</span> <span class="token keyword">USER</span> <span class="token string">'app'</span><span class="token variable">@'%'</span> IDENTIFIED <span class="token keyword">BY</span> <span class="token string">'App-pass-1'</span><span class="token punctuation">;</span>
+<span class="token keyword">GRANT</span> <span class="token keyword">ALL</span> <span class="token keyword">PRIVILEGES</span> <span class="token keyword">ON</span> shop<span class="token punctuation">.</span><span class="token operator">*</span> <span class="token keyword">TO</span> <span class="token string">'app'</span><span class="token variable">@'%'</span><span class="token punctuation">;</span>
+<span class="token keyword">SHOW</span> GRANTS <span class="token keyword">FOR</span> <span class="token string">'app'</span><span class="token variable">@'%'</span><span class="token punctuation">;</span></code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">Grants for app@%
+GRANT USAGE ON *.* TO `app`@`%` IDENTIFIED BY PASSWORD '*95B7D082CF2B4B751337D4A78D327D07811EE287'
+GRANT ALL PRIVILEGES ON `shop`.* TO `app`@`%`</code></pre>
+<ul>
+<li><code>SHOW GRANTS</code> 의 첫 줄에 비밀번호 해시가 함께 나온다. 이 줄을 그대로 다른 서버에 넣으면 같은 비밀번호의 사용자가 된다</li>
+<li>이미 있는 사용자를 다시 만들면 <code>ERROR 1396 (HY000): Operation CREATE USER failed for 'app'@'%'</code> 다. <code>CREATE USER IF NOT EXISTS</code> 는 오류 대신 <code>Note 1973 … it already exists</code> 를 남기고 넘어간다</li>
+<li><code>CREATE OR REPLACE USER</code> 는 있던 사용자를 지우고 새로 만든다. 받아 둔 권한도 사라진다 — <code>SELECT</code> 를 받은 <code>tmp</code> 를 다시 만들자 <code>GRANT USAGE</code> 한 줄만 남았다</li>
+</ul>
+<h2 id="grant-가-사용자를-만든다">GRANT 가 사용자를 만든다</h2>
+<p>MySQL 8 에서 막힌 문법이 MariaDB 에서는 된다.</p>
+<pre class="language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">GRANT</span> <span class="token keyword">SELECT</span> <span class="token keyword">ON</span> shop<span class="token punctuation">.</span><span class="token operator">*</span> <span class="token keyword">TO</span> <span class="token string">'g2'</span><span class="token variable">@'%'</span> IDENTIFIED <span class="token keyword">BY</span> <span class="token string">'G2-pass-1'</span><span class="token punctuation">;</span>   <span class="token comment">-- 사용자를 만들고 권한을 준다</span>
+<span class="token keyword">GRANT</span> <span class="token keyword">SELECT</span> <span class="token keyword">ON</span> shop<span class="token punctuation">.</span><span class="token operator">*</span> <span class="token keyword">TO</span> <span class="token string">'g1'</span><span class="token variable">@'%'</span><span class="token punctuation">;</span>
+<span class="token comment">-- ERROR 1133 (28000): Can't find any matching row in the user table</span></code></pre>
+<ul>
+<li>비밀번호 없이 없는 사용자에게 주면 막힌다. 기본 <code>sql_mode</code> 의 <code>NO_AUTO_CREATE_USER</code> 때문이다</li>
+<li>옛 설치 글 · 스크립트의 <code>GRANT … IDENTIFIED BY</code> 가 MariaDB 에서는 돌고 MySQL 8 에서는 돌지 않는다. 둘에 함께 쓸 스크립트는 <code>CREATE USER</code> 뒤 <code>GRANT</code> 로 나눈다</li>
+</ul>
+<h2 id="역할">역할</h2>
+<p>권한을 역할에 모아 두고 사용자에게 역할을 준다.</p>
+<pre class="language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> ROLE reader<span class="token punctuation">;</span>
+<span class="token keyword">GRANT</span> <span class="token keyword">SELECT</span> <span class="token keyword">ON</span> shop<span class="token punctuation">.</span><span class="token operator">*</span> <span class="token keyword">TO</span> reader<span class="token punctuation">;</span>
+<span class="token keyword">CREATE</span> <span class="token keyword">USER</span> <span class="token string">'report'</span><span class="token variable">@'%'</span> IDENTIFIED <span class="token keyword">BY</span> <span class="token string">'Rep-pass-1'</span><span class="token punctuation">;</span>
+<span class="token keyword">GRANT</span> reader <span class="token keyword">TO</span> <span class="token string">'report'</span><span class="token variable">@'%'</span><span class="token punctuation">;</span></code></pre>
+<p>역할을 받았어도 로그인하면 꺼져 있다.</p>
+<pre class="language-sql" data-language="sql"><code class="language-sql"><span class="token comment">-- report 로</span>
+<span class="token keyword">SELECT</span> CURRENT_ROLE<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>        <span class="token comment">-- NULL</span>
+<span class="token keyword">SELECT</span> <span class="token operator">*</span> <span class="token keyword">FROM</span> shop<span class="token punctuation">.</span>orders<span class="token punctuation">;</span>
+<span class="token comment">-- ERROR 1142 (42000): SELECT command denied to user 'report'@'172.18.0.2' for table `shop`.`orders`</span>
+<span class="token keyword">SET</span> ROLE reader<span class="token punctuation">;</span>              <span class="token comment">-- 이 접속에서만 켠다</span>
+<span class="token keyword">SELECT</span> <span class="token operator">*</span> <span class="token keyword">FROM</span> shop<span class="token punctuation">.</span>orders<span class="token punctuation">;</span>    <span class="token comment">-- 읽힌다</span></code></pre>
+<p>로그인할 때 켜지게 하려면 기본 역할을 정한다.</p>
+<pre class="language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SET</span> <span class="token keyword">DEFAULT</span> ROLE reader <span class="token keyword">FOR</span> <span class="token string">'report'</span><span class="token variable">@'%'</span><span class="token punctuation">;</span>   <span class="token comment">-- root 가</span>
+<span class="token keyword">SET</span> <span class="token keyword">DEFAULT</span> ROLE reader<span class="token punctuation">;</span>                     <span class="token comment">-- report 가 스스로</span></code></pre>
+<ul>
+<li>정한 뒤 다시 붙자 <code>CURRENT_ROLE()</code> 이 <code>reader</code> 였고 바로 읽혔다. <code>SHOW GRANTS</code> 끝에 <code>SET DEFAULT ROLE `reader` FOR `report`@`%`</code> 줄이 나온다</li>
+<li>앱 계정에 역할로 권한을 준다면 기본 역할까지 정해야 한다. 빠뜨리면 앱은 붙기는 하고 쿼리마다 <code>command denied</code> 를 받는다</li>
+<li>역할을 만든 root 에게도 그 역할이 <code>WITH ADMIN OPTION</code> 으로 주어진다</li>
+<li><code>DROP ROLE reader</code> 는 받은 사용자가 있어도 지워진다. 기본 역할 줄은 남지만 로그인하면 <code>CURRENT_ROLE()</code> 이 <code>NULL</code> 이고 다시 <code>command denied</code> 다</li>
+</ul>
+<h2 id="인증-방식">인증 방식</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>비밀번호 기본 방식</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MySQL 8.4</td>
+<td><code>caching_sha2_password</code></td>
+</tr>
+<tr>
+<td>MariaDB</td>
+<td><code>mysql_native_password</code></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>클라이언트 → 서버</th>
+<th>결과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MySQL 8.4 → MariaDB(<code>mysql_native_password</code> 계정)</td>
+<td>붙는다</td>
+</tr>
+<tr>
+<td>MariaDB 10.11 · 12.3 → MySQL 8.4(<code>caching_sha2_password</code> 계정)</td>
+<td>붙는다 (12.3 은 인증서 확인을 끄고)</td>
+</tr>
+<tr>
+<td>MySQL 8.4 → MariaDB(<code>ed25519</code> 계정)</td>
+<td><code>ERROR 2059 (HY000): Authentication plugin 'client_ed25519' cannot be loaded</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>mysql_native_password</code> 는 해시가 SHA-1 이라 약하다. MariaDB 클라이언트만 붙는다면 <code>ed25519</code> 를 쓴다.</p>
+<pre class="language-sql" data-language="sql"><code class="language-sql">INSTALL <span class="token keyword">SONAME</span> <span class="token string">'auth_ed25519'</span><span class="token punctuation">;</span>
+<span class="token keyword">CREATE</span> <span class="token keyword">USER</span> <span class="token string">'e'</span><span class="token variable">@'%'</span> IDENTIFIED VIA ed25519 <span class="token keyword">USING</span> PASSWORD<span class="token punctuation">(</span><span class="token string">'E-pass-1'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">SHOW</span> <span class="token keyword">CREATE</span> <span class="token keyword">USER</span> <span class="token string">'e'</span><span class="token variable">@'%'</span><span class="token punctuation">;</span></code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">CREATE USER `e`@`%` IDENTIFIED VIA ed25519 USING 'AHKSLYUnuwgrJfPysylC7zyaOfGm7t3wiTtBnqS8e2E'</code></pre>
+<ul>
+<li><code>ed25519</code> 는 플러그인이라 먼저 <code>INSTALL SONAME</code> 한다. 한 번 깔면 서버를 다시 띄워도 남는다</li>
+<li><code>mysql.user</code> 의 <code>plugin</code> 열에서 계정마다 방식을 본다(<code>app</code> 은 <code>mysql_native_password</code>, <code>e</code> 는 <code>ed25519</code>)</li>
+<li>MySQL 클라이언트로 붙는 곳(MySQL 용 도구 · 옛 앱) 이 있으면 그 계정은 <code>mysql_native_password</code> 로 둔다</li>
+</ul>
+<h2 id="비밀번호--지우기">비밀번호 · 지우기</h2>
+<pre class="language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">ALTER</span> <span class="token keyword">USER</span> <span class="token string">'app'</span><span class="token variable">@'%'</span> IDENTIFIED <span class="token keyword">BY</span> <span class="token string">'App-pass-2'</span><span class="token punctuation">;</span>
+<span class="token keyword">RENAME</span> <span class="token keyword">USER</span> <span class="token string">'report'</span><span class="token variable">@'%'</span> <span class="token keyword">TO</span> <span class="token string">'report'</span><span class="token variable">@'10.0.0.%'</span><span class="token punctuation">;</span>
+<span class="token keyword">DROP</span> <span class="token keyword">USER</span> <span class="token string">'report'</span><span class="token variable">@'10.0.0.%'</span><span class="token punctuation">;</span></code></pre>
+<ul>
+<li><code>SET PASSWORD FOR 'app'@'%' = PASSWORD('…')</code> 도 된다</li>
+<li><code>DROP USER</code> 는 그 사용자의 권한도 함께 지운다. 그 사용자가 만든 표는 남는다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://mariadb.com/docs/server/reference/sql-statements/account-management-sql-statements/grant">GRANT</a> — 권한 종류 · <code>IDENTIFIED BY</code> · <code>NO_AUTO_CREATE_USER</code></li>
+<li><a href="https://mariadb.com/docs/server/security/user-account-management/roles/roles-overview">Roles Overview</a> — <code>SET ROLE</code> · <code>SET DEFAULT ROLE</code></li>
+<li><a href="https://mariadb.com/docs/server/reference/plugins/authentication-plugins/authentication-plugin-ed25519">Authentication Plugin - Ed25519</a> — 깔기 · 클라이언트 지원</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/RDB/">관계형 DB</a></li><li><a href="/docs/server/RDB/MariaDB/">MariaDB</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/MariaDB/" rel="tag">MariaDB</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-09T12:19:26.000Z">2026-11-09</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

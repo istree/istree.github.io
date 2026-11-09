@@ -1,0 +1,107 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>대시보드 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">운영</span><span class="up"> / <a href="/docs/server/" title="한 단계 위로">서버</a></span></p><ul><li><a href="/docs/server/Operations/">개요</a></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/Operations/Java-앱/">Java 앱</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Operations/Java-앱/빌드와-실행/">빌드와 실행</a></li><li><a href="/docs/server/Operations/Java-앱/systemd-서비스/">systemd 서비스</a></li><li><a href="/docs/server/Operations/Java-앱/Nginx-뒤에/">Nginx 뒤에</a></li><li><a href="/docs/server/Operations/Java-앱/Docker로/">Docker로</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/Operations/Prometheus/">Prometheus</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Operations/Prometheus/설치와-수집/">설치와 수집</a></li><li><a href="/docs/server/Operations/Prometheus/PromQL/">PromQL</a></li><li><a href="/docs/server/Operations/Prometheus/앱-지표/">앱 지표</a></li><li><a href="/docs/server/Operations/Prometheus/경보/">경보</a></li></ul></details></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/server/Operations/Grafana/">Grafana</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Operations/Grafana/설치와-데이터-소스/">설치와 데이터 소스</a></li><li><a href="/docs/server/Operations/Grafana/대시보드/" aria-current="page">대시보드</a></li><li><a href="/docs/server/Operations/Grafana/경보/">경보</a></li></ul></details></li></ul></nav><article><h1 class="page-title">대시보드</h1><details class="sidebar-m"><summary>목록 · 운영</summary><ul><li><a href="/docs/server/Operations/">개요</a></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/Operations/Java-앱/">Java 앱</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Operations/Java-앱/빌드와-실행/">빌드와 실행</a></li><li><a href="/docs/server/Operations/Java-앱/systemd-서비스/">systemd 서비스</a></li><li><a href="/docs/server/Operations/Java-앱/Nginx-뒤에/">Nginx 뒤에</a></li><li><a href="/docs/server/Operations/Java-앱/Docker로/">Docker로</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/Operations/Prometheus/">Prometheus</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Operations/Prometheus/설치와-수집/">설치와 수집</a></li><li><a href="/docs/server/Operations/Prometheus/PromQL/">PromQL</a></li><li><a href="/docs/server/Operations/Prometheus/앱-지표/">앱 지표</a></li><li><a href="/docs/server/Operations/Prometheus/경보/">경보</a></li></ul></details></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/server/Operations/Grafana/">Grafana</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Operations/Grafana/설치와-데이터-소스/">설치와 데이터 소스</a></li><li><a href="/docs/server/Operations/Grafana/대시보드/" aria-current="page">대시보드</a></li><li><a href="/docs/server/Operations/Grafana/경보/">경보</a></li></ul></details></li></ul></details><div class="content"><p>대시보드는 패널 여럿을 한 화면에 모은 것이다. 패널마다 PromQL 식을 하나 이상 적고, 시계열 그래프 · 큰 숫자(stat) · 표 같은 형태를 정한다. 위에 변수(<code>$instance</code>) 를 두면 같은 대시보드로 앱 · 서버를 바꿔 본다. 리눅스 서버 · JVM 처럼 흔한 것은 남이 만든 대시보드를 번호로 가져온다. 만든 대시보드는 JSON 이므로 파일로 저장해 provisioning 으로 넣으면, 저장소에 두고 서버마다 같은 것을 띄운다. 아래 예제는 <code>grafana/grafana:13.3.0</code> 에 <code>prom/prometheus:v3.13.5</code> 를 붙이고, Spring Boot 4.1.2 앱(요청의 5 % 가 500 · 5 % 가 300 ms) 과 node_exporter 1.12.1 의 지표로 그렸다.</p>
+<h2 id="앱-대시보드">앱 대시보드</h2>
+<p><img alt="Shop 대시보드 — 상태별 초당 요청, 오류율 4.3 %, 힙 사용 41.4 MiB, 응답 시간 p50 · p95 · p99. 끝에 앱을 멈춘 동안 그래프가 끊겼다" loading="lazy" decoding="async" width="1280" height="720" src="/_astro/Shop-%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C.CABLJ-c-_10jXKi.webp"></p>
+<table>
+<thead>
+<tr>
+<th>패널</th>
+<th>형태</th>
+<th>식</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>초당 요청 (상태별)</td>
+<td>시계열</td>
+<td><code>sum by (status) (rate(http_server_requests_seconds_count{job="shop",instance=~"$instance",uri!~"/actuator.*"}[$__rate_interval]))</code></td>
+</tr>
+<tr>
+<td>오류율 (5 분)</td>
+<td>stat · 3 % 넘으면 빨강</td>
+<td>5xx 의 <code>rate</code> ÷ 모든 <code>rate</code></td>
+</tr>
+<tr>
+<td>힙 사용</td>
+<td>stat</td>
+<td><code>sum by (instance) (jvm_memory_used_bytes{area="heap",instance=~"$instance"})</code></td>
+</tr>
+<tr>
+<td>응답 시간</td>
+<td>시계열 · 식 셋</td>
+<td><code>histogram_quantile(0.5 · 0.95 · 0.99, sum by (le) (rate(…_bucket[$__rate_interval])))</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>$__rate_interval</code> 은 Grafana 가 수집 간격과 보는 기간에 맞춰 넣는 범위다. <code>[1m]</code> 처럼 박아 두면 긴 기간을 볼 때 점이 성겨지거나 비어 보인다</li>
+<li><code>uri!~"/actuator.*"</code> 로 Prometheus 가 지표를 읽어 가는 요청을 뺐다. 빼지 않으면 15 초마다의 수집이 요청 수에 섞인다</li>
+<li>단위를 정한다(<code>reqps</code> · <code>percentunit</code> · <code>bytes</code> · <code>s</code>). 숫자 옆에 <code>req/s</code> · <code>%</code> · <code>MiB</code> · <code>ms</code> 가 붙는다</li>
+<li>stat 은 기본 임계값(80 넘으면 빨강) 이 있어, 바이트를 담은 힙 패널이 늘 빨갛게 나왔다. 뜻이 없는 패널은 임계값을 한 색으로 둔다</li>
+<li>p95 가 0 과 270 ms 를 오갔다. 느린 요청이 딱 5 % 라 p95 가 그 경계에 걸린 것이다. p99 는 340 ms 로 고르게 나왔다</li>
+</ul>
+<h2 id="변수">변수</h2>
+<pre class="language-json" data-language="json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"instance"</span><span class="token punctuation">,</span>
+  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"query"</span><span class="token punctuation">,</span>
+  <span class="token property">"datasource"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"prometheus"</span><span class="token punctuation">,</span> <span class="token property">"uid"</span><span class="token operator">:</span> <span class="token string">"prom"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"query"</span><span class="token operator">:</span> <span class="token string">"label_values(up{job=\"shop\"}, instance)"</span><span class="token punctuation">,</span>
+  <span class="token property">"includeAll"</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+  <span class="token property">"multi"</span><span class="token operator">:</span> <span class="token boolean">true</span>
+<span class="token punctuation">}</span></code></pre>
+<ul>
+<li><code>label_values(지표, 라벨)</code> 이 그 라벨의 값들을 내려 목록으로 보인다. 앱이 늘면 저절로 목록에 더해진다</li>
+<li>식에는 <code>instance=~"$instance"</code> 로 쓴다. 여럿을 선택하거나 All 이면 정규식(<code>a|b</code>) 으로 바뀌므로 <code>=</code> 가 아니라 <code>=~</code> 다</li>
+</ul>
+<h2 id="가져오기">가져오기</h2>
+<p>리눅스 서버는 Node Exporter Full(번호 1860) 을 가져왔다. 화면의 Dashboards → New → Import 에 번호를 넣거나 API 로 넣는다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">curl</span> <span class="token parameter variable">-s</span> https://grafana.com/api/dashboards/1860/revisions/latest/download <span class="token parameter variable">-o</span> <span class="token number">1860</span>.json</code></pre>
+<p><img alt="Node Exporter Full — CPU 10.3 %, RAM 27 %, 루트 디스크 7 %, 코어 2, RAM 4 GiB, CPU · 메모리 · 네트워크 · 디스크 그래프" loading="lazy" decoding="async" width="1280" height="900" src="/_astro/Node-Exporter-Full.N5KIg4Jq_1nsi0K.webp"></p>
+<ul>
+<li>패널 28 개, 변수 넷(<code>ds_prometheus</code> · <code>job</code> · <code>nodename</code> · <code>node</code>) 이었다. 데이터 소스를 변수로 받아, 가져올 때 따로 정할 것이 없었다</li>
+<li>node_exporter 를 컨테이너로 띄우면 Nodename 이 컨테이너 id 로 나온다. node_exporter 에 <code>--uts host</code> 를 준다</li>
+<li>JVM 은 JVM (Micrometer)(번호 4701) 이 있다. 가져온 대시보드는 지표 이름 · 라벨이 내 것과 같은지 보고 쓴다</li>
+</ul>
+<h2 id="파일로-넣기">파일로 넣기</h2>
+<pre class="language-yaml" data-language="yaml"><code class="language-yaml"><span class="token comment"># provisioning/dashboards/files.yml</span>
+<span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> <span class="token number">1</span>
+<span class="token key atrule">providers</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> files
+    <span class="token key atrule">folder</span><span class="token punctuation">:</span> 서버
+    <span class="token key atrule">type</span><span class="token punctuation">:</span> file
+    <span class="token key atrule">allowUiUpdates</span><span class="token punctuation">:</span> <span class="token boolean important">false</span>
+    <span class="token key atrule">options</span><span class="token punctuation">:</span>
+      <span class="token key atrule">path</span><span class="token punctuation">:</span> /var/lib/grafana/dashboards</code></pre>
+<ul>
+<li>이 폴더의 JSON(<code>shop.json</code>) 이 「서버」 폴더 아래 대시보드가 된다. 화면에서 만든 대시보드는 Share → Export 로 JSON 을 받아 이 폴더에 둔다</li>
+<li>파일을 고치자 10 초 안에 대시보드의 판(<code>version</code>) 이 2 가 됐다. 다시 띄우지 않아도 읽는다</li>
+<li>파일로 넣은 대시보드를 API 로 저장하려 하자 <code>{"message":"Cannot save provisioned dashboard"}</code>(400) 였다. 화면에서 고친 것도 저장되지 않으므로, 고칠 때는 파일을 고친다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://grafana.com/docs/grafana/latest/panels-visualizations/">Panels and visualizations</a> — 패널 형태 · 단위 · 임계값</li>
+<li><a href="https://grafana.com/docs/grafana/latest/dashboards/variables/">Variables</a> — <code>label_values</code> · 여럿 선택 · <code>$__rate_interval</code></li>
+<li><a href="https://grafana.com/grafana/dashboards/1860-node-exporter-full/">Node Exporter Full</a> · <a href="https://grafana.com/grafana/dashboards/4701-jvm-micrometer/">JVM (Micrometer)</a> — 가져온 대시보드</li>
+<li><a href="https://grafana.com/docs/grafana/latest/administration/provisioning/">Provisioning — Dashboards</a> — 파일로 넣기 · 고치기</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/Operations/">운영</a></li><li><a href="/docs/server/Operations/Grafana/">Grafana</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Grafana/" rel="tag">Grafana</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-09T12:19:26.000Z">2026-11-09</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

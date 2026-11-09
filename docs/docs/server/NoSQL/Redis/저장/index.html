@@ -1,0 +1,149 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>저장 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">NoSQL</span><span class="up"> / <a href="/docs/server/" title="한 단계 위로">서버</a></span></p><ul><li><a href="/docs/server/NoSQL/">개요</a></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/server/NoSQL/Redis/">Redis</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/NoSQL/Redis/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/NoSQL/Redis/자료형/">자료형</a></li><li><a href="/docs/server/NoSQL/Redis/캐시/">캐시</a></li><li><a href="/docs/server/NoSQL/Redis/저장/" aria-current="page">저장</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/NoSQL/MongoDB/">MongoDB</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/NoSQL/MongoDB/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/NoSQL/MongoDB/문서와-쿼리/">문서와 쿼리</a></li><li><a href="/docs/server/NoSQL/MongoDB/복제-세트/">복제 세트</a></li><li><a href="/docs/server/NoSQL/MongoDB/샤딩/">샤딩</a></li><li><a href="/docs/server/NoSQL/MongoDB/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/NoSQL/Cassandra/">Cassandra</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/NoSQL/Cassandra/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/NoSQL/Cassandra/데이터-모델/">데이터 모델</a></li><li><a href="/docs/server/NoSQL/Cassandra/클러스터/">클러스터</a></li><li><a href="/docs/server/NoSQL/Cassandra/백업/">백업</a></li></ul></details></li></ul></nav><article><h1 class="page-title">저장</h1><details class="sidebar-m"><summary>목록 · NoSQL</summary><ul><li><a href="/docs/server/NoSQL/">개요</a></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/server/NoSQL/Redis/">Redis</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/NoSQL/Redis/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/NoSQL/Redis/자료형/">자료형</a></li><li><a href="/docs/server/NoSQL/Redis/캐시/">캐시</a></li><li><a href="/docs/server/NoSQL/Redis/저장/" aria-current="page">저장</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/NoSQL/MongoDB/">MongoDB</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/NoSQL/MongoDB/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/NoSQL/MongoDB/문서와-쿼리/">문서와 쿼리</a></li><li><a href="/docs/server/NoSQL/MongoDB/복제-세트/">복제 세트</a></li><li><a href="/docs/server/NoSQL/MongoDB/샤딩/">샤딩</a></li><li><a href="/docs/server/NoSQL/MongoDB/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/NoSQL/Cassandra/">Cassandra</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/NoSQL/Cassandra/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/NoSQL/Cassandra/데이터-모델/">데이터 모델</a></li><li><a href="/docs/server/NoSQL/Cassandra/클러스터/">클러스터</a></li><li><a href="/docs/server/NoSQL/Cassandra/백업/">백업</a></li></ul></details></li></ul></details><div class="content"><p>Redis 는 자료를 메모리에 두지만, 다시 띄워도 남도록 디스크에 두 가지로 적는다. RDB 는 어느 순간의 메모리를 통째로 뜬 파일(<code>dump.rdb</code>) 이고, AOF 는 들어온 쓰기 명령을 차례로 적은 기록이다. RDB 는 작고 빨리 읽히지만 마지막으로 뜬 뒤의 변경을 잃는다. AOF 는 많아야 1 초 치만 잃지만 파일이 커진다. 기본은 RDB 만 켜져 있다. 캐시로만 쓰면 둘 다 꺼도 되고, 세션 · 큐처럼 잃으면 안 되는 자료를 두면 AOF 를 켠다. 아래 예제는 <code>redis:8</code>(8.10.3) 컨테이너와 Ubuntu 패키지의 Redis 7.0.15 에서 돌렸다.</p>
+<h2 id="rdb">RDB</h2>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">save 3600 1 300 100 60 10000    # 1 시간에 1 번 · 5 분에 100 번 · 1 분에 1 만 번 이상 바뀌면 뜬다
+dbfilename dump.rdb
+dir /var/lib/redis              # Docker 이미지는 /data</code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">BGSAVE      → Background saving started     자식 프로세스가 뜬다
+SAVE        → OK                            다 뜰 때까지 서버가 멈춘다
+LASTSAVE    → 1794198400                    마지막으로 뜬 시각</code></pre>
+<p>키 둘을 넣고 바로 끝내 봤다.</p>
+<table>
+<thead>
+<tr>
+<th>끝내는 법</th>
+<th>다시 띄우면</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>docker stop</code> (SIGTERM)</td>
+<td>2 개 — 로그에 <code>Saving the final RDB snapshot before exiting.</code> · <code>DB saved on disk</code></td>
+</tr>
+<tr>
+<td><code>docker kill -s KILL</code></td>
+<td>0 개 — 위 <code>save</code> 조건에 닿기 전이라 뜬 적이 없다</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>제대로 끝내면 끝나기 전에 한 번 뜬다. 갑자기 죽으면(전원 · OOM killer · <code>kill -9</code>) 마지막으로 뜬 뒤의 변경을 잃는다</li>
+<li>뜬 상태는 <code>INFO persistence</code> 의 <code>rdb_changes_since_last_save</code> · <code>rdb_last_bgsave_status:ok</code> 로 본다</li>
+<li><code>BGSAVE</code> 는 자식 프로세스를 만든다. 로그의 <code>WARNING Memory overcommit must be enabled!</code> 를 그대로 두면 메모리가 빠듯할 때 뜨기에 실패할 수 있다(<code>vm.overcommit_memory = 1</code>)</li>
+<li>캐시로만 쓰고 다시 띄울 때 빈 채로 시작해도 되면 <code>save ""</code> 로 끈다</li>
+</ul>
+<h2 id="aof">AOF</h2>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">appendonly yes
+appendfsync everysec     # 1 초마다 디스크에 밀어 넣는다</code></pre>
+<p>AOF 를 켜고 키 둘을 넣은 뒤 1.5 초 뒤 <code>kill</code> 했다. 다시 띄우자 둘 다 있었다.</p>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">DB loaded from base file appendonly.aof.1.base.rdb: 0.000 seconds
+DB loaded from incr file appendonly.aof.1.incr.aof: 0.000 seconds</code></pre>
+<p>자료 폴더 안은 이렇다(7 부터).</p>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">dump.rdb
+appendonlydir/
+  appendonly.aof.1.base.rdb     # 바탕 (RDB 형식)
+  appendonly.aof.1.incr.aof     # 그 뒤의 쓰기 명령
+  appendonly.aof.manifest       # 어느 파일을 어떤 순서로 읽을지</code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext"># appendonly.aof.1.incr.aof 의 앞
+*3
+$3
+SET
+$1
+c
+$1
+3</code></pre>
+<table>
+<thead>
+<tr>
+<th><code>appendfsync</code></th>
+<th>잃을 수 있는 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>always</code></td>
+<td>거의 없다 (쓰기마다 디스크에, 느리다)</td>
+</tr>
+<tr>
+<td><code>everysec</code> (기본)</td>
+<td>1 초 치</td>
+</tr>
+<tr>
+<td><code>no</code></td>
+<td>OS 가 밀어 넣을 때까지 (보통 30 초쯤)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>AOF 가 켜져 있으면 띄울 때 <code>dump.rdb</code> 가 아니라 AOF 를 읽는다</li>
+<li>기록이 길어지면 Redis 가 스스로 바탕 파일을 새로 뜨고 기록을 비운다(<code>auto-aof-rewrite-percentage 100</code> · <code>auto-aof-rewrite-min-size 64mb</code>)</li>
+<li>Docker 에서 <code>CONFIG SET appendonly yes</code> 로 켠 것은 다시 띄우면 꺼진다. 그 사이에 넣은 키는 AOF 를 읽지 않아 사라졌다. 설정 파일이나 <code>redis-server --appendonly yes</code> 로 띄운다</li>
+</ul>
+<h2 id="백업">백업</h2>
+<p>RDB 파일 하나가 백업이다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh">redis-cli <span class="token parameter variable">-h</span> <span class="token number">10.0</span>.0.5 <span class="token parameter variable">-a</span> <span class="token string">'Redis-pass-1'</span> <span class="token parameter variable">--rdb</span> /backup/redis-<span class="token variable"><span class="token variable">$(</span><span class="token function">date</span> +%F<span class="token variable">)</span></span>.rdb    <span class="token comment"># 서버에서 RDB 를 받아 온다</span>
+<span class="token comment"># 또는 서버에서</span>
+redis-cli BGSAVE <span class="token operator">&amp;&amp;</span> <span class="token function">cp</span> /var/lib/redis/dump.rdb /backup/</code></pre>
+<ul>
+<li><code>--rdb</code> 는 복제처럼 붙어 RDB 를 받아 온다(<code>Transfer finished with success after 190 bytes</code>). 다른 기계에서 받을 수 있다</li>
+<li><code>BGSAVE</code> 는 바로 돌아오므로, 복사하기 전에 <code>INFO persistence</code> 의 <code>rdb_bgsave_in_progress:0</code> 을 본다</li>
+</ul>
+<h2 id="되살리기">되살리기</h2>
+<p>서버를 멈추고 <code>dump.rdb</code> 를 바꿔 넣고 띄운다. AOF 가 켜져 있으면 이대로는 안 된다.</p>
+<table>
+<thead>
+<tr>
+<th>되살리는 법</th>
+<th>다시 띄우면</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AOF 켠 채 <code>dump.rdb</code> 만 바꿈</td>
+<td>0 개 — AOF(지운 뒤의 상태) 를 읽었다</td>
+</tr>
+<tr>
+<td>AOF 켠 채 <code>appendonlydir</code> 도 지움</td>
+<td>0 개 — 빈 AOF 를 새로 만들고 <code>dump.rdb</code> 는 읽지 않았다</td>
+</tr>
+<tr>
+<td>AOF 끄고 띄움 → <code>CONFIG SET appendonly yes</code> → AOF 켜고 다시 띄움</td>
+<td>백업의 키가 모두 있었다</td>
+</tr>
+</tbody>
+</table>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">docker</span> stop redis                                  <span class="token comment"># 끝날 때 지금 상태로 dump.rdb 를 덮어쓴다</span>
+<span class="token function">docker</span> <span class="token function">cp</span> backup.rdb redis:/data/dump.rdb          <span class="token comment"># 그러니 멈춘 뒤에 넣는다</span>
+<span class="token comment"># appendonly no 로 띄운다 → 키를 확인한다</span>
+redis-cli CONFIG SET appendonly <span class="token function">yes</span>                <span class="token comment"># 지금 메모리로 AOF 를 새로 만든다</span>
+<span class="token comment"># 설정을 appendonly yes 로 돌려 다시 띄운다</span></code></pre>
+<ul>
+<li>Redis 는 멈출 때 메모리의 상태로 <code>dump.rdb</code> 를 덮어쓴다. AOF 를 켠 채 바꿔 넣고 띄웠다가 멈추자, 넣은 백업(190 바이트) 이 빈 DB 의 RDB(89 바이트) 로 덮였다. 넣기 전에 백업 파일을 다른 곳에 남겨 둔다</li>
+<li>Ubuntu 패키지에서는 <code>sudo systemctl stop redis-server</code> 뒤 <code>/var/lib/redis/dump.rdb</code> 를 바꾸고, 주인을 <code>redis:redis</code> 로 둔다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://redis.io/docs/latest/operate/oss_and_stack/management/persistence/">Redis persistence</a> — RDB · AOF 의 장단점 · 백업 · AOF 로 바꾸기</li>
+<li><a href="https://redis.io/docs/latest/operate/oss_and_stack/management/admin/">Redis administration</a> — <code>vm.overcommit_memory</code> 등 운영 설정</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/NoSQL/">NoSQL</a></li><li><a href="/docs/server/NoSQL/Redis/">Redis</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Redis/" rel="tag">Redis</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-09T13:11:50.000Z">2026-11-09</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

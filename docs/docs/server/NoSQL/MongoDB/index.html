@@ -1,0 +1,46 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>MongoDB | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">NoSQL</span><span class="up"> / <a href="/docs/server/" title="한 단계 위로">서버</a></span></p><ul><li><a href="/docs/server/NoSQL/">개요</a></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/NoSQL/Redis/">Redis</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/NoSQL/Redis/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/NoSQL/Redis/자료형/">자료형</a></li><li><a href="/docs/server/NoSQL/Redis/캐시/">캐시</a></li><li><a href="/docs/server/NoSQL/Redis/저장/">저장</a></li></ul></details></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/server/NoSQL/MongoDB/" aria-current="page">MongoDB</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/NoSQL/MongoDB/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/NoSQL/MongoDB/문서와-쿼리/">문서와 쿼리</a></li><li><a href="/docs/server/NoSQL/MongoDB/복제-세트/">복제 세트</a></li><li><a href="/docs/server/NoSQL/MongoDB/샤딩/">샤딩</a></li><li><a href="/docs/server/NoSQL/MongoDB/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/NoSQL/Cassandra/">Cassandra</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/NoSQL/Cassandra/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/NoSQL/Cassandra/데이터-모델/">데이터 모델</a></li><li><a href="/docs/server/NoSQL/Cassandra/클러스터/">클러스터</a></li><li><a href="/docs/server/NoSQL/Cassandra/백업/">백업</a></li></ul></details></li></ul></nav><article><h1 class="page-title">MongoDB</h1><details class="sidebar-m"><summary>목록 · NoSQL</summary><ul><li><a href="/docs/server/NoSQL/">개요</a></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/NoSQL/Redis/">Redis</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/NoSQL/Redis/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/NoSQL/Redis/자료형/">자료형</a></li><li><a href="/docs/server/NoSQL/Redis/캐시/">캐시</a></li><li><a href="/docs/server/NoSQL/Redis/저장/">저장</a></li></ul></details></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/server/NoSQL/MongoDB/" aria-current="page">MongoDB</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/NoSQL/MongoDB/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/NoSQL/MongoDB/문서와-쿼리/">문서와 쿼리</a></li><li><a href="/docs/server/NoSQL/MongoDB/복제-세트/">복제 세트</a></li><li><a href="/docs/server/NoSQL/MongoDB/샤딩/">샤딩</a></li><li><a href="/docs/server/NoSQL/MongoDB/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/NoSQL/Cassandra/">Cassandra</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/NoSQL/Cassandra/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/NoSQL/Cassandra/데이터-모델/">데이터 모델</a></li><li><a href="/docs/server/NoSQL/Cassandra/클러스터/">클러스터</a></li><li><a href="/docs/server/NoSQL/Cassandra/백업/">백업</a></li></ul></details></li></ul></details><div class="content"><p>MongoDB 는 문서 데이터베이스다. 표와 행 대신 컬렉션과 문서(JSON 형태, 속은 BSON) 에 자료를 담는다. 문서마다 필드가 달라도 되고, 안에 객체 · 배열을 품을 수 있어 앱의 객체를 그대로 넣고 꺼낸다. SQL 대신 <code>find</code> · <code>updateOne</code> · <code>aggregate</code> 같은 메서드로 다룬다. 운영에서는 노드 셋 이상의 복제 세트로 띄워 하나가 죽어도 저절로 넘어가게 하고, 자료가 한 서버에 담기지 않으면 샤딩으로 여러 복제 세트에 나눈다. 서버는 2018 년부터 SSPL 라이선스이고, Ubuntu 기본 저장소에는 없어 MongoDB 의 저장소나 Docker 이미지로 깐다. 지금 판은 9.0 이다.</p>
+<h2 id="정보">정보</h2>
+<ul>
+<li><a href="https://www.mongodb.com/">MongoDB</a> — 공식 사이트 · 내려받기</li>
+<li><a href="https://www.mongodb.com/docs/manual/release-notes/">Release Notes</a> — 판마다 바뀐 것</li>
+<li><a href="https://www.mongodb.com/company/blog">MongoDB Blog</a> — 출시 · 기능 소식</li>
+<li><a href="https://www.mongodb.com/legal/licensing/community-edition">Licensing</a> — 서버 · 도구 · 드라이버의 라이선스</li>
+<li><a href="https://jepsen.io/analyses/mongodb-4.2.6">Jepsen — MongoDB 4.2.6</a> — 장애 때 트랜잭션 · 일관성을 시험한 분석</li>
+</ul>
+<h2 id="문서">문서</h2>
+<ul>
+<li><a href="https://www.mongodb.com/docs/manual/">MongoDB Manual</a> — CRUD · 인덱스 · 복제 · 샤딩 · 관리 설명서</li>
+<li><a href="https://www.mongodb.com/docs/mongodb-shell/">mongosh</a> — 명령줄 셸</li>
+<li><a href="https://www.mongodb.com/docs/database-tools/">Database Tools</a> — <code>mongodump</code> · <code>mongorestore</code> · <code>mongoimport</code></li>
+<li><a href="https://hub.docker.com/_/mongo">mongo (Docker Official Image)</a> — 이미지의 환경 변수 · 초기화 스크립트</li>
+</ul>
+<h2 id="도구">도구</h2>
+<ul>
+<li><a href="https://www.mongodb.com/products/tools/compass">MongoDB Compass</a> — 공식 화면 도구 (문서 둘러보기 · 쿼리 · 집계 · 실행 계획)</li>
+</ul>
+<h2 id="책">책</h2>
+<ul>
+<li><a href="https://www.manning.com/books/mongodb-in-action-third-edition">MongoDB 8.0 in Action</a> (3판, 2025) — Arek Borucki.</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/NoSQL/">NoSQL</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/MongoDB/" rel="tag">MongoDB</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-09T12:24:32.000Z">2026-11-09</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

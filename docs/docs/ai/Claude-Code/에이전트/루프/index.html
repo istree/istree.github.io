@@ -1,0 +1,109 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>루프 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">AI</span><span class="up"> / <a href="/docs/" title="한 단계 위로">정리</a></span></p><ul><li><a href="/docs/ai/">개요</a></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/ai/Claude-Code/">Claude Code</a><span class="fold" aria-label="펼치기"></span></summary><ul><li class="side-folder"><details name="side-1"><summary><span class="side-name">기본</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/기본/시작하기/">시작하기</a></li><li><a href="/docs/ai/Claude-Code/기본/설정과-메모리/">설정과 메모리</a></li><li><a href="/docs/ai/Claude-Code/기본/훅/">훅</a></li><li><a href="/docs/ai/Claude-Code/기본/상태-표시줄/">상태 표시줄</a></li></ul></details></li><li class="side-folder"><details name="side-1"><summary><span class="side-name">스킬</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/스킬/만들기/">만들기</a></li><li><a href="/docs/ai/Claude-Code/스킬/모음/">모음</a></li></ul></details></li><li class="side-folder"><details name="side-1"><summary><span class="side-name">MCP</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/MCP/붙이기/">붙이기</a></li><li><a href="/docs/ai/Claude-Code/MCP/서버-만들기/">서버 만들기</a></li></ul></details></li><li class="side-folder"><details name="side-1" open><summary><span class="side-name">에이전트</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/에이전트/서브에이전트/">서브에이전트</a></li><li><a href="/docs/ai/Claude-Code/에이전트/여러-세션/">여러 세션</a></li><li><a href="/docs/ai/Claude-Code/에이전트/워크플로우/">워크플로우</a></li><li><a href="/docs/ai/Claude-Code/에이전트/루프/" aria-current="page">루프</a></li></ul></details></li><li class="side-folder"><details name="side-1"><summary><span class="side-name">원격</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/원격/텔레그램-알림/">텔레그램 알림</a></li><li><a href="/docs/ai/Claude-Code/원격/텔레그램-총괄/">텔레그램 총괄</a></li></ul></details></li></ul></details></li></ul></nav><article><h1 class="page-title">루프</h1><details class="sidebar-m"><summary>목록 · AI</summary><ul><li><a href="/docs/ai/">개요</a></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/ai/Claude-Code/">Claude Code</a><span class="fold" aria-label="펼치기"></span></summary><ul><li class="side-folder"><details name="side-m-1"><summary><span class="side-name">기본</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/기본/시작하기/">시작하기</a></li><li><a href="/docs/ai/Claude-Code/기본/설정과-메모리/">설정과 메모리</a></li><li><a href="/docs/ai/Claude-Code/기본/훅/">훅</a></li><li><a href="/docs/ai/Claude-Code/기본/상태-표시줄/">상태 표시줄</a></li></ul></details></li><li class="side-folder"><details name="side-m-1"><summary><span class="side-name">스킬</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/스킬/만들기/">만들기</a></li><li><a href="/docs/ai/Claude-Code/스킬/모음/">모음</a></li></ul></details></li><li class="side-folder"><details name="side-m-1"><summary><span class="side-name">MCP</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/MCP/붙이기/">붙이기</a></li><li><a href="/docs/ai/Claude-Code/MCP/서버-만들기/">서버 만들기</a></li></ul></details></li><li class="side-folder"><details name="side-m-1" open><summary><span class="side-name">에이전트</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/에이전트/서브에이전트/">서브에이전트</a></li><li><a href="/docs/ai/Claude-Code/에이전트/여러-세션/">여러 세션</a></li><li><a href="/docs/ai/Claude-Code/에이전트/워크플로우/">워크플로우</a></li><li><a href="/docs/ai/Claude-Code/에이전트/루프/" aria-current="page">루프</a></li></ul></details></li><li class="side-folder"><details name="side-m-1"><summary><span class="side-name">원격</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/원격/텔레그램-알림/">텔레그램 알림</a></li><li><a href="/docs/ai/Claude-Code/원격/텔레그램-총괄/">텔레그램 총괄</a></li></ul></details></li></ul></details></li></ul></details><div class="content"><p>루프는 내가 다음 말을 하지 않아도 세션이 일을 이어 가게 하는 방법이다. 다음 턴을 언제 시작하는지에 따라 고른다. 조건을 채울 때까지 바로 이어 가는 <code>/goal</code>, 시간 간격마다 다시 도는 <code>/loop</code>, 응답이 끝날 때마다 내 스크립트가 판단하는 <code>Stop</code> 훅이 있다.</p>
+<table>
+<thead>
+<tr>
+<th>방법</th>
+<th>다음 턴</th>
+<th>멈출 때</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/goal &lt;조건&gt;</code></td>
+<td>앞 턴이 끝나면 바로</td>
+<td>따로 도는 평가 모델이 조건을 채웠다고 보거나, 할 수 없다고 볼 때</td>
+</tr>
+<tr>
+<td><code>/loop [간격] &lt;지시&gt;</code></td>
+<td>간격이 지나면</td>
+<td>내가 멈추거나, Claude 가 일이 끝났다고 볼 때</td>
+</tr>
+<tr>
+<td><code>Stop</code> 훅</td>
+<td>앞 턴이 끝나면 바로</td>
+<td>내 스크립트 · 프롬프트가 정할 때</td>
+</tr>
+</tbody>
+</table>
+<h2 id="goal">/goal</h2>
+<p>끝난 상태를 조건으로 적으면, 턴마다 평가 모델이 조건을 따져 보고 아직이면 다음 턴을 시작한다. 일을 한 모델이 아니라 새 모델이 끝을 판정한다.</p>
+<pre class="language-text" data-language="text"><code class="language-text">/goal test/auth 의 테스트가 모두 통과하고 lint 가 깨끗하다
+/goal               # 상태 보기 (조건 · 걸린 시간 · 턴 수 · 토큰 · 마지막 판정 이유)
+/goal clear         # 지우기</code></pre>
+<pre class="language-text" data-language="text"><code class="language-text">$ claude -p '/goal count.txt contains the numbers 1 to 5, one per line, and `cat count.txt` output is shown.
+  Add only one number per turn. Or stop after 8 turns.'
+count.txt now has the numbers 1 to 5, one per line. I added one number per turn, so it took 5 of the 8 allowed turns.
+1
+2
+3
+4
+5</code></pre>
+<ul>
+<li>평가 모델은 대화에 나온 것만 본다. 명령을 돌리거나 파일을 읽지 않으므로, 조건에 확인 방법을 적는다 ("<code>npm test</code> 가 0 으로 끝난다" · "<code>git status</code> 가 깨끗하다")</li>
+<li>바뀌면 안 되는 것도 조건에 적는다 ("다른 테스트 파일은 고치지 않는다")</li>
+<li>끝없이 돌지 않게 "or stop after 20 turns" 처럼 턴 · 시간 한도를 붙인다</li>
+<li>권한 모드는 바꾸지 않는다. 사람 없이 돌리려면 auto 모드에서 건다</li>
+<li>세션당 목표는 하나다. <code>--resume</code> 으로 다시 열면 이어진다</li>
+<li><code>claude -p</code> 에서는 한 번 부르면 끝날 때까지 돈다. 도는 동안 보려면 <code>--output-format stream-json --verbose</code> 를 붙인다</li>
+</ul>
+<h2 id="loop">/loop</h2>
+<p>세션이 열려 있는 동안 같은 지시를 되풀이한다. 배포 · CI 처럼 바깥 상태를 기다릴 때 쓴다.</p>
+<pre class="language-text" data-language="text"><code class="language-text">/loop 5m 배포가 끝났는지 보고 결과를 알려 줘     # 5 분마다
+/loop CI 가 통과했는지 보고 리뷰 댓글을 처리해     # 간격은 Claude 가 1 분–1 시간 사이에서 고른다
+/loop 20m /review-pr 1234                      # 스킬을 되풀이
+/loop                                          # 기본 유지 보수 지시 (`.claude/loop.md` 로 바꾼다)</code></pre>
+<ul>
+<li>간격을 주면 cron 으로 바꿔 예약한다. 단위는 <code>s</code> · <code>m</code> · <code>h</code> · <code>d</code>, cron 이라 1 분 단위로 올림한다</li>
+<li>간격을 빼면 Claude 가 지켜본 것에 따라 다음 간격을 고르고, 일이 끝나면 스스로 멈춘다</li>
+<li>간격 없는 루프는 기다리는 동안 <code>Esc</code> 로 멈춘다. 간격을 준 루프는 "배포 확인 루프를 취소해" 처럼 말로 멈춘다</li>
+<li>되풀이 작업은 7 일 뒤 저절로 지워진다</li>
+<li>세션이 닫히면 멈춘다. 닫혀 있어도 돌아야 하는 일은 데스크톱 · 클라우드 예약 작업으로 옮긴다</li>
+</ul>
+<h2 id="stop-훅--ralph-루프">Stop 훅 · Ralph 루프</h2>
+<p><code>Stop</code> 훅이 2 로 끝나면 Claude 는 멈추지 못하고 이어서 일한다. 이것을 쓰면 끝날 때까지 같은 지시를 다시 넣는 루프가 된다. ralph-loop 플러그인이 이렇게 만들어져 있다.</p>
+<pre class="language-text" data-language="text"><code class="language-text">/ralph-loop "할 일 API 를 만든다. CRUD · 입력 검사 · 테스트. 다 되면 &lt;promise&gt;COMPLETE&lt;/promise&gt; 를 출력한다" \
+  --completion-promise "COMPLETE" --max-iterations 50</code></pre>
+<ul>
+<li>지시는 매번 같고, 앞에서 한 일은 파일 · git 기록에 남아 다음 바퀴에 읽힌다</li>
+<li>약속한 낱말(<code>COMPLETE</code>) 이 나오거나 최대 횟수에 닿으면 멈춘다</li>
+<li>직접 훅을 짤 때는 입력의 <code>stop_hook_active</code> 를 보고, 검사를 통과하면 0 으로 끝내게 한다. 그렇지 않으면 끝나지 않는다</li>
+</ul>
+<h2 id="셸-반복문">셸 반복문</h2>
+<p>세션 밖에서 <code>claude -p</code> 를 셸로 되풀이할 수도 있다. 바퀴마다 새 대화로 시작한다.</p>
+<pre class="language-bash" data-language="bash"><code class="language-bash"><span class="token keyword">for</span> <span class="token for-or-select variable">i</span> <span class="token keyword">in</span> <span class="token variable"><span class="token variable">$(</span><span class="token function">seq</span> <span class="token number">1</span> <span class="token number">10</span><span class="token variable">)</span></span><span class="token punctuation">;</span> <span class="token keyword">do</span>
+  claude <span class="token parameter variable">-p</span> <span class="token string">"TODO.md 에서 맨 위 항목 하나를 끝내고 지운다. 남은 것이 없으면 DONE 만 출력한다"</span> <span class="token punctuation">\</span>
+    --permission-mode acceptEdits --max-turns <span class="token number">30</span> <span class="token operator">|</span> <span class="token function">tee</span> <span class="token parameter variable">-a</span> loop.log <span class="token operator">|</span> <span class="token function">grep</span> <span class="token parameter variable">-q</span> <span class="token string">'^DONE$'</span> <span class="token operator">&amp;&amp;</span> <span class="token builtin class-name">break</span>
+<span class="token keyword">done</span></code></pre>
+<ul>
+<li><code>--max-turns</code> · <code>--max-budget-usd</code> 로 한 바퀴의 크기를 묶는다</li>
+<li>바퀴 사이에 남길 것은 파일(<code>TODO.md</code> · <code>NOTES.md</code>) 로 넘긴다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://code.claude.com/docs/ko/goal">목표</a> — <code>/goal</code> 조건 쓰기 · 평가 · 비대화형</li>
+<li><a href="https://code.claude.com/docs/ko/scheduled-tasks">예약 작업</a> — <code>/loop</code> · <code>loop.md</code> · 예약 방법 견주기</li>
+<li><a href="https://code.claude.com/docs/ko/hooks-guide">Hooks 가이드</a> — <code>Stop</code> 훅</li>
+<li><a href="https://github.com/anthropics/claude-plugins-official/tree/main/plugins/ralph-loop">ralph-loop</a> — Stop 훅으로 만든 되풀이 플러그인</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">AI</a></li><li><a href="/docs/ai/Claude-Code/">Claude Code</a></li><li><a href="/docs/ai/Claude-Code/에이전트/">에이전트</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/AI/" rel="tag">AI</a><a class="chip" href="/tags/Claude Code/" rel="tag">Claude Code</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-09T11:52:23.000Z">2026-11-09</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

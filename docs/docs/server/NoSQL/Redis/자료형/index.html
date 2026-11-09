@@ -1,0 +1,148 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>자료형 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">NoSQL</span><span class="up"> / <a href="/docs/server/" title="한 단계 위로">서버</a></span></p><ul><li><a href="/docs/server/NoSQL/">개요</a></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/server/NoSQL/Redis/">Redis</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/NoSQL/Redis/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/NoSQL/Redis/자료형/" aria-current="page">자료형</a></li><li><a href="/docs/server/NoSQL/Redis/캐시/">캐시</a></li><li><a href="/docs/server/NoSQL/Redis/저장/">저장</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/NoSQL/MongoDB/">MongoDB</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/NoSQL/MongoDB/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/NoSQL/MongoDB/문서와-쿼리/">문서와 쿼리</a></li><li><a href="/docs/server/NoSQL/MongoDB/복제-세트/">복제 세트</a></li><li><a href="/docs/server/NoSQL/MongoDB/샤딩/">샤딩</a></li><li><a href="/docs/server/NoSQL/MongoDB/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/NoSQL/Cassandra/">Cassandra</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/NoSQL/Cassandra/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/NoSQL/Cassandra/데이터-모델/">데이터 모델</a></li><li><a href="/docs/server/NoSQL/Cassandra/클러스터/">클러스터</a></li><li><a href="/docs/server/NoSQL/Cassandra/백업/">백업</a></li></ul></details></li></ul></nav><article><h1 class="page-title">자료형</h1><details class="sidebar-m"><summary>목록 · NoSQL</summary><ul><li><a href="/docs/server/NoSQL/">개요</a></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/server/NoSQL/Redis/">Redis</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/NoSQL/Redis/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/NoSQL/Redis/자료형/" aria-current="page">자료형</a></li><li><a href="/docs/server/NoSQL/Redis/캐시/">캐시</a></li><li><a href="/docs/server/NoSQL/Redis/저장/">저장</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/NoSQL/MongoDB/">MongoDB</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/NoSQL/MongoDB/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/NoSQL/MongoDB/문서와-쿼리/">문서와 쿼리</a></li><li><a href="/docs/server/NoSQL/MongoDB/복제-세트/">복제 세트</a></li><li><a href="/docs/server/NoSQL/MongoDB/샤딩/">샤딩</a></li><li><a href="/docs/server/NoSQL/MongoDB/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/NoSQL/Cassandra/">Cassandra</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/NoSQL/Cassandra/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/NoSQL/Cassandra/데이터-모델/">데이터 모델</a></li><li><a href="/docs/server/NoSQL/Cassandra/클러스터/">클러스터</a></li><li><a href="/docs/server/NoSQL/Cassandra/백업/">백업</a></li></ul></details></li></ul></details><div class="content"><p>Redis 의 값은 자료형이 있다. 문자열 하나만 담는 키도 있고, 필드가 여럿인 해시 · 순서가 있는 리스트 · 겹치지 않는 집합 · 점수로 줄 세운 정렬 집합도 있다. 명령은 자료형마다 따로이고(<code>GET</code> · <code>HGET</code> · <code>LPOP</code> …), 다른 자료형의 명령을 쓰면 오류다. 키마다 만료 시간을 줄 수 있어 캐시 · 세션 · 잠금에 쓴다. 명령 하나하나는 원자적이고, 여럿을 묶을 때는 <code>MULTI</code> 나 Lua 스크립트를 쓴다. 아래 예제는 <code>redis:8</code>(8.10.3) 컨테이너의 <code>redis-cli</code> 에서 돌렸다.</p>
+<h2 id="문자열">문자열</h2>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">SET greeting hello EX 60      → OK          60 초 뒤 사라진다
+TTL greeting                  → 60
+SET lock:1 a NX EX 10         → OK          없을 때만 넣는다
+SET lock:1 b NX EX 10         → (nil)       이미 있어 넣지 않았다
+INCR views                    → 1
+INCRBY views 10               → 11
+SET n abc
+INCR n                        → ERR value is not an integer or out of range</code></pre>
+<ul>
+<li><code>NX</code> 는 키가 없을 때만, <code>XX</code> 는 있을 때만 넣는다. <code>SET … NX EX</code> 한 줄이 "잠금을 잡고 10 초 뒤 저절로 풀기" 다</li>
+<li><code>INCR</code> 은 원자적이다. 여러 서버가 함께 올려도 빠지는 수가 없어 조회수 · 요청 수 세기에 쓴다. 속은 문자열이지만 <code>OBJECT ENCODING views</code> 는 <code>int</code> 다</li>
+</ul>
+<h2 id="해시--리스트--집합--정렬-집합">해시 · 리스트 · 집합 · 정렬 집합</h2>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">HSET user:1 name kim age 30   → 2
+HINCRBY user:1 age 1          → 31
+HGETALL user:1                → name kim age 31
+
+RPUSH q a b c                 → 3
+LPOP q                        → a           앞에서 꺼낸다 (큐)
+LRANGE q 0 -1                 → b c
+
+SADD tags x y x               → 2           겹친 x 는 한 번
+SISMEMBER tags y              → 1
+
+ZADD rank 100 kim 250 lee 180 park
+ZREVRANGE rank 0 1 WITHSCORES → lee 250 park 180
+ZINCRBY rank 100 kim          → 200
+ZRANK rank kim                → 1           낮은 점수부터 0, 1, 2</code></pre>
+<table>
+<thead>
+<tr>
+<th>자료형</th>
+<th>쓰임</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>문자열</td>
+<td>캐시 값(JSON) · 카운터 · 잠금</td>
+</tr>
+<tr>
+<td>해시</td>
+<td>객체 하나 (사용자 · 세션). 필드 하나만 읽고 고친다</td>
+</tr>
+<tr>
+<td>리스트</td>
+<td>큐 · 최근 본 목록 (<code>LPUSH</code> + <code>LTRIM</code>)</td>
+</tr>
+<tr>
+<td>집합</td>
+<td>태그 · 오늘 들어온 사용자 (겹치지 않게)</td>
+</tr>
+<tr>
+<td>정렬 집합</td>
+<td>순위표 · 시간순 목록 (점수 = 시각)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>해시 키에 <code>GET user:1</code> 을 하면 <code>WRONGTYPE Operation against a key holding the wrong kind of value</code> 다. <code>TYPE</code> 으로 자료형을 본다</li>
+<li>키 이름은 <code>:</code> 로 마디를 나눈다(<code>user:1</code> · <code>session:abc</code>). Redis 는 이름의 뜻을 모르지만, <code>--scan --pattern 'user:*'</code> · ACL 의 <code>~user:*</code> 가 이 형태로 묶는다</li>
+</ul>
+<h2 id="만료">만료</h2>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">EXPIRE user:1 30              → 1
+TTL user:1                    → 30
+PERSIST user:1                → 1           만료를 없앤다
+TTL user:1                    → -1          만료 없음
+TTL nokey                     → -2          키가 없다
+SET greeting bye
+TTL greeting                  → -1          SET 이 만료를 지웠다</code></pre>
+<ul>
+<li>만료가 있던 키에 <code>SET</code> 을 다시 하면 만료가 사라진다. 값을 바꾸면서 남은 시간을 두려면 <code>SET … KEEPTTL</code>, 새로 정하려면 <code>SET … EX</code> 를 함께 준다</li>
+<li>해시 · 리스트는 키 전체에만 만료가 붙는다. 7.4 부터는 해시 필드마다 줄 수 있다(<code>HEXPIRE</code>)</li>
+</ul>
+<h2 id="keys-대신-scan">KEYS 대신 SCAN</h2>
+<p>키 100 만 개를 넣고 <code>KEYS *</code> 를 돌렸다.</p>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">SLOWLOG GET 1    → KEYS 103061 마이크로초</code></pre>
+<ul>
+<li><code>KEYS</code> 는 모든 키를 한 번에 훑는 동안 서버를 붙잡는다. 그사이 다른 클라이언트의 <code>PING</code> 이 86 ms 를 기다렸다(평소 2 ms). Redis 는 명령을 하나씩 처리하기 때문이다</li>
+<li><code>redis-cli --scan --pattern 'k:99999*'</code> 는 5.5 초 걸렸지만 조금씩 나눠 훑어서 서버를 오래 붙잡지 않는다. 운영 서버에서는 <code>SCAN</code> 을 쓴다</li>
+<li><code>SCAN 0 MATCH 'k:1*' COUNT 10</code> 은 다음 커서와 키 몇 개를 돌려준다. 커서가 <code>0</code> 으로 돌아올 때까지 되풀이한다. 같은 키가 두 번 나올 수 있다</li>
+<li>같은 까닭으로 큰 키의 <code>HGETALL</code> · <code>SMEMBERS</code> · <code>LRANGE 0 -1</code> 이나 <code>FLUSHALL</code> 도 서버를 붙잡는다. <code>SLOWLOG GET</code> 으로 오래 걸린 명령을 찾는다</li>
+</ul>
+<h2 id="여러-명령을-묶기">여러 명령을 묶기</h2>
+<p><code>MULTI</code> … <code>EXEC</code> 사이의 명령은 다른 클라이언트의 명령이 끼어들지 않고 한꺼번에 돈다.</p>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">MULTI
+DECR stock                    → QUEUED
+INCR sold                     → QUEUED
+EXEC                          → 2  1</code></pre>
+<p>중간 명령이 실패해도 앞뒤 명령은 그대로 적용된다. 되돌리기는 없다.</p>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">MULTI
+SET a 1
+INCR stockx_not
+LPUSH a x
+SET b 2
+EXEC                          → OK  1  WRONGTYPE …  OK
+GET b                         → 2</code></pre>
+<p>값을 읽고 그 값으로 판단해 쓸 때는 <code>WATCH</code> 를 건다. 읽은 뒤 다른 클라이언트가 그 키를 바꾸면 <code>EXEC</code> 가 아무것도 하지 않는다.</p>
+<pre class="language-python" data-language="python"><code class="language-python">p <span class="token operator">=</span> r<span class="token punctuation">.</span>pipeline<span class="token punctuation">(</span><span class="token punctuation">)</span>
+p<span class="token punctuation">.</span>watch<span class="token punctuation">(</span><span class="token string">"stock"</span><span class="token punctuation">)</span>
+s <span class="token operator">=</span> <span class="token builtin">int</span><span class="token punctuation">(</span>p<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"stock"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token comment"># 그사이 다른 클라이언트가 stock 을 0 으로 바꿨다</span>
+p<span class="token punctuation">.</span>multi<span class="token punctuation">(</span><span class="token punctuation">)</span>
+p<span class="token punctuation">.</span><span class="token builtin">set</span><span class="token punctuation">(</span><span class="token string">"stock"</span><span class="token punctuation">,</span> s <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span>
+p<span class="token punctuation">.</span>execute<span class="token punctuation">(</span><span class="token punctuation">)</span>     <span class="token comment"># redis.exceptions.WatchError: Watched variable changed.</span></code></pre>
+<ul>
+<li>실패하면 처음부터 다시 읽고 시도한다. 다툼이 잦은 키라면 아래 스크립트가 낫다</li>
+</ul>
+<h2 id="lua-스크립트">Lua 스크립트</h2>
+<p>스크립트 하나가 통째로 원자적으로 돈다. "재고가 있으면 하나 줄인다" 를 한 번에 한다.</p>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">EVAL "local s = tonumber(redis.call('GET', KEYS[1])); if s and s &gt; 0 then return redis.call('DECR', KEYS[1]) else return -1 end" 1 stock</code></pre>
+<ul>
+<li><code>stock</code> 이 3 일 때 <code>2</code>, 0 일 때 <code>-1</code> 을 돌려주고 값은 그대로 0 이었다</li>
+<li>쓰는 키는 <code>KEYS[1]</code> 처럼 인자로 넘긴다. 스크립트 안에 키 이름을 적지 않는다</li>
+<li>스크립트가 도는 동안에도 서버는 다른 명령을 받지 못한다. 키 100 만 개를 넣는 스크립트처럼 오래 도는 일은 스크립트로 하지 않는다</li>
+<li>스크립트는 시작할 때만 메모리 한도를 본다. 한도 2 MB 에서도 도중의 <code>SET</code> 은 막히지 않아 메모리가 한도를 넘었다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://redis.io/docs/latest/commands/">Commands</a> — 명령마다 시간 복잡도</li>
+<li><a href="https://redis.io/docs/latest/commands/scan/">SCAN</a> — 커서 · <code>MATCH</code> · <code>COUNT</code> 가 보장하는 것</li>
+<li><a href="https://redis.io/docs/latest/develop/using-commands/transactions/">Transactions</a> — <code>MULTI</code> · <code>WATCH</code> · 되돌리기가 없는 까닭</li>
+<li><a href="https://redis.io/docs/latest/develop/programmability/eval-intro/">Scripting with Lua</a> — <code>EVAL</code> · <code>KEYS</code> · <code>ARGV</code></li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/NoSQL/">NoSQL</a></li><li><a href="/docs/server/NoSQL/Redis/">Redis</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Redis/" rel="tag">Redis</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-09T12:19:26.000Z">2026-11-09</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>
