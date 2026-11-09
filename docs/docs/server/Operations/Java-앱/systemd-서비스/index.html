@@ -1,0 +1,154 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>systemd 서비스 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">운영</span><span class="up"> / <a href="/docs/server/" title="한 단계 위로">서버</a></span></p><ul><li><a href="/docs/server/Operations/">개요</a></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/server/Operations/Java-앱/">Java 앱</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Operations/Java-앱/빌드와-실행/">빌드와 실행</a></li><li><a href="/docs/server/Operations/Java-앱/systemd-서비스/" aria-current="page">systemd 서비스</a></li><li><a href="/docs/server/Operations/Java-앱/Nginx-뒤에/">Nginx 뒤에</a></li><li><a href="/docs/server/Operations/Java-앱/Docker로/">Docker로</a></li></ul></details></li><li><a href="/docs/server/Operations/Prometheus/">Prometheus</a></li></ul></nav><article><h1 class="page-title">systemd 서비스</h1><details class="sidebar-m"><summary>목록 · 운영</summary><ul><li><a href="/docs/server/Operations/">개요</a></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/server/Operations/Java-앱/">Java 앱</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Operations/Java-앱/빌드와-실행/">빌드와 실행</a></li><li><a href="/docs/server/Operations/Java-앱/systemd-서비스/" aria-current="page">systemd 서비스</a></li><li><a href="/docs/server/Operations/Java-앱/Nginx-뒤에/">Nginx 뒤에</a></li><li><a href="/docs/server/Operations/Java-앱/Docker로/">Docker로</a></li></ul></details></li><li><a href="/docs/server/Operations/Prometheus/">Prometheus</a></li></ul></details><div class="content"><p>서버에서는 jar 를 systemd 서비스로 띄운다. 그러면 서버가 다시 켜질 때 저절로 뜨고, 앱이 죽으면 다시 뜨며, 로그는 저널에 모인다. 앱은 root 가 아니라 앱만의 사용자로 돌리고, 설정 · 비밀번호는 유닛 파일이 아니라 따로 둔 환경 파일에 넣는다. Java 는 <code>SIGTERM</code> 으로 끝나면 종료 코드 143 을 내므로 이것을 정상 종료로 알려 줘야 한다. 아래 예제는 Ubuntu 24.04(systemd 255) 에 <code>openjdk-25-jre-headless</code>(25.0.5) 를 깔고, Spring Boot 4.1.2 앱 jar 를 서비스로 띄웠다.</p>
+<h2 id="자리--사용자">자리 · 사용자</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> <span class="token function">apt</span> <span class="token function">install</span> openjdk-25-jre-headless
+<span class="token function">sudo</span> <span class="token function">useradd</span> <span class="token parameter variable">--system</span> <span class="token parameter variable">--home</span> /opt/shop <span class="token parameter variable">--shell</span> /usr/sbin/nologin shop
+<span class="token function">sudo</span> <span class="token function">install</span> <span class="token parameter variable">-d</span> <span class="token parameter variable">-o</span> shop <span class="token parameter variable">-g</span> shop /opt/shop
+<span class="token function">sudo</span> <span class="token function">install</span> <span class="token parameter variable">-o</span> shop <span class="token parameter variable">-g</span> shop <span class="token parameter variable">-m</span> <span class="token number">644</span> shop.jar /opt/shop/shop.jar</code></pre>
+<table>
+<thead>
+<tr>
+<th>자리</th>
+<th>담는 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/opt/shop/shop.jar</code></td>
+<td>앱</td>
+</tr>
+<tr>
+<td><code>/etc/shop/shop.env</code></td>
+<td>설정 · 비밀번호</td>
+</tr>
+<tr>
+<td><code>/etc/systemd/system/shop.service</code></td>
+<td>유닛</td>
+</tr>
+<tr>
+<td>저널(<code>journalctl -u shop</code>)</td>
+<td>로그</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>--system</code> 사용자는 로그인하지 못하고(<code>nologin</code>) 홈 폴더가 앱 자리다. 앱이 뚫려도 그 사용자의 권한만 갖는다</li>
+</ul>
+<h2 id="환경-파일">환경 파일</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token comment"># /etc/shop/shop.env</span>
+<span class="token assign-left variable">SERVER_PORT</span><span class="token operator">=</span><span class="token number">8080</span>
+<span class="token assign-left variable">JAVA_OPTS</span><span class="token operator">=</span>-Xms256m <span class="token parameter variable">-Xmx256m</span>
+<span class="token assign-left variable">SPRING_PROFILES_ACTIVE</span><span class="token operator">=</span>prod
+<span class="token assign-left variable">DB_PASSWORD</span><span class="token operator">=</span>Db-pass-1</code></pre>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> <span class="token function">chown</span> root:root /etc/shop/shop.env
+<span class="token function">sudo</span> <span class="token function">chmod</span> <span class="token number">600</span> /etc/shop/shop.env</code></pre>
+<ul>
+<li>파일을 root 만 읽게(600) 두어도 앱은 떴다. 환경 파일은 systemd(root) 가 읽어 앱에 넘긴다. <code>shop</code> 사용자로 그 파일을 읽으면 <code>Permission denied</code> 였다</li>
+<li><code>systemctl show shop -p Environment</code> 에는 환경 파일의 값이 나오지 않았다(<code>Environment=</code>). 유닛에 <code>Environment=DB_PASSWORD=…</code> 로 적으면 누구나 <code>systemctl show</code> · <code>systemctl cat</code> 으로 본다</li>
+<li>넘긴 값은 프로세스의 환경에 남는다. 같은 사용자 · root 는 <code>/proc/&lt;PID&gt;/environ</code> 에서 <code>DB_PASSWORD=Db-pass-1</code> 을 읽었다</li>
+</ul>
+<h2 id="유닛">유닛</h2>
+<pre class="language-ini" data-language="ini"><code class="language-ini"><span class="token comment"># /etc/systemd/system/shop.service</span>
+<span class="token section"><span class="token punctuation">[</span><span class="token section-name selector">Unit</span><span class="token punctuation">]</span></span>
+<span class="token key attr-name">Description</span><span class="token punctuation">=</span><span class="token value attr-value">shop (Spring Boot)</span>
+<span class="token key attr-name">After</span><span class="token punctuation">=</span><span class="token value attr-value">network-online.target</span>
+<span class="token key attr-name">Wants</span><span class="token punctuation">=</span><span class="token value attr-value">network-online.target</span>
+
+<span class="token section"><span class="token punctuation">[</span><span class="token section-name selector">Service</span><span class="token punctuation">]</span></span>
+<span class="token key attr-name">User</span><span class="token punctuation">=</span><span class="token value attr-value">shop</span>
+<span class="token key attr-name">Group</span><span class="token punctuation">=</span><span class="token value attr-value">shop</span>
+<span class="token key attr-name">WorkingDirectory</span><span class="token punctuation">=</span><span class="token value attr-value">/opt/shop</span>
+<span class="token key attr-name">EnvironmentFile</span><span class="token punctuation">=</span><span class="token value attr-value">/etc/shop/shop.env</span>
+<span class="token key attr-name">ExecStart</span><span class="token punctuation">=</span><span class="token value attr-value">/usr/bin/java $JAVA_OPTS -jar /opt/shop/shop.jar</span>
+<span class="token key attr-name">SuccessExitStatus</span><span class="token punctuation">=</span><span class="token value attr-value">143</span>
+<span class="token key attr-name">Restart</span><span class="token punctuation">=</span><span class="token value attr-value">on-failure</span>
+<span class="token key attr-name">RestartSec</span><span class="token punctuation">=</span><span class="token value attr-value">5</span>
+<span class="token key attr-name">TimeoutStopSec</span><span class="token punctuation">=</span><span class="token value attr-value">40</span>
+
+<span class="token section"><span class="token punctuation">[</span><span class="token section-name selector">Install</span><span class="token punctuation">]</span></span>
+<span class="token key attr-name">WantedBy</span><span class="token punctuation">=</span><span class="token value attr-value">multi-user.target</span></code></pre>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> systemctl daemon-reload
+<span class="token function">sudo</span> systemctl <span class="token builtin class-name">enable</span> <span class="token parameter variable">--now</span> shop
+systemctl status shop</code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">● shop.service - shop (Spring Boot)
+     Loaded: loaded (/etc/systemd/system/shop.service; enabled; preset: enabled)
+     Active: active (running) since Mon 2026-11-09 17:27:41 KST; 6s ago
+   Main PID: 60830 (java)
+     Memory: 243.8M (peak: 244.1M)
+     CGroup: /system.slice/shop.service
+             └─60830 /usr/bin/java -Xms256m -Xmx256m -jar /opt/shop/shop.jar</code></pre>
+<ul>
+<li><code>WorkingDirectory</code> 가 실행 폴더라, <code>/opt/shop/application.yml</code> 을 두면 jar 안의 설정을 덮어쓴다</li>
+<li><code>TimeoutStopSec</code> 은 graceful shutdown 의 기다림(30 초) 보다 길게 둔다. 그 안에 끝나지 않으면 systemd 가 <code>SIGKILL</code> 을 보낸다</li>
+</ul>
+<h2 id="유닛에서-걸린-것">유닛에서 걸린 것</h2>
+<table>
+<thead>
+<tr>
+<th>고친 것</th>
+<th>결과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SuccessExitStatus=143</code> 을 뺌</td>
+<td><code>systemctl stop</code> 만 해도 <code>Active: failed (Result: exit-code)</code> · <code>ExecMainStatus=143</code>. 있으면 <code>Result=success</code> · <code>inactive</code></td>
+</tr>
+<tr>
+<td><code>$JAVA_OPTS</code> 를 <code>${JAVA_OPTS}</code> 로 씀</td>
+<td><code>Invalid initial heap size: -Xms256m -Xmx256m</code> · <code>Error: Could not create the Java Virtual Machine.</code> 로 뜨지 않고 다시 뜨기를 되풀이</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>systemd 는 <code>$이름</code> 을 빈칸에서 나눠 인자 여럿으로, <code>${이름}</code> 은 통째로 인자 하나로 넣는다. JVM 옵션 여럿을 한 변수에 담았다면 <code>$JAVA_OPTS</code> 로 쓴다</li>
+<li><code>failed</code> 로 남으면 모니터링이 정상 정지를 장애로 센다</li>
+</ul>
+<h2 id="죽었을-때">죽었을 때</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> <span class="token function">kill</span> <span class="token parameter variable">-9</span> <span class="token variable"><span class="token variable">$(</span>systemctl show shop <span class="token parameter variable">-p</span> MainPID <span class="token parameter variable">--value</span><span class="token variable">)</span></span>
+journalctl <span class="token parameter variable">-u</span> shop <span class="token parameter variable">-n</span> <span class="token number">30</span></code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">systemd[1]: shop.service: Main process exited, code=killed, status=9/KILL
+systemd[1]: shop.service: Failed with result 'signal'.
+systemd[1]: shop.service: Scheduled restart job, restart counter is at 1.
+systemd[1]: Started shop.service - shop (Spring Boot).</code></pre>
+<ul>
+<li><code>RestartSec=5</code> 뒤 다시 떴고, 죽이고 9 초 뒤 다시 응답했다(5 초 기다림 + 뜨는 데 3 ~ 4 초). <code>NRestarts</code> 가 1 이 됐다</li>
+<li><code>Restart=on-failure</code> 는 비정상 종료 · 신호로 죽었을 때만 다시 띄운다. <code>systemctl stop</code> 으로 끈 것은 다시 띄우지 않는다</li>
+<li><code>${JAVA_OPTS}</code> 시험처럼 늘 실패하는 서비스는 <code>activating (auto-restart)</code> 로 다시 띄우기를 되풀이했다. 고친 뒤 <code>systemctl reset-failed shop</code> 으로 실패 기록을 지우고 띄운다</li>
+</ul>
+<h2 id="새-판으로-바꾸기">새 판으로 바꾸기</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> <span class="token function">install</span> <span class="token parameter variable">-o</span> shop <span class="token parameter variable">-g</span> shop <span class="token parameter variable">-m</span> <span class="token number">644</span> shop.jar /opt/shop/shop.jar.new
+<span class="token function">sudo</span> <span class="token function">mv</span> /opt/shop/shop.jar.new /opt/shop/shop.jar      <span class="token comment"># 바꿔치기는 한 번에</span>
+<span class="token function">sudo</span> systemctl restart shop</code></pre>
+<ul>
+<li>0.1 초마다 요청을 보내면서 바꾸자, 3.7 초 동안 연결이 거부됐다(<code>000</code> 33 번). 앞 판이 graceful 로 끝나고 새 판이 뜨는 데 3.3 초(<code>Started ShopApplication in 3.316 seconds</code>) 걸린 만큼이다</li>
+<li>끊기지 않게 하려면 앱을 둘 띄우고 Nginx 뒤에서 하나씩 바꾼다</li>
+<li>같은 유닛을 포트만 바꿔 여럿 띄울 때는 템플릿 유닛 <code>shop@.service</code> 를 쓴다. <code>ExecStart=… -jar /opt/shop/shop.jar --server.port=%i</code> 로 적고 <code>systemctl enable --now shop@8081 shop@8082</code> 로 띄운다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html">systemd.service</a> — <code>Restart</code> · <code>SuccessExitStatus</code> · <code>TimeoutStopSec</code> · 변수 풀기</li>
+<li><a href="https://www.freedesktop.org/software/systemd/man/latest/systemd.exec.html">systemd.exec</a> — <code>User</code> · <code>EnvironmentFile</code> · <code>WorkingDirectory</code></li>
+<li><a href="https://docs.spring.io/spring-boot/how-to/deployment/installing.html">Installing Spring Boot Applications</a> — systemd 유닛 예</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/Operations/">운영</a></li><li><a href="/docs/server/Operations/Java-앱/">Java 앱</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Java/" rel="tag">Java</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-09T08:40:39.000Z">2026-11-09</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

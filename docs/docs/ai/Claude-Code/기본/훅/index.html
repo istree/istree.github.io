@@ -1,0 +1,164 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>훅 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">AI</span><span class="up"> / <a href="/docs/" title="한 단계 위로">정리</a></span></p><ul><li><a href="/docs/ai/">개요</a></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/ai/Claude-Code/">Claude Code</a><span class="fold" aria-label="펼치기"></span></summary><ul><li class="side-folder"><details name="side-1" open><summary><span class="side-name">기본</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/기본/시작하기/">시작하기</a></li><li><a href="/docs/ai/Claude-Code/기본/설정과-메모리/">설정과 메모리</a></li><li><a href="/docs/ai/Claude-Code/기본/훅/" aria-current="page">훅</a></li><li><a href="/docs/ai/Claude-Code/기본/상태-표시줄/">상태 표시줄</a></li></ul></details></li><li class="side-folder"><details name="side-1"><summary><span class="side-name">스킬</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/스킬/만들기/">만들기</a></li><li><a href="/docs/ai/Claude-Code/스킬/모음/">모음</a></li></ul></details></li><li class="side-folder"><details name="side-1"><summary><span class="side-name">MCP</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/MCP/붙이기/">붙이기</a></li><li><a href="/docs/ai/Claude-Code/MCP/서버-만들기/">서버 만들기</a></li></ul></details></li><li class="side-folder"><details name="side-1"><summary><span class="side-name">에이전트</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/에이전트/서브에이전트/">서브에이전트</a></li><li><a href="/docs/ai/Claude-Code/에이전트/여러-세션/">여러 세션</a></li><li class="side-folder"><details name="side-2"><summary><span class="side-name">쓰기</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/에이전트/쓰기/알려-주기/">알려 주기</a></li><li><a href="/docs/ai/Claude-Code/에이전트/쓰기/확인시키기/">확인시키기</a></li><li><a href="/docs/ai/Claude-Code/에이전트/쓰기/규칙-강제하기/">규칙 강제하기</a></li><li><a href="/docs/ai/Claude-Code/에이전트/쓰기/세션-다루기/">세션 다루기</a></li><li><a href="/docs/ai/Claude-Code/에이전트/쓰기/맡겨-두기/">맡겨 두기</a></li><li><a href="/docs/ai/Claude-Code/에이전트/쓰기/이제-하지-않아도-되는-것/">이제 하지 않아도 되는 것</a></li></ul></details></li><li class="side-folder"><details name="side-2"><summary><span class="side-name">만들기</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/에이전트/만들기/워크플로-패턴/">워크플로 패턴</a></li><li><a href="/docs/ai/Claude-Code/에이전트/만들기/에이전트-루프/">에이전트 루프</a></li><li><a href="/docs/ai/Claude-Code/에이전트/만들기/컨텍스트-엔지니어링/">컨텍스트 엔지니어링</a></li><li><a href="/docs/ai/Claude-Code/에이전트/만들기/도구-설계/">도구 설계</a></li><li><a href="/docs/ai/Claude-Code/에이전트/만들기/여러-에이전트/">여러 에이전트</a></li></ul></details></li></ul></details></li><li class="side-folder"><details name="side-1"><summary><span class="side-name">원격</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/원격/텔레그램-알림/">텔레그램 알림</a></li><li><a href="/docs/ai/Claude-Code/원격/텔레그램-총괄/">텔레그램 총괄</a></li></ul></details></li></ul></details></li></ul></nav><article><h1 class="page-title">훅</h1><details class="sidebar-m"><summary>목록 · AI</summary><ul><li><a href="/docs/ai/">개요</a></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/ai/Claude-Code/">Claude Code</a><span class="fold" aria-label="펼치기"></span></summary><ul><li class="side-folder"><details name="side-m-1" open><summary><span class="side-name">기본</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/기본/시작하기/">시작하기</a></li><li><a href="/docs/ai/Claude-Code/기본/설정과-메모리/">설정과 메모리</a></li><li><a href="/docs/ai/Claude-Code/기본/훅/" aria-current="page">훅</a></li><li><a href="/docs/ai/Claude-Code/기본/상태-표시줄/">상태 표시줄</a></li></ul></details></li><li class="side-folder"><details name="side-m-1"><summary><span class="side-name">스킬</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/스킬/만들기/">만들기</a></li><li><a href="/docs/ai/Claude-Code/스킬/모음/">모음</a></li></ul></details></li><li class="side-folder"><details name="side-m-1"><summary><span class="side-name">MCP</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/MCP/붙이기/">붙이기</a></li><li><a href="/docs/ai/Claude-Code/MCP/서버-만들기/">서버 만들기</a></li></ul></details></li><li class="side-folder"><details name="side-m-1"><summary><span class="side-name">에이전트</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/에이전트/서브에이전트/">서브에이전트</a></li><li><a href="/docs/ai/Claude-Code/에이전트/여러-세션/">여러 세션</a></li><li class="side-folder"><details name="side-m-2"><summary><span class="side-name">쓰기</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/에이전트/쓰기/알려-주기/">알려 주기</a></li><li><a href="/docs/ai/Claude-Code/에이전트/쓰기/확인시키기/">확인시키기</a></li><li><a href="/docs/ai/Claude-Code/에이전트/쓰기/규칙-강제하기/">규칙 강제하기</a></li><li><a href="/docs/ai/Claude-Code/에이전트/쓰기/세션-다루기/">세션 다루기</a></li><li><a href="/docs/ai/Claude-Code/에이전트/쓰기/맡겨-두기/">맡겨 두기</a></li><li><a href="/docs/ai/Claude-Code/에이전트/쓰기/이제-하지-않아도-되는-것/">이제 하지 않아도 되는 것</a></li></ul></details></li><li class="side-folder"><details name="side-m-2"><summary><span class="side-name">만들기</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/에이전트/만들기/워크플로-패턴/">워크플로 패턴</a></li><li><a href="/docs/ai/Claude-Code/에이전트/만들기/에이전트-루프/">에이전트 루프</a></li><li><a href="/docs/ai/Claude-Code/에이전트/만들기/컨텍스트-엔지니어링/">컨텍스트 엔지니어링</a></li><li><a href="/docs/ai/Claude-Code/에이전트/만들기/도구-설계/">도구 설계</a></li><li><a href="/docs/ai/Claude-Code/에이전트/만들기/여러-에이전트/">여러 에이전트</a></li></ul></details></li></ul></details></li><li class="side-folder"><details name="side-m-1"><summary><span class="side-name">원격</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/원격/텔레그램-알림/">텔레그램 알림</a></li><li><a href="/docs/ai/Claude-Code/원격/텔레그램-총괄/">텔레그램 총괄</a></li></ul></details></li></ul></details></li></ul></details><div class="content"><p>훅은 Claude Code 가 일하는 도중 정해진 때에 내 명령을 돌린다. 응답이 끝날 때 커밋하고, 위험한 명령을 실행 전에 막고, 승인을 기다릴 때 알림을 보내는 식이다. Claude 에게 부탁하는 것과 달리 빠짐없이 돈다. 설정은 <code>settings.json</code> 의 <code>hooks</code> 에 적고, <code>/hooks</code> 에서 걸린 것을 본다.</p>
+<h2 id="언제-도는가">언제 도는가</h2>
+<table>
+<thead>
+<tr>
+<th>이벤트</th>
+<th>때</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SessionStart</code> · <code>SessionEnd</code></td>
+<td>세션이 시작 · 재개될 때, 끝날 때</td>
+</tr>
+<tr>
+<td><code>UserPromptSubmit</code></td>
+<td>내가 메시지를 보낸 뒤, Claude 가 읽기 전</td>
+</tr>
+<tr>
+<td><code>PreToolUse</code> · <code>PostToolUse</code></td>
+<td>도구를 실행하기 전 · 성공한 뒤</td>
+</tr>
+<tr>
+<td><code>Notification</code></td>
+<td>승인 · 입력을 기다릴 때</td>
+</tr>
+<tr>
+<td><code>Stop</code></td>
+<td>응답이 끝날 때</td>
+</tr>
+<tr>
+<td><code>PreCompact</code></td>
+<td>대화를 요약하기 전</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>이 밖에도 <code>SubagentStop</code> · <code>CwdChanged</code> · <code>FileChanged</code> 같은 이벤트가 더 있다</li>
+<li><code>matcher</code> 로 좁힌다. 도구 이벤트는 도구 이름(<code>Bash</code> · <code>Edit|Write</code> · <code>mcp__.*</code>), <code>SessionStart</code> 는 시작 방식(<code>startup</code> · <code>resume</code> · <code>compact</code>), <code>Notification</code> 은 종류(<code>permission_prompt</code> · <code>idle_prompt</code>) 다</li>
+</ul>
+<h2 id="입력--결과">입력 · 결과</h2>
+<p>명령은 표준 입력으로 JSON 하나를 받는다. 모든 이벤트에 <code>session_id</code> · <code>transcript_path</code> · <code>cwd</code> · <code>hook_event_name</code> 이 있고, 이벤트마다 더 붙는다 (<code>PreToolUse</code> 는 <code>tool_name</code> · <code>tool_input</code>, <code>Stop</code> 은 <code>last_assistant_message</code>).</p>
+<table>
+<thead>
+<tr>
+<th>종료 코드</th>
+<th>결과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0</code></td>
+<td>그대로 진행. <code>UserPromptSubmit</code> · <code>SessionStart</code> 는 표준 출력을 Claude 가 읽는 컨텍스트로 넣는다</td>
+</tr>
+<tr>
+<td><code>2</code></td>
+<td>막는다. 표준 오류가 막은 이유로 Claude 에게 간다 (<code>PreToolUse</code> 는 도구 호출, <code>UserPromptSubmit</code> 은 메시지를 막는다)</td>
+</tr>
+<tr>
+<td>그 밖</td>
+<td>막지 않는 오류로 화면에만 보인다</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>$CLAUDE_PROJECT_DIR</code> 은 프로젝트 뿌리다. 스크립트 경로는 이것으로 적는다</li>
+<li><code>timeout</code> 을 주지 않으면 명령 훅은 600 초까지 기다린다. 알림처럼 바깥에 보내는 훅은 짧게 준다</li>
+</ul>
+<h2 id="응답마다-커밋--push">응답마다 커밋 · push</h2>
+<p>개인 저장소에서 Claude 가 고친 것을 응답이 끝날 때마다 올린다. 커밋 메시지는 그 턴에 내가 보낸 말로 만든다.</p>
+<pre class="language-json" data-language="json"><code class="language-json"><span class="token comment">// .claude/settings.json</span>
+<span class="token punctuation">{</span>
+  <span class="token property">"hooks"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"Stop"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token punctuation">{</span> <span class="token property">"matcher"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span> <span class="token property">"hooks"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span> <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"command"</span><span class="token punctuation">,</span> <span class="token property">"command"</span><span class="token operator">:</span> <span class="token string">"bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/sync-repo.sh\""</span> <span class="token punctuation">}</span><span class="token punctuation">]</span> <span class="token punctuation">}</span>
+    <span class="token punctuation">]</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<pre class="language-bash" data-language="bash"><code class="language-bash"><span class="token shebang important">#!/bin/bash</span>
+<span class="token comment"># .claude/hooks/sync-repo.sh</span>
+<span class="token builtin class-name">cd</span> <span class="token string">"<span class="token variable">$CLAUDE_PROJECT_DIR</span>"</span>
+<span class="token assign-left variable">input</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">cat</span><span class="token variable">)</span></span>
+<span class="token function">git</span> <span class="token function">add</span> <span class="token parameter variable">-A</span>
+<span class="token keyword">if</span> <span class="token operator">!</span> <span class="token function">git</span> <span class="token function">diff</span> <span class="token parameter variable">--cached</span> --quiet<span class="token punctuation">;</span> <span class="token keyword">then</span>
+  <span class="token assign-left variable">msg</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token builtin class-name">printf</span> <span class="token string">'%s'</span> <span class="token string">"<span class="token variable">$input</span>"</span> <span class="token operator">|</span> python3 <span class="token string">"<span class="token variable">$CLAUDE_PROJECT_DIR</span>/.claude/hooks/commit-msg.py"</span><span class="token variable">)</span></span>
+  <span class="token assign-left variable">subject</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token builtin class-name">printf</span> <span class="token string">'%s\n'</span> <span class="token string">"<span class="token variable">$msg</span>"</span> <span class="token operator">|</span> <span class="token function">head</span> <span class="token parameter variable">-n</span> <span class="token number">1</span><span class="token variable">)</span></span>
+  <span class="token punctuation">[</span> <span class="token parameter variable">-n</span> <span class="token string">"<span class="token variable">$subject</span>"</span> <span class="token punctuation">]</span> <span class="token operator">||</span> <span class="token assign-left variable">subject</span><span class="token operator">=</span><span class="token string">"auto sync"</span>
+  <span class="token function">git</span> commit <span class="token parameter variable">-q</span> <span class="token parameter variable">-m</span> <span class="token string">"chore: <span class="token variable">$subject</span> <span class="token variable"><span class="token variable">$(</span><span class="token function">date</span> <span class="token string">'+%Y-%m-%d %H:%M'</span><span class="token variable">)</span></span>"</span>
+<span class="token keyword">fi</span>
+<span class="token function">git</span> pull <span class="token parameter variable">--rebase</span> <span class="token parameter variable">--autostash</span> <span class="token parameter variable">-X</span> theirs origin main
+<span class="token function">git</span> push origin main</code></pre>
+<p><code>commit-msg.py</code> 는 <code>transcript_path</code> 를 뒤에서부터 읽어 마지막 사용자 메시지를 찾는다.</p>
+<pre class="language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">user_text</span><span class="token punctuation">(</span>entry<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">if</span> entry<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"type"</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token string">"user"</span> <span class="token keyword">or</span> entry<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"isMeta"</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token boolean">None</span>
+    content <span class="token operator">=</span> entry<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"message"</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"content"</span><span class="token punctuation">)</span>
+    <span class="token keyword">if</span> <span class="token builtin">isinstance</span><span class="token punctuation">(</span>content<span class="token punctuation">,</span> <span class="token builtin">list</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">if</span> <span class="token builtin">any</span><span class="token punctuation">(</span>c<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"type"</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token string">"tool_result"</span> <span class="token keyword">for</span> c <span class="token keyword">in</span> content <span class="token keyword">if</span> <span class="token builtin">isinstance</span><span class="token punctuation">(</span>c<span class="token punctuation">,</span> <span class="token builtin">dict</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+            <span class="token keyword">return</span> <span class="token boolean">None</span>          <span class="token comment"># 도구 결과도 type 이 user 다</span>
+        content <span class="token operator">=</span> <span class="token string">"\n"</span><span class="token punctuation">.</span>join<span class="token punctuation">(</span>c<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"text"</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">)</span> <span class="token keyword">for</span> c <span class="token keyword">in</span> content <span class="token keyword">if</span> c<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"type"</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token string">"text"</span><span class="token punctuation">)</span>
+    text <span class="token operator">=</span> re<span class="token punctuation">.</span>sub<span class="token punctuation">(</span><span class="token string">r"&lt;system-reminder&gt;.*?&lt;/system-reminder&gt;"</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">,</span> content <span class="token keyword">or</span> <span class="token string">""</span><span class="token punctuation">,</span> flags<span class="token operator">=</span>re<span class="token punctuation">.</span>S<span class="token punctuation">)</span><span class="token punctuation">.</span>strip<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">if</span> <span class="token keyword">not</span> text <span class="token keyword">or</span> text<span class="token punctuation">.</span>startswith<span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token string">"&lt;local-command"</span><span class="token punctuation">,</span> <span class="token string">"&lt;command-"</span><span class="token punctuation">,</span> <span class="token string">"[Request interrupted"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token boolean">None</span>              <span class="token comment"># 슬래시 명령 · 중단은 건너뛴다</span>
+    <span class="token keyword">return</span> text</code></pre>
+<ul>
+<li>대화 기록에는 도구 결과 · 시스템 알림도 <code>type: "user"</code> 로 들어 있다. 걸러 내야 내가 친 말이 나온다</li>
+<li>바뀐 것이 없으면 커밋하지 않고 pull · push 만 한다</li>
+<li>여러 세션이 같은 저장소에서 일하면 서로의 변경이 섞여 한 커밋에 들어간다</li>
+</ul>
+<h2 id="위험한-명령-막기">위험한 명령 막기</h2>
+<p><code>PreToolUse</code> 에서 <code>rm -rf</code> 를 막는다. 권한을 건너뛰는 모드(<code>--dangerously-skip-permissions</code>) 에서도 막힌다.</p>
+<pre class="language-json" data-language="json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"hooks"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"PreToolUse"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token punctuation">{</span> <span class="token property">"matcher"</span><span class="token operator">:</span> <span class="token string">"Bash"</span><span class="token punctuation">,</span> <span class="token property">"hooks"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span> <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"command"</span><span class="token punctuation">,</span> <span class="token property">"command"</span><span class="token operator">:</span> <span class="token string">"\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/no-rm-rf.sh"</span> <span class="token punctuation">}</span><span class="token punctuation">]</span> <span class="token punctuation">}</span>
+    <span class="token punctuation">]</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<pre class="language-bash" data-language="bash"><code class="language-bash"><span class="token shebang important">#!/bin/bash</span>
+<span class="token comment"># .claude/hooks/no-rm-rf.sh</span>
+<span class="token assign-left variable">cmd</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span>jq <span class="token parameter variable">-r</span> <span class="token string">'.tool_input.command // ""'</span><span class="token variable">)</span></span>
+<span class="token keyword">if</span> <span class="token builtin class-name">printf</span> <span class="token string">'%s'</span> <span class="token string">"<span class="token variable">$cmd</span>"</span> <span class="token operator">|</span> <span class="token function">grep</span> <span class="token parameter variable">-Eq</span> <span class="token string">'\brm[[:space:]]+-[a-zA-Z]*r[a-zA-Z]*f|\brm[[:space:]]+-[a-zA-Z]*f[a-zA-Z]*r'</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+  <span class="token builtin class-name">echo</span> <span class="token string">"rm -rf 는 막아 두었다. 지울 파일을 하나씩 지정한다"</span> <span class="token operator">&gt;</span><span class="token file-descriptor important">&amp;2</span>
+  <span class="token builtin class-name">exit</span> <span class="token number">2</span>
+<span class="token keyword">fi</span>
+<span class="token builtin class-name">exit</span> <span class="token number">0</span></code></pre>
+<pre class="language-text" data-language="text"><code class="language-text">$ claude -p 'Bash 로 정확히 `rm -rf build` 한 줄만 실행해. 막히면 막힌 이유를 한 줄로 적어' --dangerously-skip-permissions
+프로젝트 PreToolUse 훅(`.claude/hooks/no-rm-rf.sh`)이 `rm -rf build`를 막았다. 훅이 남긴 메시지는 "rm -rf 는 막아 두었다. 지울 파일을 하나씩 지정한다"이다.</code></pre>
+<ul>
+<li>막은 이유는 Claude 가 읽으므로, 무엇을 대신 하면 되는지 적어 두면 그대로 따른다</li>
+<li>명령 문자열을 정규식으로 보는 것이라 <code>find -delete</code> 처럼 다른 길은 막지 못한다. 마지막 안전장치로 쓴다</li>
+</ul>
+<h2 id="주의">주의</h2>
+<ul>
+<li><code>Stop</code> 훅이 2 로 끝나면 Claude 가 멈추지 않고 이어서 일한다. 이어 가는 중에는 입력의 <code>stop_hook_active</code> 가 <code>true</code> 다. 이것을 보지 않으면 끝나지 않는다</li>
+<li>훅은 내 권한으로 바로 돈다. 남의 저장소의 <code>.claude/settings.json</code> 은 폴더를 믿기 전에 읽어 본다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://code.claude.com/docs/ko/hooks">Hooks 참조</a> — 이벤트마다 입력 · 출력 · 종료 코드</li>
+<li><a href="https://code.claude.com/docs/ko/hooks-guide">Hooks 가이드</a> — 예제 모음</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">AI</a></li><li><a href="/docs/ai/Claude-Code/">Claude Code</a></li><li><a href="/docs/ai/Claude-Code/기본/">기본</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/AI/" rel="tag">AI</a><a class="chip" href="/tags/Claude Code/" rel="tag">Claude Code</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-09T08:10:31.000Z">2026-11-09</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

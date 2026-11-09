@@ -1,0 +1,162 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>설치와 접속 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">메시지 큐</span><span class="up"> / <a href="/docs/server/" title="한 단계 위로">서버</a></span></p><ul><li><a href="/docs/server/MessageQueue/">개요</a></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/server/MessageQueue/Kafka/">Kafka</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/MessageQueue/Kafka/설치와-접속/" aria-current="page">설치와 접속</a></li><li><a href="/docs/server/MessageQueue/Kafka/토픽과-파티션/">토픽과 파티션</a></li><li><a href="/docs/server/MessageQueue/Kafka/컨슈머-그룹/">컨슈머 그룹</a></li><li><a href="/docs/server/MessageQueue/Kafka/클러스터와-복제/">클러스터와 복제</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/MessageQueue/RabbitMQ/">RabbitMQ</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/MessageQueue/RabbitMQ/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/교환기와-큐/">교환기와 큐</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/전달-보장/">전달 보장</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/클러스터/">클러스터</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/Kafka와-다른-것/">Kafka와 다른 것</a></li></ul></details></li></ul></nav><article><h1 class="page-title">설치와 접속</h1><details class="sidebar-m"><summary>목록 · 메시지 큐</summary><ul><li><a href="/docs/server/MessageQueue/">개요</a></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/server/MessageQueue/Kafka/">Kafka</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/MessageQueue/Kafka/설치와-접속/" aria-current="page">설치와 접속</a></li><li><a href="/docs/server/MessageQueue/Kafka/토픽과-파티션/">토픽과 파티션</a></li><li><a href="/docs/server/MessageQueue/Kafka/컨슈머-그룹/">컨슈머 그룹</a></li><li><a href="/docs/server/MessageQueue/Kafka/클러스터와-복제/">클러스터와 복제</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/MessageQueue/RabbitMQ/">RabbitMQ</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/MessageQueue/RabbitMQ/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/교환기와-큐/">교환기와 큐</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/전달-보장/">전달 보장</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/클러스터/">클러스터</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/Kafka와-다른-것/">Kafka와 다른 것</a></li></ul></details></li></ul></details><div class="content"><p>Kafka 는 Java 로 된 서버다. Ubuntu 기본 저장소에는 없어, Apache 가 내는 tar 를 받아 풀거나 Docker 이미지(<code>apache/kafka</code>) 로 띄운다. 브로커는 클라이언트에게 "나는 이 주소에 있다" 고 알려 주고(<code>advertised.listeners</code>), 클라이언트는 그 주소로 다시 붙는다. 그래서 처음 붙은 주소가 맞아도, 알려 준 주소가 클라이언트에서 닿지 않으면 보내기가 시간 초과로 실패한다. Docker 에서는 컨테이너끼리 쓰는 리스너와 바깥에서 쓰는 리스너를 나눠 둔다. 아래 예제는 <code>apache/kafka:4.4.0</code>(JDK 25) 컨테이너 한 대(브로커 겸 컨트롤러) 와, 같은 Docker 네트워크의 <code>maven:3.9-eclipse-temurin-25</code> 컨테이너에서 돈 Java 클라이언트(<code>kafka-clients</code> 4.4.0) 로 돌렸다.</p>
+<h2 id="그대로-띄우면">그대로 띄우면</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">docker</span> run <span class="token parameter variable">-d</span> <span class="token parameter variable">--name</span> k1 <span class="token parameter variable">--hostname</span> k1 <span class="token parameter variable">--network</span> kafka-net apache/kafka:4.4.0
+<span class="token function">docker</span> logs k1 <span class="token operator">|</span> <span class="token function">grep</span> <span class="token parameter variable">-E</span> <span class="token string">"process.roles|advertised.listeners|log.dirs"</span></code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">	advertised.listeners = [PLAINTEXT://localhost:9092]
+	log.dirs = [/tmp/kraft-combined-logs]
+	process.roles = [broker, controller]</code></pre>
+<ul>
+<li>4 초 만에 <code>Kafka Server started</code> 가 나왔다. 브로커와 컨트롤러(메타데이터 관리) 를 한 프로세스가 맡는다</li>
+<li>자료가 컨테이너 안의 <code>/tmp</code> 에 쌓인다. 컨테이너를 지우면 메시지도 사라진다</li>
+<li>같은 네트워크의 다른 컨테이너에서 <code>k1:9092</code> 로 보내자 처음 연결은 됐지만 그 뒤로 이 경고가 되풀이되고, 15 초 뒤(<code>delivery.timeout.ms</code>) 실패했다</li>
+</ul>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">WARN … Connection to node 1 (localhost/127.0.0.1:9092) could not be established. Node may not be available.
+TimeoutException: Expiring 1 record(s) for t1-0:15001 ms has passed since batch creation.</code></pre>
+<ul>
+<li>브로커가 알려 준 <code>localhost:9092</code> 는 클라이언트 컨테이너 자신이라 닿지 않는다</li>
+<li>없는 토픽 <code>t1</code> 에 보냈는데 토픽이 저절로 생겼다(<code>auto.create.topics.enable=true</code>)</li>
+</ul>
+<h2 id="리스너-나누기">리스너 나누기</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">docker</span> run <span class="token parameter variable">-d</span> <span class="token parameter variable">--name</span> k1 <span class="token parameter variable">--hostname</span> k1 <span class="token parameter variable">--network</span> kafka-net <span class="token parameter variable">-p</span> <span class="token number">127.0</span>.0.1:9092:9092 <span class="token punctuation">\</span>
+  <span class="token parameter variable">-e</span> <span class="token assign-left variable">KAFKA_NODE_ID</span><span class="token operator">=</span><span class="token number">1</span> <span class="token punctuation">\</span>
+  <span class="token parameter variable">-e</span> <span class="token assign-left variable">KAFKA_PROCESS_ROLES</span><span class="token operator">=</span>broker,controller <span class="token punctuation">\</span>
+  <span class="token parameter variable">-e</span> <span class="token assign-left variable">KAFKA_LISTENERS</span><span class="token operator">=</span>INTERNAL://:19092,EXTERNAL://:9092,CONTROLLER://:9093 <span class="token punctuation">\</span>
+  <span class="token parameter variable">-e</span> <span class="token assign-left variable">KAFKA_ADVERTISED_LISTENERS</span><span class="token operator">=</span>INTERNAL://k1:19092,EXTERNAL://localhost:9092 <span class="token punctuation">\</span>
+  <span class="token parameter variable">-e</span> <span class="token assign-left variable">KAFKA_LISTENER_SECURITY_PROTOCOL_MAP</span><span class="token operator">=</span>INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT <span class="token punctuation">\</span>
+  <span class="token parameter variable">-e</span> <span class="token assign-left variable">KAFKA_INTER_BROKER_LISTENER_NAME</span><span class="token operator">=</span>INTERNAL <span class="token punctuation">\</span>
+  <span class="token parameter variable">-e</span> <span class="token assign-left variable">KAFKA_CONTROLLER_LISTENER_NAMES</span><span class="token operator">=</span>CONTROLLER <span class="token punctuation">\</span>
+  <span class="token parameter variable">-e</span> <span class="token assign-left variable">KAFKA_CONTROLLER_QUORUM_VOTERS</span><span class="token operator">=</span><span class="token number">1</span>@k1:9093 <span class="token punctuation">\</span>
+  <span class="token parameter variable">-e</span> <span class="token assign-left variable">KAFKA_LOG_DIRS</span><span class="token operator">=</span>/var/lib/kafka/data <span class="token punctuation">\</span>
+  <span class="token parameter variable">-e</span> <span class="token assign-left variable">KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR</span><span class="token operator">=</span><span class="token number">1</span> <span class="token punctuation">\</span>
+  <span class="token parameter variable">-e</span> <span class="token assign-left variable">KAFKA_AUTO_CREATE_TOPICS_ENABLE</span><span class="token operator">=</span>false <span class="token punctuation">\</span>
+  <span class="token parameter variable">-e</span> <span class="token assign-left variable">KAFKA_HEAP_OPTS</span><span class="token operator">=</span><span class="token string">"-Xmx512m -Xms512m"</span> <span class="token punctuation">\</span>
+  <span class="token parameter variable">-v</span> k1-data:/var/lib/kafka/data <span class="token punctuation">\</span>
+  apache/kafka:4.4.0</code></pre>
+<table>
+<thead>
+<tr>
+<th>어디서</th>
+<th>붙는 주소</th>
+<th>결과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>같은 네트워크의 컨테이너</td>
+<td><code>k1:19092</code> (INTERNAL)</td>
+<td>보내졌다</td>
+</tr>
+<tr>
+<td>같은 네트워크의 컨테이너</td>
+<td><code>localhost:9092</code></td>
+<td><code>Connection to node -1 (localhost/127.0.0.1:9092) could not be established</code></td>
+</tr>
+<tr>
+<td>맥(호스트)</td>
+<td><code>localhost:9092</code> (EXTERNAL, <code>-p</code>)</td>
+<td>보내졌다</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>환경 변수 <code>KAFKA_…</code> 는 설정 이름의 <code>.</code> 을 <code>_</code> 로, 소문자를 대문자로 바꾼 것이다(<code>log.dirs</code> → <code>KAFKA_LOG_DIRS</code>). 하나라도 주면 이미지의 기본 설정을 쓰지 않으므로, 위의 줄을 함께 준다</li>
+<li>리스너마다 이름을 짓고 <code>LISTENER_SECURITY_PROTOCOL_MAP</code> 에서 방식(<code>PLAINTEXT</code> · <code>SSL</code> · <code>SASL_SSL</code>) 을 붙인다. 브로커끼리는 <code>INTER_BROKER_LISTENER_NAME</code> 의 리스너로 이야기한다</li>
+<li>서버에 바로 깔았다면 <code>EXTERNAL</code> 의 알리는 주소는 다른 서버가 찾을 수 있는 이름 · IP 다(<code>EXTERNAL://kafka1.lan:9092</code>)</li>
+<li><code>CLUSTER_ID</code> 를 주지 않으면 이미지에 정해진 값(<code>Using provided cluster id 5L6g3nShT-eMCtK--X86sw</code>) 으로 자료 폴더를 만든다. 브로커 여럿을 묶을 때는 <code>kafka-storage.sh random-uuid</code> 로 하나 만들어 모두에 준다</li>
+<li>토픽 자동 생성을 끄자, 없는 토픽에 보내기가 60 초(<code>max.block.ms</code>) 뒤 <code>TimeoutException: Topic t1 not present in metadata after 60000 ms.</code> 로 실패했다. 운영에서는 끄고 토픽을 미리 만든다(오타 토픽이 생기지 않게)</li>
+</ul>
+<h2 id="명령줄-도구">명령줄 도구</h2>
+<p>이미지의 <code>/opt/kafka/bin/</code> 에 있다. 서버에 붙을 주소는 <code>--bootstrap-server</code> 로 준다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh">kafka-topics.sh --bootstrap-server k1:19092 <span class="token parameter variable">--create</span> <span class="token parameter variable">--topic</span> orders <span class="token parameter variable">--partitions</span> <span class="token number">3</span>
+kafka-topics.sh --bootstrap-server k1:19092 <span class="token parameter variable">--list</span>
+<span class="token builtin class-name">printf</span> <span class="token string">'kim:apple\nlee:pear\n'</span> <span class="token operator">|</span> kafka-console-producer.sh --bootstrap-server k1:19092 <span class="token parameter variable">--topic</span> orders <span class="token punctuation">\</span>
+  --reader-property <span class="token assign-left variable">parse.key</span><span class="token operator">=</span>true --reader-property <span class="token assign-left variable">key.separator</span><span class="token operator">=</span>:
+kafka-console-consumer.sh --bootstrap-server k1:19092 <span class="token parameter variable">--topic</span> orders --from-beginning <span class="token punctuation">\</span>
+  --formatter-property <span class="token assign-left variable">print.key</span><span class="token operator">=</span>true --formatter-property <span class="token assign-left variable">print.partition</span><span class="token operator">=</span>true</code></pre>
+<table>
+<thead>
+<tr>
+<th>도구</th>
+<th>하는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>kafka-topics.sh</code></td>
+<td>토픽 만들기 · 목록 · 설명 · 파티션 늘리기</td>
+</tr>
+<tr>
+<td><code>kafka-console-producer.sh</code> · <code>kafka-console-consumer.sh</code></td>
+<td>한 줄씩 보내기 · 받기</td>
+</tr>
+<tr>
+<td><code>kafka-consumer-groups.sh</code></td>
+<td>그룹의 offset · LAG 보기, offset 되돌리기</td>
+</tr>
+<tr>
+<td><code>kafka-configs.sh</code></td>
+<td>토픽 · 브로커 설정 바꾸기</td>
+</tr>
+<tr>
+<td><code>kafka-get-offsets.sh</code></td>
+<td>파티션마다 처음 · 끝 offset</td>
+</tr>
+<tr>
+<td><code>kafka-metadata-quorum.sh</code></td>
+<td>KRaft 컨트롤러 상태</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>4.4 에서 <code>--property</code> 는 <code>Warning: --property is deprecated …</code> 를 낸다. 보내기는 <code>--reader-property</code>, 받기는 <code>--formatter-property</code> 로 쓴다</li>
+<li><code>--group</code> 없이 띄운 <code>kafka-console-consumer.sh</code> 도 <code>console-consumer-50559</code> 같은 그룹을 만들고, 그 그룹은 남는다(<code>kafka-consumer-groups.sh --list</code>)</li>
+</ul>
+<h2 id="java-클라이언트">Java 클라이언트</h2>
+<pre class="language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>org.apache.kafka<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>kafka-clients<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">&gt;</span></span>4.4.0<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">&gt;</span></span></code></pre>
+<pre class="language-java" data-language="java"><code class="language-java"><span class="token keyword">var</span> props <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Properties</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"bootstrap.servers"</span><span class="token punctuation">,</span> <span class="token string">"k1:19092"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"key.serializer"</span><span class="token punctuation">,</span> <span class="token string">"org.apache.kafka.common.serialization.StringSerializer"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"value.serializer"</span><span class="token punctuation">,</span> <span class="token string">"org.apache.kafka.common.serialization.StringSerializer"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">try</span> <span class="token punctuation">(</span><span class="token keyword">var</span> p <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">KafkaProducer</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>props<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token class-name">RecordMetadata</span> m <span class="token operator">=</span> p<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ProducerRecord</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token string">"orders"</span><span class="token punctuation">,</span> <span class="token string">"kim"</span><span class="token punctuation">,</span> <span class="token string">"apple"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"partition %d offset %d%n"</span><span class="token punctuation">,</span> m<span class="token punctuation">.</span><span class="token function">partition</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> m<span class="token punctuation">.</span><span class="token function">offset</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<pre class="language-sh" data-language="sh"><code class="language-sh">mvn dependency:copy-dependencies <span class="token parameter variable">-DoutputDirectory</span><span class="token operator">=</span>lib    <span class="token comment"># kafka-clients 와 lz4 · snappy · zstd · slf4j</span>
+<span class="token function">java</span> <span class="token parameter variable">-cp</span> <span class="token string">'lib/*'</span> Producer.java k1:19092                   <span class="token comment"># 한 파일짜리는 컴파일 없이 돈다</span></code></pre>
+<ul>
+<li><code>bootstrap.servers</code> 는 처음 붙을 브로커다. 브로커가 여럿이면 둘셋을 적는다. 하나에 붙으면 나머지 브로커 주소는 메타데이터로 받는다</li>
+<li><code>send</code> 는 바로 돌아오고 보내기는 뒤에서 한다. 위처럼 <code>.get()</code> 으로 기다리면 결과(파티션 · offset) 나 오류를 바로 본다. 많이 보낼 때는 콜백(<code>send(record, (m, e) -&gt; …)</code>) 을 쓴다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://kafka.apache.org/44/getting-started/docker/">Kafka Docker</a> — 이미지 · 환경 변수로 설정하기</li>
+<li><a href="https://kafka.apache.org/44/configuration/broker-configs/">Broker Configs</a> — <code>listeners</code> · <code>advertised.listeners</code> · <code>log.dirs</code></li>
+<li><a href="https://www.confluent.io/blog/kafka-listeners-explained/">Kafka Listeners – Explained</a> — 알리는 주소가 왜 필요한가</li>
+<li><a href="https://kafka.apache.org/44/operations/kraft/">KRaft</a> — 컨트롤러 · <code>CLUSTER_ID</code> · 자료 폴더 만들기</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/MessageQueue/">메시지 큐</a></li><li><a href="/docs/server/MessageQueue/Kafka/">Kafka</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Kafka/" rel="tag">Kafka</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-09T05:56:30.000Z">2026-11-09</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

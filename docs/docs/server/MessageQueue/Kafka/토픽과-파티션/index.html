@@ -1,0 +1,140 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>토픽과 파티션 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">메시지 큐</span><span class="up"> / <a href="/docs/server/" title="한 단계 위로">서버</a></span></p><ul><li><a href="/docs/server/MessageQueue/">개요</a></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/server/MessageQueue/Kafka/">Kafka</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/MessageQueue/Kafka/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/MessageQueue/Kafka/토픽과-파티션/" aria-current="page">토픽과 파티션</a></li><li><a href="/docs/server/MessageQueue/Kafka/컨슈머-그룹/">컨슈머 그룹</a></li><li><a href="/docs/server/MessageQueue/Kafka/클러스터와-복제/">클러스터와 복제</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/MessageQueue/RabbitMQ/">RabbitMQ</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/MessageQueue/RabbitMQ/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/교환기와-큐/">교환기와 큐</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/전달-보장/">전달 보장</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/클러스터/">클러스터</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/Kafka와-다른-것/">Kafka와 다른 것</a></li></ul></details></li></ul></nav><article><h1 class="page-title">토픽과 파티션</h1><details class="sidebar-m"><summary>목록 · 메시지 큐</summary><ul><li><a href="/docs/server/MessageQueue/">개요</a></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/server/MessageQueue/Kafka/">Kafka</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/MessageQueue/Kafka/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/MessageQueue/Kafka/토픽과-파티션/" aria-current="page">토픽과 파티션</a></li><li><a href="/docs/server/MessageQueue/Kafka/컨슈머-그룹/">컨슈머 그룹</a></li><li><a href="/docs/server/MessageQueue/Kafka/클러스터와-복제/">클러스터와 복제</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/MessageQueue/RabbitMQ/">RabbitMQ</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/MessageQueue/RabbitMQ/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/교환기와-큐/">교환기와 큐</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/전달-보장/">전달 보장</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/클러스터/">클러스터</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/Kafka와-다른-것/">Kafka와 다른 것</a></li></ul></details></li></ul></details><div class="content"><p>Kafka 의 토픽은 파티션 여럿으로 나뉜 로그다. 메시지는 파티션 하나의 끝에 덧붙고, 파티션 안에서 0 부터 늘어나는 번호(offset) 를 받는다. 순서는 파티션 안에서만 지켜진다. 같은 키의 메시지는 늘 같은 파티션으로 가므로, 한 주문 · 한 사용자의 이벤트처럼 순서가 중요한 것은 키를 붙여 보낸다. 메시지는 읽어 가도 지워지지 않고, 보존 기간이 지나거나 크기 한도를 넘으면 오래된 것부터 지워진다. 키마다 마지막 값만 남기는 compaction 토픽도 있다. 아래 예제는 <code>apache/kafka:4.4.0</code> 브로커 한 대와 Java 클라이언트(<code>kafka-clients</code> 4.4.0) 로 돌렸다.</p>
+<h2 id="만들기">만들기</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh">kafka-topics.sh --bootstrap-server k1:19092 <span class="token parameter variable">--create</span> <span class="token parameter variable">--topic</span> orders <span class="token parameter variable">--partitions</span> <span class="token number">3</span> --replication-factor <span class="token number">1</span>
+kafka-topics.sh --bootstrap-server k1:19092 <span class="token parameter variable">--describe</span> <span class="token parameter variable">--topic</span> orders</code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">Topic: orders	TopicId: REwSFMN0TdqBEqXPhPD0RA	PartitionCount: 3	ReplicationFactor: 1	Configs: min.insync.replicas=1
+	Topic: orders	Partition: 0	Leader: 1	Replicas: 1	Isr: 1
+	Topic: orders	Partition: 1	Leader: 1	Replicas: 1	Isr: 1
+	Topic: orders	Partition: 2	Leader: 1	Replicas: 1	Isr: 1</code></pre>
+<ul>
+<li>파티션 수는 동시에 읽을 수 있는 컨슈머 수의 한도다. 한 그룹에서 파티션 하나는 컨슈머 하나만 읽는다</li>
+<li>복제 계수는 브로커 수를 넘을 수 없다. 브로커 한 대에서는 1 이다</li>
+</ul>
+<h2 id="키와-파티션">키와 파티션</h2>
+<p>키 <code>user0</code> ~ <code>user3</code> 을 두 번씩 보냈다.</p>
+<pre class="language-java" data-language="java"><code class="language-java"><span class="token class-name">RecordMetadata</span> m <span class="token operator">=</span> p<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ProducerRecord</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token string">"orders"</span><span class="token punctuation">,</span> <span class="token string">"user"</span> <span class="token operator">+</span> <span class="token punctuation">(</span>i <span class="token operator">%</span> <span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"msg-"</span> <span class="token operator">+</span> i<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">key=user0 → partition 0 offset 1
+key=user1 → partition 0 offset 2
+key=user2 → partition 2 offset 5
+key=user3 → partition 2 offset 6
+key=user0 → partition 0 offset 3
+key=user1 → partition 0 offset 4
+key=user2 → partition 2 offset 7
+key=user3 → partition 2 offset 8</code></pre>
+<ul>
+<li>키를 해시해 파티션 수로 나눈 나머지가 파티션이다. 같은 키는 몇 번을 보내도 같은 파티션이었다</li>
+<li>키 넷 가운데 파티션 1 에 간 키는 없었다. 키 가짓수가 적으면 파티션이 고르게 쓰이지 않는다</li>
+<li>키 없이 여섯 번 보내자 여섯 모두 파티션 1 로 갔다. 키가 없으면 한 파티션에 몰아 보내다가 배치가 차면 다른 파티션으로 옮긴다(sticky). 따로 띄운 프로그램은 파티션 0 · 1 로 갔다</li>
+</ul>
+<h2 id="파티션-늘리기">파티션 늘리기</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh">kafka-topics.sh --bootstrap-server k1:19092 <span class="token parameter variable">--alter</span> <span class="token parameter variable">--topic</span> orders <span class="token parameter variable">--partitions</span> <span class="token number">6</span></code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">key=user0 → partition 3     # 전에는 0
+key=user1 → partition 0
+key=user2 → partition 5     # 전에는 2
+key=user3 → partition 5</code></pre>
+<ul>
+<li>파티션 수가 바뀌면 나머지가 바뀌어, 같은 키가 다른 파티션으로 간다. 옛 메시지는 옛 파티션에 남으므로, 그 키의 순서가 두 파티션에 걸쳐 갈라진다. 키로 순서를 지키는 토픽은 처음부터 넉넉하게 만든다</li>
+<li>줄이기는 안 된다. <code>--partitions 2</code> 는 <code>InvalidPartitionsException: The topic orders currently has 6 partition(s); 2 would not be an increase.</code> 다</li>
+</ul>
+<h2 id="보존">보존</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh">kafka-topics.sh --bootstrap-server k1:19092 <span class="token parameter variable">--create</span> <span class="token parameter variable">--topic</span> logs <span class="token parameter variable">--partitions</span> <span class="token number">1</span> <span class="token punctuation">\</span>
+  <span class="token parameter variable">--config</span> <span class="token assign-left variable">retention.ms</span><span class="token operator">=</span><span class="token number">15000</span> <span class="token parameter variable">--config</span> <span class="token assign-left variable">segment.ms</span><span class="token operator">=</span><span class="token number">5000</span>
+<span class="token comment"># 세 줄을 3 초 간격으로 보낸 뒤</span>
+kafka-get-offsets.sh --bootstrap-server k1:19092 <span class="token parameter variable">--topic</span> logs <span class="token parameter variable">--time</span> <span class="token parameter variable">-2</span>   <span class="token comment"># 처음 offset</span>
+kafka-get-offsets.sh --bootstrap-server k1:19092 <span class="token parameter variable">--topic</span> logs <span class="token parameter variable">--time</span> <span class="token parameter variable">-1</span>   <span class="token comment"># 끝 offset</span></code></pre>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>처음</th>
+<th>끝</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>보낸 직후</td>
+<td><code>logs:0:0</code></td>
+<td><code>logs:0:3</code></td>
+</tr>
+<tr>
+<td>40 초 뒤</td>
+<td><code>logs:0:3</code></td>
+<td><code>logs:0:3</code></td>
+</tr>
+</tbody>
+</table>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">INFO [UnifiedLog partition=logs-0, dir=/var/lib/kafka/data] Deleting segment LogSegment(baseOffset=1, size=73, …</code></pre>
+<ul>
+<li>15 초가 지난 메시지 셋이 지워졌다. offset 은 다시 0 부터가 아니라 3 에서 이어진다</li>
+<li>지우기는 메시지 하나씩이 아니라 세그먼트 파일(<code>segment.ms</code> · <code>segment.bytes</code> 로 나뉨) 째로 한다. 지금 쓰는 세그먼트는 지우지 않는다. 브로커가 지울 것을 찾는 간격은 <code>log.retention.check.interval.ms</code>(기본 5 분) 라, 이 시험에서는 10 초로 줄여 띄웠다</li>
+<li>기본 보존은 7 일(<code>retention.ms=604800000</code>) 이고 크기 한도는 없다(<code>retention.bytes=-1</code>). 디스크를 넘지 않게 토픽마다 정한다</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>설정</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>retention.ms</code></td>
+<td>이 시간이 지난 세그먼트를 지운다</td>
+</tr>
+<tr>
+<td><code>retention.bytes</code></td>
+<td>파티션마다 이 크기를 넘으면 오래된 세그먼트부터 지운다</td>
+</tr>
+<tr>
+<td><code>cleanup.policy</code></td>
+<td><code>delete</code>(기본) · <code>compact</code> · <code>compact,delete</code></td>
+</tr>
+</tbody>
+</table>
+<pre class="language-sh" data-language="sh"><code class="language-sh">kafka-configs.sh --bootstrap-server k1:19092 <span class="token parameter variable">--alter</span> --entity-type topics --entity-name logs <span class="token punctuation">\</span>
+  --add-config <span class="token assign-left variable">retention.ms</span><span class="token operator">=</span><span class="token number">86400000</span>      <span class="token comment"># 만든 뒤 바꾸기</span></code></pre>
+<h2 id="compaction">compaction</h2>
+<p>키마다 마지막 값만 남긴다. 상품 가격 · 사용자 설정처럼 "지금 값" 을 담는 토픽에 쓴다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh">kafka-topics.sh --bootstrap-server k1:19092 <span class="token parameter variable">--create</span> <span class="token parameter variable">--topic</span> prices <span class="token parameter variable">--partitions</span> <span class="token number">1</span> <span class="token punctuation">\</span>
+  <span class="token parameter variable">--config</span> <span class="token assign-left variable">cleanup.policy</span><span class="token operator">=</span>compact <span class="token parameter variable">--config</span> <span class="token assign-left variable">segment.ms</span><span class="token operator">=</span><span class="token number">3000</span> <span class="token punctuation">\</span>
+  <span class="token parameter variable">--config</span> <span class="token assign-left variable">min.cleanable.dirty.ratio</span><span class="token operator">=</span><span class="token number">0.01</span> <span class="token parameter variable">--config</span> <span class="token assign-left variable">delete.retention.ms</span><span class="token operator">=</span><span class="token number">1000</span>
+<span class="token comment"># apple:1000 · pear:3000 · apple:1200 · milk:2500 · apple:1300 · pear:3100 을 보내고 잠시 뒤</span>
+kafka-console-consumer.sh --bootstrap-server k1:19092 <span class="token parameter variable">--topic</span> prices --from-beginning <span class="token punctuation">\</span>
+  --formatter-property <span class="token assign-left variable">print.key</span><span class="token operator">=</span>true --formatter-property <span class="token assign-left variable">print.offset</span><span class="token operator">=</span>true</code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">Offset:3	milk	2500
+Offset:4	apple	1300
+Offset:5	pear	3100
+Offset:6	x	1</code></pre>
+<ul>
+<li>같은 키의 옛 값(offset 0 · 1 · 2) 이 지워졌다. 남은 메시지의 offset 은 그대로라 번호가 빈다</li>
+<li>값을 <code>null</code> 로 보내면(tombstone) 그 키를 지운다. <code>pear</code> 에 <code>null</code> 을 보내자 <code>pear</code> 가 목록에서 사라졌다</li>
+<li>지금 쓰는 세그먼트는 정리하지 않는다. 위 시험은 <code>segment.ms</code> 를 3 초로 줄이고 메시지를 더 보내 세그먼트를 넘긴 뒤에 정리됐다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://kafka.apache.org/44/configuration/topic-configs/">Topic Configs</a> — <code>retention.*</code> · <code>cleanup.policy</code> · <code>segment.*</code></li>
+<li><a href="https://kafka.apache.org/44/design/design/#log-compaction">Design — Log Compaction</a> — 무엇이 남고 언제 정리되나</li>
+<li><a href="https://kafka.apache.org/44/operations/basic-kafka-operations/">Basic Kafka Operations</a> — 토픽 만들기 · 바꾸기 · 파티션 늘리기</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/MessageQueue/">메시지 큐</a></li><li><a href="/docs/server/MessageQueue/Kafka/">Kafka</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Kafka/" rel="tag">Kafka</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-09T05:56:30.000Z">2026-11-09</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

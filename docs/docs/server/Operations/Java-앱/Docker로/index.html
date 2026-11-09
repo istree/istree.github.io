@@ -1,0 +1,128 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Docker로 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">운영</span><span class="up"> / <a href="/docs/server/" title="한 단계 위로">서버</a></span></p><ul><li><a href="/docs/server/Operations/">개요</a></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/server/Operations/Java-앱/">Java 앱</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Operations/Java-앱/빌드와-실행/">빌드와 실행</a></li><li><a href="/docs/server/Operations/Java-앱/systemd-서비스/">systemd 서비스</a></li><li><a href="/docs/server/Operations/Java-앱/Nginx-뒤에/">Nginx 뒤에</a></li><li><a href="/docs/server/Operations/Java-앱/Docker로/" aria-current="page">Docker로</a></li></ul></details></li><li><a href="/docs/server/Operations/Prometheus/">Prometheus</a></li></ul></nav><article><h1 class="page-title">Docker로</h1><details class="sidebar-m"><summary>목록 · 운영</summary><ul><li><a href="/docs/server/Operations/">개요</a></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/server/Operations/Java-앱/">Java 앱</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Operations/Java-앱/빌드와-실행/">빌드와 실행</a></li><li><a href="/docs/server/Operations/Java-앱/systemd-서비스/">systemd 서비스</a></li><li><a href="/docs/server/Operations/Java-앱/Nginx-뒤에/">Nginx 뒤에</a></li><li><a href="/docs/server/Operations/Java-앱/Docker로/" aria-current="page">Docker로</a></li></ul></details></li><li><a href="/docs/server/Operations/Prometheus/">Prometheus</a></li></ul></details><div class="content"><p>Spring Boot 앱을 Docker 이미지로 만들면 JRE 와 jar 를 함께 옮겨, 서버에는 Docker 만 있으면 된다. Dockerfile 은 빌드 단계(JDK · Maven) 와 실행 단계(JRE) 를 나눠 이미지를 줄이고, jar 를 풀어 라이브러리와 내 코드를 다른 층에 넣어 코드만 바뀌었을 때 작은 층만 새로 만든다. 컨테이너에 메모리 한도를 주면 JVM 은 그 한도를 보고 힙을 정하므로, 비율로 정해 두면 한도를 바꿔도 맞춰진다. 아래 예제는 Spring Boot 4.1.2 앱을 <code>maven:3.9-eclipse-temurin-25</code> 에서 빌드하고 <code>eclipse-temurin:25-jre</code>(25.0.5, Ubuntu 26.04 바탕) 로 띄웠다.</p>
+<h2 id="dockerfile">Dockerfile</h2>
+<pre class="language-dockerfile" data-language="dockerfile"><code class="language-dockerfile"><span class="token instruction"><span class="token keyword">FROM</span> maven:3.9-eclipse-temurin-25 <span class="token keyword">AS</span> build</span>
+<span class="token instruction"><span class="token keyword">WORKDIR</span> /src</span>
+<span class="token instruction"><span class="token keyword">COPY</span> pom.xml .</span>
+<span class="token instruction"><span class="token keyword">RUN</span> mvn -q dependency:go-offline</span>
+<span class="token instruction"><span class="token keyword">COPY</span> src src</span>
+<span class="token instruction"><span class="token keyword">RUN</span> mvn -q -DskipTests package <span class="token operator">\</span>
+ &amp;&amp; java -Djarmode=tools -jar target/shop-0.0.1-SNAPSHOT.jar extract --layers --launcher --destination /x</span>
+
+<span class="token instruction"><span class="token keyword">FROM</span> eclipse-temurin:25-jre</span>
+<span class="token instruction"><span class="token keyword">RUN</span> apt-get update &amp;&amp; apt-get install -y --no-install-recommends curl &amp;&amp; rm -rf /var/lib/apt/lists/* <span class="token operator">\</span>
+ &amp;&amp; useradd --system --uid 10001 shop</span>
+<span class="token instruction"><span class="token keyword">WORKDIR</span> /app</span>
+<span class="token instruction"><span class="token keyword">COPY</span> <span class="token options"><span class="token property">--from</span><span class="token punctuation">=</span><span class="token string">build</span></span> /x/dependencies/ ./</span>
+<span class="token instruction"><span class="token keyword">COPY</span> <span class="token options"><span class="token property">--from</span><span class="token punctuation">=</span><span class="token string">build</span></span> /x/spring-boot-loader/ ./</span>
+<span class="token instruction"><span class="token keyword">COPY</span> <span class="token options"><span class="token property">--from</span><span class="token punctuation">=</span><span class="token string">build</span></span> /x/snapshot-dependencies/ ./</span>
+<span class="token instruction"><span class="token keyword">COPY</span> <span class="token options"><span class="token property">--from</span><span class="token punctuation">=</span><span class="token string">build</span></span> /x/application/ ./</span>
+<span class="token instruction"><span class="token keyword">USER</span> shop</span>
+<span class="token instruction"><span class="token keyword">EXPOSE</span> 8080</span>
+<span class="token instruction"><span class="token keyword">ENV</span> JAVA_TOOL_OPTIONS=<span class="token string">"-XX:MaxRAMPercentage=75"</span></span>
+<span class="token instruction"><span class="token keyword">HEALTHCHECK</span> <span class="token options"><span class="token property">--interval</span><span class="token punctuation">=</span><span class="token string">5s</span> <span class="token property">--timeout</span><span class="token punctuation">=</span><span class="token string">3s</span> <span class="token property">--start-period</span><span class="token punctuation">=</span><span class="token string">20s</span></span> <span class="token keyword">CMD</span> curl -fs localhost:8080/actuator/health || exit 1</span>
+<span class="token instruction"><span class="token keyword">ENTRYPOINT</span> [<span class="token string">"java"</span>, <span class="token string">"org.springframework.boot.loader.launch.JarLauncher"</span>]</span></code></pre>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">docker</span> build <span class="token parameter variable">-t</span> shop:1 <span class="token builtin class-name">.</span>
+<span class="token function">docker</span> run <span class="token parameter variable">-d</span> <span class="token parameter variable">--name</span> shop <span class="token parameter variable">-p</span> <span class="token number">127.0</span>.0.1:8080:8080 <span class="token parameter variable">--memory</span> 512m shop:1</code></pre>
+<ul>
+<li><code>pom.xml</code> 만 먼저 넣고 라이브러리를 받아 두면(<code>dependency:go-offline</code>), 코드만 바뀐 빌드는 그 층을 다시 쓴다. 첫 빌드 46 초, 코드 한 줄을 바꾼 빌드 6 초였다</li>
+<li>실행 단계에는 JDK · Maven 이 없다. 이미지는 556 MB 였고, 그 가운데 내가 더한 층은 라이브러리 24.4 MB · 로더 696 kB · 내 코드 86 kB · <code>curl</code> 11.8 MB 다</li>
+<li><code>eclipse-temurin:25-jre</code> 에는 <code>curl</code> · <code>wget</code> 이 없다. 건강 검사를 <code>curl</code> 로 하려고 따로 깔았다</li>
+<li>이미지 안에서 root 로 돌지 않게 사용자를 만들어 <code>USER</code> 로 바꾼다. 컨테이너 안의 <code>id</code> 는 <code>uid=10001(shop)</code> 이었다</li>
+</ul>
+<h2 id="층-나누기">층 나누기</h2>
+<p><code>-Djarmode=tools … extract --layers</code> 는 jar 를 네 폴더로 푼다.</p>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">application            80K     내 코드 · 설정
+dependencies           24M     판이 정해진 라이브러리
+snapshot-dependencies  4.0K    -SNAPSHOT 라이브러리
+spring-boot-loader     676K    JarLauncher</code></pre>
+<p>코드만 바꿔 다시 빌드한 <code>shop:2</code> 와 <code>shop:1</code> 의 마지막 층 셋을 견줬다.</p>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">bfbcd3b8ea7b 5f70bf18a086 5926761dbc6f   ← shop:1
+bfbcd3b8ea7b 5f70bf18a086 70a79ca85808   ← shop:2</code></pre>
+<ul>
+<li>마지막 층(내 코드) 만 달라졌다. 서버가 새 이미지를 받을 때 86 kB 층 하나만 받는다</li>
+<li>jar 를 통째로 <code>COPY</code> 하면 코드 한 줄을 바꿔도 24 MB 층을 다시 만들고 다시 받는다</li>
+</ul>
+<h2 id="메모리">메모리</h2>
+<p><code>--memory 512m</code> 컨테이너에서 JVM 이 정한 최대 힙이다.</p>
+<table>
+<thead>
+<tr>
+<th>JVM 옵션</th>
+<th>최대 힙</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(없음)</td>
+<td>134217728 — 128 MB, 한도의 25 %</td>
+</tr>
+<tr>
+<td><code>-XX:MaxRAMPercentage=75</code></td>
+<td>402653184 — 384 MB</td>
+</tr>
+<tr>
+<td><code>-Xmx1g</code></td>
+<td>1073741824 — 한도보다 크다</td>
+</tr>
+</tbody>
+</table>
+<p>한도보다 큰 힙을 주면 어떻게 끝나는지 50 MB 씩 메모리를 잡는 프로그램으로 봤다.</p>
+<table>
+<thead>
+<tr>
+<th>JVM 옵션</th>
+<th>끝</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-Xmx1g</code></td>
+<td>450 MB 에서 소리 없이 죽음 — 종료 코드 <code>137</code> · <code>OOMKilled=true</code></td>
+</tr>
+<tr>
+<td><code>-XX:MaxRAMPercentage=75</code></td>
+<td><code>java.lang.OutOfMemoryError</code> — 종료 코드 <code>1</code>, 로그에 까닭이 남는다</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>-Xmx</code> 를 한도보다 크게 주면 JVM 이 힙을 다 쓰기 전에 커널이 컨테이너를 죽인다. Java 의 오류 · 힙 덤프가 남지 않아 까닭을 찾기 어렵다</li>
+<li>비율로 정하면 한도를 바꿔도 힙이 따라간다. 힙 밖 메모리도 있으므로 75 % 를 넘기지 않는다</li>
+<li><code>JAVA_TOOL_OPTIONS</code> 는 JVM 이 스스로 읽는 환경 변수다. 로그 첫 줄에 <code>Picked up JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=75</code> 가 나온다. <code>docker run -e JAVA_TOOL_OPTIONS=…</code> 로 바꿀 수 있다</li>
+</ul>
+<h2 id="건강-검사--끄기">건강 검사 · 끄기</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">docker</span> inspect <span class="token parameter variable">-f</span> <span class="token string">'{{.State.Health.Status}}'</span> shop    <span class="token comment"># 띄우고 6 초 뒤 healthy</span></code></pre>
+<ul>
+<li><code>--start-period=20s</code> 동안의 실패는 세지 않는다. 앱이 뜨는 데(3.4 초) 걸리는 시간보다 넉넉히 둔다</li>
+<li><code>docker stop</code> 은 <code>SIGTERM</code> 을 보내고 10 초 기다린 뒤 <code>SIGKILL</code> 이다. 5 초짜리 요청을 하는 중에 <code>docker stop</code> 하자 요청은 <code>200</code> 으로 끝났고, 컨테이너는 4 초 만에 종료 코드 <code>143</code> 으로 멈췄다</li>
+<li>셸을 거쳐 띄우면(<code>ENTRYPOINT java …</code> 꼴 · <code>sh -c "java …"</code>) PID 1 이 <code>sh</code> 이고 Java 는 그 아래(PID 7) 다. <code>SIGTERM</code> 을 셸이 받고 Java 에 넘기지 않아, <code>docker stop</code> 이 10 초를 다 기다린 뒤 종료 코드 <code>137</code> 로 죽였다(graceful 로그 없음). 위처럼 JSON 배열 꼴로 쓴다</li>
+<li>앱의 graceful 기다림(30 초) 이 <code>docker stop</code> 의 10 초보다 길다. 오래 걸리는 요청이 있으면 <code>docker stop -t 40</code> · compose 의 <code>stop_grace_period: 40s</code> 로 늘린다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://docs.spring.io/spring-boot/reference/packaging/container-images/dockerfiles.html">Dockerfiles</a> — 층 나누기 · <code>jarmode=tools</code></li>
+<li><a href="https://hub.docker.com/_/eclipse-temurin">eclipse-temurin (Docker Official Image)</a> — 태그 · JRE 이미지</li>
+<li><a href="https://docs.oracle.com/en/java/javase/25/docs/specs/man/java.html">The java Command</a> — <code>MaxRAMPercentage</code> · <code>JAVA_TOOL_OPTIONS</code></li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/Operations/">운영</a></li><li><a href="/docs/server/Operations/Java-앱/">Java 앱</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Java/" rel="tag">Java</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-09T08:40:39.000Z">2026-11-09</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

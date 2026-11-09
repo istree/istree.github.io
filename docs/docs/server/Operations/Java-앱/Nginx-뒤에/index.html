@@ -1,0 +1,160 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Nginx 뒤에 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">운영</span><span class="up"> / <a href="/docs/server/" title="한 단계 위로">서버</a></span></p><ul><li><a href="/docs/server/Operations/">개요</a></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/server/Operations/Java-앱/">Java 앱</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Operations/Java-앱/빌드와-실행/">빌드와 실행</a></li><li><a href="/docs/server/Operations/Java-앱/systemd-서비스/">systemd 서비스</a></li><li><a href="/docs/server/Operations/Java-앱/Nginx-뒤에/" aria-current="page">Nginx 뒤에</a></li><li><a href="/docs/server/Operations/Java-앱/Docker로/">Docker로</a></li></ul></details></li><li><a href="/docs/server/Operations/Prometheus/">Prometheus</a></li></ul></nav><article><h1 class="page-title">Nginx 뒤에</h1><details class="sidebar-m"><summary>목록 · 운영</summary><ul><li><a href="/docs/server/Operations/">개요</a></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/server/Operations/Java-앱/">Java 앱</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Operations/Java-앱/빌드와-실행/">빌드와 실행</a></li><li><a href="/docs/server/Operations/Java-앱/systemd-서비스/">systemd 서비스</a></li><li><a href="/docs/server/Operations/Java-앱/Nginx-뒤에/" aria-current="page">Nginx 뒤에</a></li><li><a href="/docs/server/Operations/Java-앱/Docker로/">Docker로</a></li></ul></details></li><li><a href="/docs/server/Operations/Prometheus/">Prometheus</a></li></ul></details><div class="content"><p>Spring Boot 앱은 바깥에 바로 내놓지 않고 앞에 Nginx 를 둔다. Nginx 가 80 · 443 과 HTTPS 를 받고, 앱은 <code>127.0.0.1:8080</code> 에서만 듣는다. 이때 앱이 보는 요청은 Nginx 가 보낸 것이라, 클라이언트 IP 와 <code>https</code> 를 알려면 Nginx 가 머리말(<code>X-Forwarded-*</code>) 을 붙이고 앱이 그것을 믿게 설정한다. 앱을 둘 띄워 Nginx 가 나눠 보내면, 하나씩 다시 띄워도 요청이 끊기지 않는다. 아래 예제는 Ubuntu 24.04 의 Nginx 1.24.0 과 systemd 로 띄운 Spring Boot 4.1.2 앱으로 돌렸다. 클라이언트는 같은 기계의 Docker 컨테이너(<code>172.17.0.3</code>) 다.</p>
+<h2 id="프록시">프록시</h2>
+<pre class="language-nginx" data-language="nginx"><code class="language-nginx"><span class="token comment"># /etc/nginx/sites-available/shop</span>
+<span class="token directive"><span class="token keyword">server</span></span> <span class="token punctuation">{</span>
+    <span class="token directive"><span class="token keyword">listen</span> <span class="token number">80</span></span><span class="token punctuation">;</span>
+    <span class="token directive"><span class="token keyword">server_name</span> shop.example.com</span><span class="token punctuation">;</span>
+
+    <span class="token directive"><span class="token keyword">location</span> /</span> <span class="token punctuation">{</span>
+        <span class="token directive"><span class="token keyword">proxy_pass</span> http://127.0.0.1:8080</span><span class="token punctuation">;</span>
+        <span class="token directive"><span class="token keyword">proxy_set_header</span> Host <span class="token variable">$host</span></span><span class="token punctuation">;</span>
+        <span class="token directive"><span class="token keyword">proxy_set_header</span> X-Real-IP <span class="token variable">$remote_addr</span></span><span class="token punctuation">;</span>
+        <span class="token directive"><span class="token keyword">proxy_set_header</span> X-Forwarded-For <span class="token variable">$proxy_add_x_forwarded_for</span></span><span class="token punctuation">;</span>
+        <span class="token directive"><span class="token keyword">proxy_set_header</span> X-Forwarded-Proto <span class="token variable">$scheme</span></span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> <span class="token function">ln</span> <span class="token parameter variable">-s</span> /etc/nginx/sites-available/shop /etc/nginx/sites-enabled/shop
+<span class="token function">sudo</span> nginx <span class="token parameter variable">-t</span> <span class="token operator">&amp;&amp;</span> <span class="token function">sudo</span> systemctl reload nginx</code></pre>
+<ul>
+<li>앱은 <code>server.address=127.0.0.1</code> 로 띄우거나 방화벽으로 8080 을 막아, Nginx 를 거치지 않고는 닿지 않게 한다</li>
+</ul>
+<h2 id="클라이언트-ip-와-https">클라이언트 IP 와 https</h2>
+<p>요청 정보를 돌려주는 <code>/who</code> 를 만들어, Nginx 가 TLS 를 받았다고 치고 <code>X-Forwarded-Proto https</code> 를 붙여 보냈다.</p>
+<pre class="language-java" data-language="java"><code class="language-java">m<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"remoteAddr"</span><span class="token punctuation">,</span> r<span class="token punctuation">.</span><span class="token function">getRemoteAddr</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+m<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"scheme"</span><span class="token punctuation">,</span> r<span class="token punctuation">.</span><span class="token function">getScheme</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+m<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"link"</span><span class="token punctuation">,</span> <span class="token class-name">ServletUriComponentsBuilder</span><span class="token punctuation">.</span><span class="token function">fromCurrentContextPath</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">path</span><span class="token punctuation">(</span><span class="token string">"/orders/1"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toUriString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<table>
+<thead>
+<tr>
+<th>앱의 설정</th>
+<th><code>remoteAddr</code></th>
+<th><code>scheme</code></th>
+<th>앱이 만든 링크</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(그대로)</td>
+<td><code>127.0.0.1</code></td>
+<td><code>http</code></td>
+<td><code>http://shop.example.com/orders/1</code></td>
+</tr>
+<tr>
+<td><code>server.forward-headers-strategy=native</code></td>
+<td><code>172.17.0.3</code></td>
+<td><code>https</code></td>
+<td><code>https://shop.example.com/orders/1</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>그대로 두면 앱은 모든 요청이 Nginx(<code>127.0.0.1</code>) 에서 <code>http</code> 로 온 줄 안다. 접속 기록 · IP 제한이 틀리고, 리다이렉트 · 링크가 <code>http://</code> 로 나간다</li>
+<li><code>native</code> 는 Tomcat 이 머리말을 읽게 한다. 머리말을 믿는 것은 앞 주소가 내부 주소(<code>127.0.0.1</code> · <code>10.x</code> · <code>172.16 ~ 31.x</code> · <code>192.168.x</code> …) 일 때다. 그래서 같은 Docker 네트워크의 컨테이너가 Nginx 를 거치지 않고 앱(<code>172.17.0.2:8080</code>) 에 바로 <code>X-Forwarded-For: 1.2.3.4</code> · <code>X-Forwarded-Proto: https</code> 를 보내자, 앱은 <code>remoteAddr</code> 를 <code>1.2.3.4</code>, <code>scheme</code> 을 <code>https</code> 로 그대로 믿었다. 앱 포트는 Nginx 만 닿게 막는다</li>
+<li>앱이 본 <code>Host</code> 는 Nginx 가 넘긴 것(<code>proxy_set_header Host $host</code>) 이다. 이 줄이 없으면 Nginx 는 <code>proxy_pass</code> 의 주소(<code>127.0.0.1:8080</code>) 를 <code>Host</code> 로 보낸다</li>
+</ul>
+<h2 id="앱이-꺼졌거나-느릴-때">앱이 꺼졌거나 느릴 때</h2>
+<table>
+<thead>
+<tr>
+<th>상황</th>
+<th>Nginx 의 답</th>
+<th><code>error.log</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>앱을 멈춤</td>
+<td><code>502</code></td>
+<td><code>connect() failed (111: Connection refused) while connecting to upstream</code></td>
+</tr>
+<tr>
+<td>5 초 걸리는 요청, <code>proxy_read_timeout 3s</code></td>
+<td><code>504</code>, 3.0 초</td>
+<td><code>upstream timed out (110: Connection timed out) while reading response header from upstream</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>proxy_read_timeout</code> 의 기본은 60 초다. 오래 걸리는 내려받기 · 보고서 주소에만 따로 늘린다</li>
+<li>설정을 바꾸고 <code>reload</code> 한 직후의 요청 하나는 옛 설정으로 처리됐다(5 초 뒤 <code>200</code>). 새 설정을 시험할 때는 잠깐 뒤에 보낸다</li>
+</ul>
+<h2 id="actuator-막기">Actuator 막기</h2>
+<pre class="language-nginx" data-language="nginx"><code class="language-nginx"><span class="token directive"><span class="token keyword">location</span> /actuator/</span> <span class="token punctuation">{</span>
+    <span class="token directive"><span class="token keyword">allow</span> 127.0.0.1</span><span class="token punctuation">;</span>
+    <span class="token directive"><span class="token keyword">deny</span> all</span><span class="token punctuation">;</span>
+    <span class="token directive"><span class="token keyword">proxy_pass</span> http://127.0.0.1:8080</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<ul>
+<li>같은 기계에서는 <code>/actuator/health</code> 가 <code>200</code>, 컨테이너(바깥) 에서 <code>/actuator/prometheus</code> 는 <code>403</code> 이었다</li>
+<li>지표는 Prometheus 만 읽으면 된다. Prometheus 가 다른 서버에 있으면 그 주소만 <code>allow</code> 하거나, 앱의 관리 포트를 따로 둔다(<code>management.server.port=9090</code>)</li>
+</ul>
+<h2 id="앱-둘을-번갈아-바꾸기">앱 둘을 번갈아 바꾸기</h2>
+<p>템플릿 유닛으로 앱을 8081 · 8082 에 띄우고 Nginx 가 나눠 보내게 했다.</p>
+<pre class="language-nginx" data-language="nginx"><code class="language-nginx"><span class="token directive"><span class="token keyword">upstream</span> shop</span> <span class="token punctuation">{</span>
+    <span class="token directive"><span class="token keyword">server</span> 127.0.0.1:8081</span><span class="token punctuation">;</span>
+    <span class="token directive"><span class="token keyword">server</span> 127.0.0.1:8082</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token directive"><span class="token keyword">server</span></span> <span class="token punctuation">{</span>
+    <span class="token directive"><span class="token keyword">listen</span> <span class="token number">80</span></span><span class="token punctuation">;</span>
+    <span class="token directive"><span class="token keyword">server_name</span> shop.example.com</span><span class="token punctuation">;</span>
+    <span class="token directive"><span class="token keyword">location</span> /</span> <span class="token punctuation">{</span>
+        <span class="token directive"><span class="token keyword">proxy_pass</span> http://shop</span><span class="token punctuation">;</span>
+        <span class="token directive"><span class="token keyword">proxy_set_header</span> Host <span class="token variable">$host</span></span><span class="token punctuation">;</span>
+        <span class="token directive"><span class="token keyword">proxy_set_header</span> X-Forwarded-For <span class="token variable">$proxy_add_x_forwarded_for</span></span><span class="token punctuation">;</span>
+        <span class="token directive"><span class="token keyword">proxy_set_header</span> X-Forwarded-Proto <span class="token variable">$scheme</span></span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">sudo</span> systemctl restart shop@8081     <span class="token comment"># 다 뜨기를 기다린 뒤</span>
+<span class="token function">sudo</span> systemctl restart shop@8082</code></pre>
+<p>0.05 초마다 요청을 보내면서 둘을 차례로 다시 띄웠다.</p>
+<table>
+<thead>
+<tr>
+<th>둘 사이 기다림</th>
+<th>결과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>첫째가 다 뜨자마자 둘째</td>
+<td><code>200</code> 82 · <code>502</code> 68 — <code>no live upstreams while connecting to upstream</code></td>
+</tr>
+<tr>
+<td>첫째가 뜬 뒤 12 초</td>
+<td><code>200</code> 220 · 실패 0</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>한 앱이 내려간 동안 Nginx 는 그 앱에 붙다 실패한 요청을 다른 앱으로 다시 보냈다(<code>proxy_next_upstream error</code>). 그래서 하나씩 내릴 때는 실패가 없다</li>
+<li>실패한 앱은 <code>fail_timeout</code>(기본 10 초) 동안 빼 둔다. 첫째가 다시 떴어도 Nginx 는 아직 빼 둔 상태라, 그 사이 둘째를 내리자 보낼 곳이 없어 <code>502</code> 가 났다. 둘째는 <code>fail_timeout</code> 이 지난 뒤에 내린다</li>
+<li>오픈 소스 Nginx 는 앱에 건강 검사를 따로 보내지 않는다. 실제 요청이 실패해야 빼고, 시간이 지나야 다시 넣는다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://nginx.org/en/docs/http/ngx_http_proxy_module.html">ngx_http_proxy_module</a> — <code>proxy_set_header</code> · <code>proxy_read_timeout</code> · <code>proxy_next_upstream</code></li>
+<li><a href="https://nginx.org/en/docs/http/ngx_http_upstream_module.html">ngx_http_upstream_module</a> — <code>server</code> · <code>max_fails</code> · <code>fail_timeout</code></li>
+<li><a href="https://docs.spring.io/spring-boot/how-to/webserver.html#howto.webserver.use-behind-a-proxy-server">Running Behind a Front-end Proxy Server</a> — <code>forward-headers-strategy</code> · 믿는 주소</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/Operations/">운영</a></li><li><a href="/docs/server/Operations/Java-앱/">Java 앱</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Java/" rel="tag">Java</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-09T08:40:39.000Z">2026-11-09</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

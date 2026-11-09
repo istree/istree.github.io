@@ -1,0 +1,47 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>RabbitMQ | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">메시지 큐</span><span class="up"> / <a href="/docs/server/" title="한 단계 위로">서버</a></span></p><ul><li><a href="/docs/server/MessageQueue/">개요</a></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/MessageQueue/Kafka/">Kafka</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/MessageQueue/Kafka/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/MessageQueue/Kafka/토픽과-파티션/">토픽과 파티션</a></li><li><a href="/docs/server/MessageQueue/Kafka/컨슈머-그룹/">컨슈머 그룹</a></li><li><a href="/docs/server/MessageQueue/Kafka/클러스터와-복제/">클러스터와 복제</a></li></ul></details></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/server/MessageQueue/RabbitMQ/" aria-current="page">RabbitMQ</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/MessageQueue/RabbitMQ/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/교환기와-큐/">교환기와 큐</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/전달-보장/">전달 보장</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/클러스터/">클러스터</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/Kafka와-다른-것/">Kafka와 다른 것</a></li></ul></details></li></ul></nav><article><h1 class="page-title">RabbitMQ</h1><details class="sidebar-m"><summary>목록 · 메시지 큐</summary><ul><li><a href="/docs/server/MessageQueue/">개요</a></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/MessageQueue/Kafka/">Kafka</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/MessageQueue/Kafka/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/MessageQueue/Kafka/토픽과-파티션/">토픽과 파티션</a></li><li><a href="/docs/server/MessageQueue/Kafka/컨슈머-그룹/">컨슈머 그룹</a></li><li><a href="/docs/server/MessageQueue/Kafka/클러스터와-복제/">클러스터와 복제</a></li></ul></details></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/server/MessageQueue/RabbitMQ/" aria-current="page">RabbitMQ</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/MessageQueue/RabbitMQ/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/교환기와-큐/">교환기와 큐</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/전달-보장/">전달 보장</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/클러스터/">클러스터</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/Kafka와-다른-것/">Kafka와 다른 것</a></li></ul></details></li></ul></details><div class="content"><p>RabbitMQ 는 메시지를 큐에 받아 두었다가 컨슈머에게 건네주는 메시지 브로커다. 프로듀서는 큐에 바로 넣지 않고 교환기(exchange) 에 보내고, 교환기가 라우팅 키와 바인딩 규칙을 보고 알맞은 큐로 나눠 넣는다. 컨슈머가 처리했다고 알리면(ack) 메시지는 큐에서 지워진다. 처리하지 못한 메시지는 다시 넣거나 dead letter 큐로 보내고, 컨슈머마다 한 번에 받을 수를 정해 일을 고르게 나눈다. 작업 큐 · 이메일 보내기처럼 "누군가 한 번 처리하면 끝" 인 일에 맞는다. 표준 프로토콜 AMQP 0-9-1 을 쓰고 Erlang 으로 만들었다. 지금 판은 4.4 이고, 4 부터 큐를 여러 노드에 복제하는 일은 quorum 큐(와 스트림) 가 맡는다.</p>
+<p>이 묶음은 Docker 로 RabbitMQ 를 띄우고, 사용자 · vhost 를 나누고, 교환기와 큐 · 전달 보장을 Java 클라이언트로 돌려 보고, 노드 셋 클러스터에서 노드를 꺼 보고, Kafka 와 견준 것을 모았다.</p>
+<h2 id="정보">정보</h2>
+<ul>
+<li><a href="https://www.rabbitmq.com/">RabbitMQ</a> — 공식 사이트 · 내려받기</li>
+<li><a href="https://www.rabbitmq.com/blog">RabbitMQ Blog</a> — 출시 · 기능 소식</li>
+<li><a href="https://www.rabbitmq.com/release-information">Release Information</a> — 판마다 지원이 끝나는 날</li>
+<li><a href="https://www.cloudamqp.com/blog/">CloudAMQP Blog</a> — 운영 · 설계 글 모음</li>
+</ul>
+<h2 id="문서">문서</h2>
+<ul>
+<li><a href="https://www.rabbitmq.com/docs">RabbitMQ Documentation</a> — 설치 · 설정 · 큐 · 클러스터 설명서</li>
+<li><a href="https://www.rabbitmq.com/tutorials">Tutorials</a> — 언어별로 보내기 · 받기 · 작업 큐 · 라우팅 예제</li>
+<li><a href="https://www.rabbitmq.com/client-libraries/java-api-guide">Java Client API Guide</a> — 연결 · 채널 · 자동 복구</li>
+<li><a href="https://hub.docker.com/_/rabbitmq">rabbitmq (Docker Official Image)</a> — 이미지의 태그 · 설정 · 쿠키</li>
+</ul>
+<h2 id="도구">도구</h2>
+<ul>
+<li><a href="https://github.com/rabbitmq/rabbitmqadmin-ng">rabbitmqadmin</a> — 관리 API 를 쓰는 명령줄 도구</li>
+<li><a href="https://github.com/rabbitmq/rabbitmq-perf-test">PerfTest</a> — 보내기 · 받기 빠르기를 재는 도구</li>
+</ul>
+<h2 id="책">책</h2>
+<ul>
+<li><a href="https://www.manning.com/books/rabbitmq-in-depth">RabbitMQ in Depth</a> (2017) — Gavin M. Roy.</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/MessageQueue/">메시지 큐</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/RabbitMQ/" rel="tag">RabbitMQ</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-09T07:24:27.000Z">2026-11-09</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

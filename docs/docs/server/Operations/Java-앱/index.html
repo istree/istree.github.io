@@ -1,0 +1,43 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Java 앱 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">운영</span><span class="up"> / <a href="/docs/server/" title="한 단계 위로">서버</a></span></p><ul><li><a href="/docs/server/Operations/">개요</a></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/server/Operations/Java-앱/" aria-current="page">Java 앱</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Operations/Java-앱/빌드와-실행/">빌드와 실행</a></li><li><a href="/docs/server/Operations/Java-앱/systemd-서비스/">systemd 서비스</a></li><li><a href="/docs/server/Operations/Java-앱/Nginx-뒤에/">Nginx 뒤에</a></li><li><a href="/docs/server/Operations/Java-앱/Docker로/">Docker로</a></li></ul></details></li><li><a href="/docs/server/Operations/Prometheus/">Prometheus</a></li></ul></nav><article><h1 class="page-title">Java 앱</h1><details class="sidebar-m"><summary>목록 · 운영</summary><ul><li><a href="/docs/server/Operations/">개요</a></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/server/Operations/Java-앱/" aria-current="page">Java 앱</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Operations/Java-앱/빌드와-실행/">빌드와 실행</a></li><li><a href="/docs/server/Operations/Java-앱/systemd-서비스/">systemd 서비스</a></li><li><a href="/docs/server/Operations/Java-앱/Nginx-뒤에/">Nginx 뒤에</a></li><li><a href="/docs/server/Operations/Java-앱/Docker로/">Docker로</a></li></ul></details></li><li><a href="/docs/server/Operations/Prometheus/">Prometheus</a></li></ul></details><div class="content"><p>Java 웹 앱은 보통 Spring Boot 로 만들어 jar 파일 하나로 올린다. jar 안에 내장 웹 서버(Tomcat) 와 라이브러리가 모두 들어 있어, 서버에는 JDK(JRE) 만 있으면 <code>java -jar</code> 로 뜬다. 포트 · DB 주소 · 비밀번호 같은 설정은 jar 밖에서 환경 변수나 파일로 준다. 서버에서는 jar 를 systemd 서비스로 띄워 죽으면 다시 뜨게 하고, 앞에 Nginx 를 두어 바깥 요청 · HTTPS 를 받게 한다. Docker 이미지로 만들어 띄우기도 한다. 지금 판은 Spring Boot 4.1 · Java 25(LTS) 다.</p>
+<p>이 묶음은 Spring Boot 4.1 의 작은 REST 앱 하나를 빌드해, Ubuntu 서버에 systemd 서비스로 띄우고, Nginx 뒤에 두고, Docker 이미지로 만드는 것을 실제로 돌려 본 순서대로 모았다.</p>
+<h2 id="정보">정보</h2>
+<ul>
+<li><a href="https://spring.io/projects/spring-boot">Spring Boot</a> — 공식 사이트 · 판마다 지원 기간</li>
+<li><a href="https://spring.io/blog">Spring Blog</a> — 출시 · 기능 소식</li>
+</ul>
+<h2 id="문서">문서</h2>
+<ul>
+<li><a href="https://docs.spring.io/spring-boot/reference/">Spring Boot Reference</a> — 설정 · Actuator · 끄기 · 이미지 만들기</li>
+<li><a href="https://docs.spring.io/spring-boot/how-to/deployment/installing.html">Installing Spring Boot Applications</a> — 실행 jar · systemd 서비스로</li>
+<li><a href="https://hub.docker.com/_/eclipse-temurin">eclipse-temurin (Docker Official Image)</a> — JDK · JRE 이미지</li>
+</ul>
+<h2 id="도구">도구</h2>
+<ul>
+<li><a href="https://start.spring.io/">Spring Initializr</a> — 판 · 의존성을 선택해 새 프로젝트를 만든다</li>
+</ul>
+<h2 id="책">책</h2>
+<ul>
+<li><a href="https://www.manning.com/books/cloud-native-spring-in-action">Cloud Native Spring in Action</a> (2022) — Thomas Vitale.</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/Operations/">운영</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Java/" rel="tag">Java</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-09T08:40:39.000Z">2026-11-09</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

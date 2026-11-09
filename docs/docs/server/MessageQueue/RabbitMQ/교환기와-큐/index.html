@@ -1,0 +1,126 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>교환기와 큐 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">메시지 큐</span><span class="up"> / <a href="/docs/server/" title="한 단계 위로">서버</a></span></p><ul><li><a href="/docs/server/MessageQueue/">개요</a></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/MessageQueue/Kafka/">Kafka</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/MessageQueue/Kafka/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/MessageQueue/Kafka/토픽과-파티션/">토픽과 파티션</a></li><li><a href="/docs/server/MessageQueue/Kafka/컨슈머-그룹/">컨슈머 그룹</a></li><li><a href="/docs/server/MessageQueue/Kafka/클러스터와-복제/">클러스터와 복제</a></li></ul></details></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/server/MessageQueue/RabbitMQ/">RabbitMQ</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/MessageQueue/RabbitMQ/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/교환기와-큐/" aria-current="page">교환기와 큐</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/전달-보장/">전달 보장</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/클러스터/">클러스터</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/Kafka와-다른-것/">Kafka와 다른 것</a></li></ul></details></li></ul></nav><article><h1 class="page-title">교환기와 큐</h1><details class="sidebar-m"><summary>목록 · 메시지 큐</summary><ul><li><a href="/docs/server/MessageQueue/">개요</a></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/MessageQueue/Kafka/">Kafka</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/MessageQueue/Kafka/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/MessageQueue/Kafka/토픽과-파티션/">토픽과 파티션</a></li><li><a href="/docs/server/MessageQueue/Kafka/컨슈머-그룹/">컨슈머 그룹</a></li><li><a href="/docs/server/MessageQueue/Kafka/클러스터와-복제/">클러스터와 복제</a></li></ul></details></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/server/MessageQueue/RabbitMQ/">RabbitMQ</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/MessageQueue/RabbitMQ/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/교환기와-큐/" aria-current="page">교환기와 큐</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/전달-보장/">전달 보장</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/클러스터/">클러스터</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/Kafka와-다른-것/">Kafka와 다른 것</a></li></ul></details></li></ul></details><div class="content"><p>RabbitMQ 에서 프로듀서는 메시지를 큐가 아니라 교환기(exchange) 에 보낸다. 메시지에는 라우팅 키가 붙고, 교환기는 큐와 맺은 바인딩을 보고 어느 큐에 넣을지 정한다. 교환기 종류에 따라 정하는 법이 다르다 — direct 는 키가 같은 큐로, topic 은 키의 꼴이 맞는 큐로, fanout 은 묶인 큐 모두로 보낸다. 컨슈머는 큐에서 받는다. 보낼 큐가 하나도 없는 메시지는 따로 말하지 않으면 조용히 사라진다. 아래 예제는 <code>rabbitmq:4.4-management</code>(4.4.0) 와 Java 클라이언트(<code>amqp-client</code> 5.37.1) 로 돌렸다.</p>
+<h2 id="큐-만들기">큐 만들기</h2>
+<pre class="language-java" data-language="java"><code class="language-java">ch<span class="token punctuation">.</span><span class="token function">queueDeclare</span><span class="token punctuation">(</span><span class="token string">"q.paid"</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// 이름, durable, exclusive, autoDelete, 인자</span></code></pre>
+<table>
+<thead>
+<tr>
+<th>인자</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>durable</code></td>
+<td>서버를 다시 띄워도 큐가 남는다</td>
+</tr>
+<tr>
+<td><code>exclusive</code></td>
+<td>이 연결만 쓰고, 연결이 끊기면 지워진다</td>
+</tr>
+<tr>
+<td><code>autoDelete</code></td>
+<td>마지막 컨슈머가 떠나면 지워진다</td>
+</tr>
+<tr>
+<td><code>x-queue-type</code></td>
+<td><code>classic</code>(기본) · <code>quorum</code>(복제) · <code>stream</code>(로그)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>같은 이름 · 같은 인자로 다시 <code>queueDeclare</code> 하면 아무 일도 없다. 인자가 다르면 <code>PRECONDITION_FAILED - inequivalent arg 'x-queue-type' for queue 'q.pre' in vhost '/': received 'quorum' but current is 'classic'</code> 로 채널이 닫힌다. 앱이 띄울 때마다 선언해 두는 것이 보통이다</li>
+<li>4.4 에서 durable 이 아니고 exclusive 도 아닌 큐는 만들 수 없었다. <code>INTERNAL_ERROR - Feature transient_nonexcl_queues is deprecated.</code> 로 연결이 끊겼다. <code>rabbitmq-diagnostics list_deprecated_features</code> 에 <code>transient_nonexcl_queues · denied_by_default</code> 로 나온다. 잠깐 쓸 큐는 <code>exclusive</code> 로 만든다</li>
+</ul>
+<h2 id="기본-교환기">기본 교환기</h2>
+<p>이름이 빈 교환기(<code>""</code>) 는 큐 이름을 라우팅 키로 받아 그 큐에 넣는다. 모든 큐가 저절로 여기에 묶여 있다.</p>
+<pre class="language-java" data-language="java"><code class="language-java">ch<span class="token punctuation">.</span><span class="token function">basicPublish</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">,</span> <span class="token string">"hello"</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token string">"hello"</span><span class="token punctuation">.</span><span class="token function">getBytes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token class-name">GetResponse</span> g <span class="token operator">=</span> ch<span class="token punctuation">.</span><span class="token function">basicGet</span><span class="token punctuation">(</span><span class="token string">"hello"</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// 받음 hello · 교환기 '' · 키 hello</span></code></pre>
+<ul>
+<li>큐 하나에 바로 넣는 것처럼 쓰는 길이다. 받는 큐가 늘어날 일이 있으면 처음부터 교환기를 둔다</li>
+</ul>
+<h2 id="direct">direct</h2>
+<pre class="language-java" data-language="java"><code class="language-java">ch<span class="token punctuation">.</span><span class="token function">exchangeDeclare</span><span class="token punctuation">(</span><span class="token string">"orders.direct"</span><span class="token punctuation">,</span> <span class="token class-name">BuiltinExchangeType</span><span class="token punctuation">.</span><span class="token constant">DIRECT</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ch<span class="token punctuation">.</span><span class="token function">queueBind</span><span class="token punctuation">(</span><span class="token string">"q.paid"</span><span class="token punctuation">,</span> <span class="token string">"orders.direct"</span><span class="token punctuation">,</span> <span class="token string">"paid"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ch<span class="token punctuation">.</span><span class="token function">queueBind</span><span class="token punctuation">(</span><span class="token string">"q.shipped"</span><span class="token punctuation">,</span> <span class="token string">"orders.direct"</span><span class="token punctuation">,</span> <span class="token string">"shipped"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// 키 paid · shipped · paid · cancelled 를 보냈다</span></code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">q.paid=2 q.shipped=1</code></pre>
+<ul>
+<li>키가 바인딩 키와 같은 큐로만 간다. <code>cancelled</code> 는 묶인 큐가 없어 사라졌다</li>
+<li>큐 하나에 바인딩을 여럿 걸 수도 있고, 같은 키에 큐 여럿을 걸면 모두 받는다</li>
+</ul>
+<h2 id="topic">topic</h2>
+<p>라우팅 키를 점으로 나눈 낱말로 보고, 바인딩 키의 <code>*</code>(낱말 하나) · <code>#</code>(낱말 0 개 이상) 으로 맞춘다.</p>
+<pre class="language-java" data-language="java"><code class="language-java">ch<span class="token punctuation">.</span><span class="token function">exchangeDeclare</span><span class="token punctuation">(</span><span class="token string">"events"</span><span class="token punctuation">,</span> <span class="token class-name">BuiltinExchangeType</span><span class="token punctuation">.</span><span class="token constant">TOPIC</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ch<span class="token punctuation">.</span><span class="token function">queueBind</span><span class="token punctuation">(</span><span class="token string">"q.all"</span><span class="token punctuation">,</span> <span class="token string">"events"</span><span class="token punctuation">,</span> <span class="token string">"#"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ch<span class="token punctuation">.</span><span class="token function">queueBind</span><span class="token punctuation">(</span><span class="token string">"q.order"</span><span class="token punctuation">,</span> <span class="token string">"events"</span><span class="token punctuation">,</span> <span class="token string">"order.*"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ch<span class="token punctuation">.</span><span class="token function">queueBind</span><span class="token punctuation">(</span><span class="token string">"q.kr"</span><span class="token punctuation">,</span> <span class="token string">"events"</span><span class="token punctuation">,</span> <span class="token string">"*.kr.#"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// 키 order.created · order.kr.paid · user.kr · user.created 를 보냈다</span></code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">q.all=4 q.order=1 q.kr=2
+q.order ← [order.created]
+q.kr ← [order.kr.paid, user.kr]</code></pre>
+<ul>
+<li><code>order.*</code> 는 낱말이 꼭 둘이라 <code>order.kr.paid</code> 를 받지 않았다. 셋 이상도 받으려면 <code>order.#</code> 이다</li>
+<li><code>*.kr.#</code> 의 <code>#</code> 은 0 개도 되므로 <code>user.kr</code> 을 받았다</li>
+<li>키는 <code>무엇.어디.무슨일</code> 처럼 넓은 것부터 좁은 것으로 짓는다. 나중에 받는 쪽이 늘어도 바인딩만 더한다</li>
+</ul>
+<h2 id="fanout">fanout</h2>
+<pre class="language-java" data-language="java"><code class="language-java">ch<span class="token punctuation">.</span><span class="token function">exchangeDeclare</span><span class="token punctuation">(</span><span class="token string">"broadcast"</span><span class="token punctuation">,</span> <span class="token class-name">BuiltinExchangeType</span><span class="token punctuation">.</span><span class="token constant">FANOUT</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ch<span class="token punctuation">.</span><span class="token function">queueBind</span><span class="token punctuation">(</span><span class="token string">"q.a"</span><span class="token punctuation">,</span> <span class="token string">"broadcast"</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ch<span class="token punctuation">.</span><span class="token function">queueBind</span><span class="token punctuation">(</span><span class="token string">"q.b"</span><span class="token punctuation">,</span> <span class="token string">"broadcast"</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ch<span class="token punctuation">.</span><span class="token function">basicPublish</span><span class="token punctuation">(</span><span class="token string">"broadcast"</span><span class="token punctuation">,</span> <span class="token string">"anything"</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token string">"x"</span><span class="token punctuation">.</span><span class="token function">getBytes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// q.a=1 q.b=1</span></code></pre>
+<ul>
+<li>키를 보지 않고 묶인 큐 모두에 한 벌씩 넣는다. 한 이벤트를 여러 서비스가 저마다 받을 때 쓴다. 서비스마다 제 큐를 하나씩 묶는다</li>
+</ul>
+<h2 id="갈-곳-없는-메시지">갈 곳 없는 메시지</h2>
+<pre class="language-java" data-language="java"><code class="language-java">ch<span class="token punctuation">.</span><span class="token function">addReturnListener</span><span class="token punctuation">(</span>r <span class="token operator">-&gt;</span> <span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"돌아옴 "</span> <span class="token operator">+</span> r<span class="token punctuation">.</span><span class="token function">getReplyCode</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">" "</span> <span class="token operator">+</span> r<span class="token punctuation">.</span><span class="token function">getReplyText</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">" 키 "</span> <span class="token operator">+</span> r<span class="token punctuation">.</span><span class="token function">getRoutingKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ch<span class="token punctuation">.</span><span class="token function">basicPublish</span><span class="token punctuation">(</span><span class="token string">"orders.direct"</span><span class="token punctuation">,</span> <span class="token string">"cancelled"</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">,</span> body<span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// 조용히 사라진다</span>
+ch<span class="token punctuation">.</span><span class="token function">basicPublish</span><span class="token punctuation">(</span><span class="token string">"orders.direct"</span><span class="token punctuation">,</span> <span class="token string">"cancelled"</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">,</span> body<span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment">// mandatory</span>
+<span class="token comment">// 돌아옴 312 NO_ROUTE 키 cancelled</span></code></pre>
+<ul>
+<li><code>mandatory</code> 를 켜면 갈 큐가 없는 메시지를 프로듀서에게 돌려준다. 켜지 않으면 오류도 기록도 없다. 바인딩을 빠뜨린 것을 알아채려면 켠다</li>
+<li>교환기에 <code>alternate-exchange</code> 인자를 주면 갈 곳 없는 메시지를 다른 교환기로 보낸다. 묶인 큐가 없는 키로 보내자 그 교환기에 묶은 <code>q.unrouted</code> 에 들어갔다</li>
+</ul>
+<p>없는 교환기에 보내면 채널이 닫힌다.</p>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">channel error; protocol method: #method&lt;channel.close&gt;(reply-code=404, reply-text=NOT_FOUND - no exchange 'nope' in vhost '/', class-id=60, method-id=40)</code></pre>
+<ul>
+<li><code>basicPublish</code> 는 바로 돌아오고, 오류는 그 채널의 다음 명령에서 드러났다</li>
+</ul>
+<h2 id="받기">받기</h2>
+<pre class="language-java" data-language="java"><code class="language-java">ch<span class="token punctuation">.</span><span class="token function">basicConsume</span><span class="token punctuation">(</span><span class="token string">"q.paid"</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>tag<span class="token punctuation">,</span> d<span class="token punctuation">)</span> <span class="token operator">-&gt;</span> <span class="token punctuation">{</span>
+    <span class="token function">handle</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">String</span><span class="token punctuation">(</span>d<span class="token punctuation">.</span><span class="token function">getBody</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token class-name">StandardCharsets</span><span class="token punctuation">.</span><span class="token constant">UTF_8</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    ch<span class="token punctuation">.</span><span class="token function">basicAck</span><span class="token punctuation">(</span>d<span class="token punctuation">.</span><span class="token function">getEnvelope</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getDeliveryTag</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span> tag <span class="token operator">-&gt;</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<ul>
+<li><code>basicConsume</code> 은 서버가 메시지를 밀어 준다. <code>basicGet</code> 은 하나씩 당겨 오는 것이라 시험 · 도구에만 쓴다</li>
+<li>한 큐에 컨슈머가 여럿이면 메시지를 차례로 나눠 준다. 같은 메시지를 여러 곳이 받아야 하면 큐를 여럿 두고 fanout · topic 으로 묶는다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://www.rabbitmq.com/docs/exchanges">Exchanges</a> — 교환기 종류 · 기본 교환기 · alternate exchange</li>
+<li><a href="https://www.rabbitmq.com/docs/queues">Queues</a> — 큐의 성질 · 인자 · 종류</li>
+<li><a href="https://www.rabbitmq.com/tutorials">Tutorials</a> — 라우팅(direct) · 토픽 · 발행/구독(fanout) 예제</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/MessageQueue/">메시지 큐</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/">RabbitMQ</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/RabbitMQ/" rel="tag">RabbitMQ</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-09T07:24:27.000Z">2026-11-09</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

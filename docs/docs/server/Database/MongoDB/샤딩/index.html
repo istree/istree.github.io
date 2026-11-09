@@ -1,0 +1,128 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>샤딩 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">DB</span><span class="up"> / <a href="/docs/server/" title="한 단계 위로">서버</a></span></p><ul><li><a href="/docs/server/Database/">개요</a></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/Database/MySQL/">MySQL</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Database/MySQL/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/Database/MySQL/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/Database/MySQL/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/Database/MariaDB/">MariaDB</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Database/MariaDB/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/Database/MariaDB/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/Database/MariaDB/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/Database/PostgreSQL/">PostgreSQL</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Database/PostgreSQL/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/Database/PostgreSQL/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/Database/PostgreSQL/백업과-복원/">백업과 복원</a></li><li><a href="/docs/server/Database/PostgreSQL/MySQL과-다른-것/">MySQL과 다른 것</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/Database/Redis/">Redis</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Database/Redis/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/Database/Redis/자료형/">자료형</a></li><li><a href="/docs/server/Database/Redis/캐시/">캐시</a></li><li><a href="/docs/server/Database/Redis/저장/">저장</a></li></ul></details></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/server/Database/MongoDB/">MongoDB</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Database/MongoDB/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/Database/MongoDB/문서와-쿼리/">문서와 쿼리</a></li><li><a href="/docs/server/Database/MongoDB/복제-세트/">복제 세트</a></li><li><a href="/docs/server/Database/MongoDB/샤딩/" aria-current="page">샤딩</a></li><li><a href="/docs/server/Database/MongoDB/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/Database/Cassandra/">Cassandra</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Database/Cassandra/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/Database/Cassandra/데이터-모델/">데이터 모델</a></li><li><a href="/docs/server/Database/Cassandra/클러스터/">클러스터</a></li><li><a href="/docs/server/Database/Cassandra/백업/">백업</a></li></ul></details></li></ul></nav><article><h1 class="page-title">샤딩</h1><details class="sidebar-m"><summary>목록 · DB</summary><ul><li><a href="/docs/server/Database/">개요</a></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/Database/MySQL/">MySQL</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Database/MySQL/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/Database/MySQL/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/Database/MySQL/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/Database/MariaDB/">MariaDB</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Database/MariaDB/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/Database/MariaDB/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/Database/MariaDB/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/Database/PostgreSQL/">PostgreSQL</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Database/PostgreSQL/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/Database/PostgreSQL/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/Database/PostgreSQL/백업과-복원/">백업과 복원</a></li><li><a href="/docs/server/Database/PostgreSQL/MySQL과-다른-것/">MySQL과 다른 것</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/Database/Redis/">Redis</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Database/Redis/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/Database/Redis/자료형/">자료형</a></li><li><a href="/docs/server/Database/Redis/캐시/">캐시</a></li><li><a href="/docs/server/Database/Redis/저장/">저장</a></li></ul></details></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/server/Database/MongoDB/">MongoDB</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Database/MongoDB/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/Database/MongoDB/문서와-쿼리/">문서와 쿼리</a></li><li><a href="/docs/server/Database/MongoDB/복제-세트/">복제 세트</a></li><li><a href="/docs/server/Database/MongoDB/샤딩/" aria-current="page">샤딩</a></li><li><a href="/docs/server/Database/MongoDB/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/Database/Cassandra/">Cassandra</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Database/Cassandra/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/Database/Cassandra/데이터-모델/">데이터 모델</a></li><li><a href="/docs/server/Database/Cassandra/클러스터/">클러스터</a></li><li><a href="/docs/server/Database/Cassandra/백업/">백업</a></li></ul></details></li></ul></details><div class="content"><p>샤딩은 한 컬렉션의 문서를 여러 복제 세트(샤드) 에 나눠 담는 것이다. 문서마다 샤드 키 값을 보고 어느 샤드에 둘지 정한다. 앱은 샤드에 바로 붙지 않고 라우터(<code>mongos</code>) 에 붙는다. <code>mongos</code> 는 설정 서버가 가진 "어느 키 범위가 어느 샤드에" 표를 보고 요청을 보낸다. 자료나 쓰기가 한 복제 세트에 담기지 않을 때 쓰고, 샤드 키를 잘못 고르면 한 샤드만 바빠진다. 아래 예제는 <code>mongo:9</code>(9.0.4) 컨테이너 넷 — 설정 서버 <code>cfg1</code>, 샤드 <code>sh1</code> · <code>sh2</code>, 라우터 <code>mongos</code> — 로 돌렸다. 세 <code>mongod</code> 는 저마다 노드 하나짜리 복제 세트이고, 운영에서는 저마다 노드 셋으로 둔다.</p>
+<h2 id="띄우기">띄우기</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token comment"># 셋 모두 열쇠 파일을 붙인다 (복제 세트와 같다)</span>
+<span class="token function">docker</span> run <span class="token parameter variable">-d</span> <span class="token parameter variable">--name</span> cfg1 <span class="token parameter variable">--hostname</span> cfg1 <span class="token parameter variable">--network</span> mongo-net <span class="token parameter variable">-v</span> mongo-key:/key:ro <span class="token punctuation">\</span>
+  mongo:9 mongod <span class="token parameter variable">--configsvr</span> <span class="token parameter variable">--replSet</span> cfg <span class="token parameter variable">--port</span> <span class="token number">27017</span> <span class="token parameter variable">--bind_ip_all</span> <span class="token parameter variable">--keyFile</span> /key/keyfile
+<span class="token function">docker</span> run <span class="token parameter variable">-d</span> <span class="token parameter variable">--name</span> sh1 <span class="token parameter variable">--hostname</span> sh1 <span class="token parameter variable">--network</span> mongo-net <span class="token parameter variable">-v</span> mongo-key:/key:ro <span class="token punctuation">\</span>
+  mongo:9 mongod <span class="token parameter variable">--shardsvr</span> <span class="token parameter variable">--replSet</span> sh1 <span class="token parameter variable">--port</span> <span class="token number">27017</span> <span class="token parameter variable">--bind_ip_all</span> <span class="token parameter variable">--keyFile</span> /key/keyfile
+<span class="token function">docker</span> run <span class="token parameter variable">-d</span> <span class="token parameter variable">--name</span> sh2 …   <span class="token comment"># sh1 과 같이 --replSet sh2</span>
+
+<span class="token function">docker</span> <span class="token builtin class-name">exec</span> cfg1 mongosh <span class="token parameter variable">--eval</span> <span class="token string">'rs.initiate({_id: "cfg", configsvr: true, members: [{_id: 0, host: "cfg1:27017"}]})'</span>
+<span class="token function">docker</span> <span class="token builtin class-name">exec</span> sh1 mongosh <span class="token parameter variable">--eval</span> <span class="token string">'rs.initiate({_id: "sh1", members: [{_id: 0, host: "sh1:27017"}]})'</span>
+<span class="token function">docker</span> <span class="token builtin class-name">exec</span> sh2 mongosh <span class="token parameter variable">--eval</span> <span class="token string">'rs.initiate({_id: "sh2", members: [{_id: 0, host: "sh2:27017"}]})'</span>
+
+<span class="token function">docker</span> run <span class="token parameter variable">-d</span> <span class="token parameter variable">--name</span> mongos <span class="token parameter variable">--hostname</span> mongos <span class="token parameter variable">--network</span> mongo-net <span class="token parameter variable">-v</span> mongo-key:/key:ro <span class="token punctuation">\</span>
+  mongo:9 mongos <span class="token parameter variable">--configdb</span> cfg/cfg1:27017 <span class="token parameter variable">--bind_ip_all</span> <span class="token parameter variable">--keyFile</span> /key/keyfile</code></pre>
+<pre class="language-js" data-language="js"><code class="language-js"><span class="token comment">// mongos 에서 — 첫 사용자를 만들고 그 사용자로 다시 붙는다</span>
+db<span class="token punctuation">.</span><span class="token function">getSiblingDB</span><span class="token punctuation">(</span><span class="token string">"admin"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">createUser</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token literal-property property">user</span><span class="token operator">:</span> <span class="token string">"root"</span><span class="token punctuation">,</span> <span class="token literal-property property">pwd</span><span class="token operator">:</span> <span class="token string">"Root-pass-1"</span><span class="token punctuation">,</span> <span class="token literal-property property">roles</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"root"</span><span class="token punctuation">]</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
+sh<span class="token punctuation">.</span><span class="token function">addShard</span><span class="token punctuation">(</span><span class="token string">"sh1/sh1:27017"</span><span class="token punctuation">)</span>
+sh<span class="token punctuation">.</span><span class="token function">addShard</span><span class="token punctuation">(</span><span class="token string">"sh2/sh2:27017"</span><span class="token punctuation">)</span>
+db<span class="token punctuation">.</span><span class="token function">adminCommand</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token literal-property property">listShards</span><span class="token operator">:</span> <span class="token number">1</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span>shards<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token parameter">s</span> <span class="token operator">=&gt;</span> s<span class="token punctuation">.</span>_id <span class="token operator">+</span> <span class="token string">" "</span> <span class="token operator">+</span> s<span class="token punctuation">.</span>host<span class="token punctuation">)</span>
+<span class="token comment">// [ 'sh1 sh1/sh1:27017', 'sh2 sh2/sh2:27017' ]</span></code></pre>
+<ul>
+<li><code>--shardsvr</code> · <code>--configsvr</code> 는 기본 포트가 27018 · 27019 다. 위처럼 <code>--port 27017</code> 을 주거나 그 포트로 적는다</li>
+<li><code>mongos</code> 에서 만든 사용자는 설정 서버에 담긴다. 샤드의 <code>mongod</code> 에 그 사용자로 바로 붙으면 <code>MongoServerError: Authentication failed.</code> 다. 앱 · 관리 모두 <code>mongos</code> 를 거친다</li>
+<li>앱의 연결 문자열은 <code>mongos</code> 를 가리킨다(<code>mongodb://…@mongos:27017/?authSource=admin</code>). <code>mongos</code> 는 자료가 없어 여럿 띄워 두고 함께 적는다</li>
+</ul>
+<h2 id="컬렉션-나누기">컬렉션 나누기</h2>
+<pre class="language-js" data-language="js"><code class="language-js">sh<span class="token punctuation">.</span><span class="token function">shardCollection</span><span class="token punctuation">(</span><span class="token string">"shop.orders"</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> <span class="token literal-property property">userId</span><span class="token operator">:</span> <span class="token string">"hashed"</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token comment">// 문서 2 만 개를 넣고</span>
+db<span class="token punctuation">.</span>orders<span class="token punctuation">.</span><span class="token function">getShardDistribution</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">Shard sh1 at sh1/sh1:27017
+{ data: '558KiB', docs: 9860, chunks: 1, … }
+Shard sh2 at sh2/sh2:27017
+{ data: '574KiB', docs: 10140, chunks: 1, … }
+Totals
+{ data: '1.1MiB', docs: 20000, chunks: 2,
+  'Shard sh1': [ '49.3 % data', … ], 'Shard sh2': [ '50.7 % data', … ] }</code></pre>
+<ul>
+<li>해시 키는 키 값을 해시해 범위를 나누므로, 늘어나는 <code>userId</code> 도 두 샤드에 고르게 갔다</li>
+<li>컬렉션은 덩어리(chunk) 로 나뉘고, 덩어리마다 키 범위와 샤드가 정해진다. 덩어리가 고르지 않으면 balancer 가 저절로 옮긴다</li>
+</ul>
+<h2 id="찾을-때">찾을 때</h2>
+<pre class="language-js" data-language="js"><code class="language-js">db<span class="token punctuation">.</span>orders<span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token literal-property property">userId</span><span class="token operator">:</span> <span class="token number">42</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">explain</span><span class="token punctuation">(</span><span class="token punctuation">)</span>   <span class="token comment">// 샤드 sh2 | stage SINGLE_SHARD</span>
+db<span class="token punctuation">.</span>orders<span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token literal-property property">item</span><span class="token operator">:</span> <span class="token string">"x"</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">explain</span><span class="token punctuation">(</span><span class="token punctuation">)</span>    <span class="token comment">// 샤드 sh1,sh2 | stage SHARD_MERGE</span></code></pre>
+<ul>
+<li>조건에 샤드 키가 있으면 <code>mongos</code> 가 그 샤드 하나에만 묻는다</li>
+<li>샤드 키가 없으면 모든 샤드에 묻고 결과를 모은다(scatter-gather). 샤드가 늘수록 느려지므로, 가장 자주 하는 쿼리의 조건 필드를 샤드 키로 고른다</li>
+</ul>
+<h2 id="샤드-키-선택">샤드 키 선택</h2>
+<p>늘어나는 시각(<code>at</code>) 을 범위 키로 쓴 <code>events</code> 컬렉션에 새 문서 5000 개를 넣었다. 덩어리 크기를 1 MB 로 줄여 덩어리가 여럿으로 나뉘고 옮겨진 뒤였다.</p>
+<table>
+<thead>
+<tr>
+<th>컬렉션 · 샤드 키</th>
+<th>새 문서 5000 개가 간 곳</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>events</code> · <code>{ at: 1 }</code> (범위)</td>
+<td><code>sh1</code> 에 5000 · <code>sh2</code> 에 0</td>
+</tr>
+<tr>
+<td><code>orders</code> · <code>{ userId: "hashed" }</code></td>
+<td><code>sh1</code> 에 2463 · <code>sh2</code> 에 2537</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>범위 키가 늘어나는 값이면 새 문서는 늘 마지막 덩어리(<code>at</code> 의 끝, <code>maxKey</code> 까지) 로 간다. 그 덩어리를 가진 샤드 하나가 모든 쓰기를 받는다. 옛 덩어리는 balancer 가 옮겨도 새 쓰기는 고르게 퍼지지 않는다</li>
+<li>해시 키는 쓰기가 고르게 퍼지지만, 키 범위로 찾기(<code>at</code> 이 어제부터 오늘까지) 는 모든 샤드에 묻는다</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>볼 것</th>
+<th>좋은 키</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>값의 가짓수</td>
+<td>많다 (사용자 id). <code>country</code> 처럼 몇 가지뿐이면 덩어리를 더 나누지 못한다</td>
+</tr>
+<tr>
+<td>값마다 문서 수</td>
+<td>고르다. 한 값에 문서가 몰리면 그 덩어리가 커진다</td>
+</tr>
+<tr>
+<td>늘어나기</td>
+<td>늘어나는 값(시각 · <code>ObjectId</code>) 은 해시로 쓰거나 앞에 다른 필드를 붙인다(<code>{ userId: 1, at: 1 }</code>)</td>
+</tr>
+<tr>
+<td>쿼리</td>
+<td>자주 하는 쿼리의 조건에 들어 있다</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>5.0 부터 <code>reshardCollection</code> 으로 샤드 키를 바꿀 수 있다. 다만 컬렉션 전체를 다시 나누는 무거운 일이라 처음에 고르는 편이 낫다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://www.mongodb.com/docs/manual/sharding/">Sharding</a> — 구성 요소 · 덩어리 · balancer</li>
+<li><a href="https://www.mongodb.com/docs/manual/core/sharding-choose-a-shard-key/">Choose a Shard Key</a> — 가짓수 · 빈도 · 늘어나는 키</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/Database/">DB</a></li><li><a href="/docs/server/Database/MongoDB/">MongoDB</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/MongoDB/" rel="tag">MongoDB</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-09T05:13:16.000Z">2026-11-09</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

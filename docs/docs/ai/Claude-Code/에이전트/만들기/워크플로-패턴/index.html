@@ -1,0 +1,68 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>워크플로 패턴 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">AI</span><span class="up"> / <a href="/docs/" title="한 단계 위로">정리</a></span></p><ul><li><a href="/docs/ai/">개요</a></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/ai/Claude-Code/">Claude Code</a><span class="fold" aria-label="펼치기"></span></summary><ul><li class="side-folder"><details name="side-1"><summary><span class="side-name">기본</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/기본/시작하기/">시작하기</a></li><li><a href="/docs/ai/Claude-Code/기본/설정과-메모리/">설정과 메모리</a></li><li><a href="/docs/ai/Claude-Code/기본/훅/">훅</a></li><li><a href="/docs/ai/Claude-Code/기본/상태-표시줄/">상태 표시줄</a></li></ul></details></li><li class="side-folder"><details name="side-1"><summary><span class="side-name">스킬</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/스킬/만들기/">만들기</a></li><li><a href="/docs/ai/Claude-Code/스킬/모음/">모음</a></li></ul></details></li><li class="side-folder"><details name="side-1"><summary><span class="side-name">MCP</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/MCP/붙이기/">붙이기</a></li><li><a href="/docs/ai/Claude-Code/MCP/서버-만들기/">서버 만들기</a></li></ul></details></li><li class="side-folder"><details name="side-1" open><summary><span class="side-name">에이전트</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/에이전트/서브에이전트/">서브에이전트</a></li><li><a href="/docs/ai/Claude-Code/에이전트/여러-세션/">여러 세션</a></li><li class="side-folder"><details name="side-2"><summary><span class="side-name">쓰기</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/에이전트/쓰기/알려-주기/">알려 주기</a></li><li><a href="/docs/ai/Claude-Code/에이전트/쓰기/확인시키기/">확인시키기</a></li><li><a href="/docs/ai/Claude-Code/에이전트/쓰기/규칙-강제하기/">규칙 강제하기</a></li><li><a href="/docs/ai/Claude-Code/에이전트/쓰기/세션-다루기/">세션 다루기</a></li><li><a href="/docs/ai/Claude-Code/에이전트/쓰기/맡겨-두기/">맡겨 두기</a></li><li><a href="/docs/ai/Claude-Code/에이전트/쓰기/이제-하지-않아도-되는-것/">이제 하지 않아도 되는 것</a></li></ul></details></li><li class="side-folder"><details name="side-2" open><summary><span class="side-name">만들기</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/에이전트/만들기/워크플로-패턴/" aria-current="page">워크플로 패턴</a></li><li><a href="/docs/ai/Claude-Code/에이전트/만들기/에이전트-루프/">에이전트 루프</a></li><li><a href="/docs/ai/Claude-Code/에이전트/만들기/컨텍스트-엔지니어링/">컨텍스트 엔지니어링</a></li><li><a href="/docs/ai/Claude-Code/에이전트/만들기/도구-설계/">도구 설계</a></li><li><a href="/docs/ai/Claude-Code/에이전트/만들기/여러-에이전트/">여러 에이전트</a></li></ul></details></li></ul></details></li><li class="side-folder"><details name="side-1"><summary><span class="side-name">원격</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/원격/텔레그램-알림/">텔레그램 알림</a></li><li><a href="/docs/ai/Claude-Code/원격/텔레그램-총괄/">텔레그램 총괄</a></li></ul></details></li></ul></details></li></ul></nav><article><h1 class="page-title">워크플로 패턴</h1><details class="sidebar-m"><summary>목록 · AI</summary><ul><li><a href="/docs/ai/">개요</a></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/ai/Claude-Code/">Claude Code</a><span class="fold" aria-label="펼치기"></span></summary><ul><li class="side-folder"><details name="side-m-1"><summary><span class="side-name">기본</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/기본/시작하기/">시작하기</a></li><li><a href="/docs/ai/Claude-Code/기본/설정과-메모리/">설정과 메모리</a></li><li><a href="/docs/ai/Claude-Code/기본/훅/">훅</a></li><li><a href="/docs/ai/Claude-Code/기본/상태-표시줄/">상태 표시줄</a></li></ul></details></li><li class="side-folder"><details name="side-m-1"><summary><span class="side-name">스킬</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/스킬/만들기/">만들기</a></li><li><a href="/docs/ai/Claude-Code/스킬/모음/">모음</a></li></ul></details></li><li class="side-folder"><details name="side-m-1"><summary><span class="side-name">MCP</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/MCP/붙이기/">붙이기</a></li><li><a href="/docs/ai/Claude-Code/MCP/서버-만들기/">서버 만들기</a></li></ul></details></li><li class="side-folder"><details name="side-m-1" open><summary><span class="side-name">에이전트</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/에이전트/서브에이전트/">서브에이전트</a></li><li><a href="/docs/ai/Claude-Code/에이전트/여러-세션/">여러 세션</a></li><li class="side-folder"><details name="side-m-2"><summary><span class="side-name">쓰기</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/에이전트/쓰기/알려-주기/">알려 주기</a></li><li><a href="/docs/ai/Claude-Code/에이전트/쓰기/확인시키기/">확인시키기</a></li><li><a href="/docs/ai/Claude-Code/에이전트/쓰기/규칙-강제하기/">규칙 강제하기</a></li><li><a href="/docs/ai/Claude-Code/에이전트/쓰기/세션-다루기/">세션 다루기</a></li><li><a href="/docs/ai/Claude-Code/에이전트/쓰기/맡겨-두기/">맡겨 두기</a></li><li><a href="/docs/ai/Claude-Code/에이전트/쓰기/이제-하지-않아도-되는-것/">이제 하지 않아도 되는 것</a></li></ul></details></li><li class="side-folder"><details name="side-m-2" open><summary><span class="side-name">만들기</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/에이전트/만들기/워크플로-패턴/" aria-current="page">워크플로 패턴</a></li><li><a href="/docs/ai/Claude-Code/에이전트/만들기/에이전트-루프/">에이전트 루프</a></li><li><a href="/docs/ai/Claude-Code/에이전트/만들기/컨텍스트-엔지니어링/">컨텍스트 엔지니어링</a></li><li><a href="/docs/ai/Claude-Code/에이전트/만들기/도구-설계/">도구 설계</a></li><li><a href="/docs/ai/Claude-Code/에이전트/만들기/여러-에이전트/">여러 에이전트</a></li></ul></details></li></ul></details></li><li class="side-folder"><details name="side-m-1"><summary><span class="side-name">원격</span><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/ai/Claude-Code/원격/텔레그램-알림/">텔레그램 알림</a></li><li><a href="/docs/ai/Claude-Code/원격/텔레그램-총괄/">텔레그램 총괄</a></li></ul></details></li></ul></details></li></ul></details><div class="content"><p>에이전트를 만들 때는 가장 단순한 것부터 쓰고, 그것으로 모자랄 때만 한 단계씩 올린다. 정해진 길을 코드로 짜 두는 것이 워크플로, 길을 모델이 고르는 것이 에이전트다.</p>
+<table>
+<thead>
+<tr>
+<th>패턴</th>
+<th>하는 일</th>
+<th>쓸 때</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>프롬프트 체이닝</td>
+<td>일을 단계로 나눠 앞 출력을 다음 입력으로 넘긴다. 중간에 검사(게이트) 를 둔다</td>
+<td>단계가 정해져 있고, 느려도 정확해야 할 때. 개요 → 검사 → 본문</td>
+</tr>
+<tr>
+<td>라우팅</td>
+<td>입력을 분류해 알맞은 프롬프트 · 도구 · 모델로 보낸다</td>
+<td>갈래가 뚜렷할 때. 쉬운 질문은 작은 모델, 어려운 것은 큰 모델</td>
+</tr>
+<tr>
+<td>병렬화</td>
+<td>나눠서 함께 돌리거나(sectioning), 같은 일을 여러 번 돌려 투표한다(voting)</td>
+<td>빨라야 하거나, 여러 관점 · 여러 번 시도가 필요할 때. 취약점 리뷰를 여러 프롬프트로</td>
+</tr>
+<tr>
+<td>오케스트레이터-워커</td>
+<td>지휘하는 모델이 일을 그때그때 나눠 일꾼에게 맡기고 결과를 합친다</td>
+<td>하위 작업을 미리 알 수 없을 때. 여러 파일을 고치는 코딩</td>
+</tr>
+<tr>
+<td>평가자-최적화자</td>
+<td>하나가 만들고 하나가 평가 · 피드백하기를 되풀이한다</td>
+<td>평가 기준이 분명하고, 되풀이할수록 나아질 때. 번역 · 여러 번의 검색</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>증강 LLM</strong> — 모든 패턴의 바탕은 검색 · 도구 · 메모리를 붙인 모델 하나다</li>
+<li><strong>단순하게 · 드러나게</strong> — 구조를 단순하게 두고, 에이전트의 계획 단계를 보이게 하며, 도구 문서와 시험에 공을 들인다</li>
+<li><strong>프레임워크는 걷어 낸다</strong> — 시작은 빨라지지만 안에서 무엇이 오가는지 가린다. 실제로 쓸 때는 API 를 바로 부르는 쪽으로 줄인다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://www.anthropic.com/engineering/building-effective-agents">Building effective agents</a> — 워크플로 · 에이전트 패턴</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">AI</a></li><li><a href="/docs/ai/Claude-Code/">Claude Code</a></li><li><a href="/docs/ai/Claude-Code/에이전트/">에이전트</a></li><li><a href="/docs/ai/Claude-Code/에이전트/만들기/">만들기</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/AI/" rel="tag">AI</a><a class="chip" href="/tags/Claude Code/" rel="tag">Claude Code</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-09T08:48:03.000Z">2026-11-09</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

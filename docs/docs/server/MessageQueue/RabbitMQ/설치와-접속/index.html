@@ -1,0 +1,151 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>설치와 접속 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">메시지 큐</span><span class="up"> / <a href="/docs/server/" title="한 단계 위로">서버</a></span></p><ul><li><a href="/docs/server/MessageQueue/">개요</a></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/MessageQueue/Kafka/">Kafka</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/MessageQueue/Kafka/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/MessageQueue/Kafka/토픽과-파티션/">토픽과 파티션</a></li><li><a href="/docs/server/MessageQueue/Kafka/컨슈머-그룹/">컨슈머 그룹</a></li><li><a href="/docs/server/MessageQueue/Kafka/클러스터와-복제/">클러스터와 복제</a></li></ul></details></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/server/MessageQueue/RabbitMQ/">RabbitMQ</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/MessageQueue/RabbitMQ/설치와-접속/" aria-current="page">설치와 접속</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/교환기와-큐/">교환기와 큐</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/전달-보장/">전달 보장</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/클러스터/">클러스터</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/Kafka와-다른-것/">Kafka와 다른 것</a></li></ul></details></li></ul></nav><article><h1 class="page-title">설치와 접속</h1><details class="sidebar-m"><summary>목록 · 메시지 큐</summary><ul><li><a href="/docs/server/MessageQueue/">개요</a></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/MessageQueue/Kafka/">Kafka</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/MessageQueue/Kafka/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/MessageQueue/Kafka/토픽과-파티션/">토픽과 파티션</a></li><li><a href="/docs/server/MessageQueue/Kafka/컨슈머-그룹/">컨슈머 그룹</a></li><li><a href="/docs/server/MessageQueue/Kafka/클러스터와-복제/">클러스터와 복제</a></li></ul></details></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/server/MessageQueue/RabbitMQ/">RabbitMQ</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/MessageQueue/RabbitMQ/설치와-접속/" aria-current="page">설치와 접속</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/교환기와-큐/">교환기와 큐</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/전달-보장/">전달 보장</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/클러스터/">클러스터</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/Kafka와-다른-것/">Kafka와 다른 것</a></li></ul></details></li></ul></details><div class="content"><p>RabbitMQ 는 Ubuntu 패키지(<code>rabbitmq-server</code>) 나 Docker 이미지(<code>rabbitmq</code>) 로 띄운다. 다만 Ubuntu 24.04 의 패키지는 3.12.1 로 지원이 끝난 줄기라, 서버에 바로 깔 때는 RabbitMQ 팀의 apt 저장소를 쓴다. 앱은 5672(AMQP) 로, 사람은 관리 화면 15672 로 붙는다. 사용자는 vhost 마다 권한을 받는다. vhost 는 한 서버 안의 따로 떨어진 공간으로, 큐 · 교환기 이름이 vhost 마다 따로다. 처음 있는 <code>guest</code> 는 지우거나 막는다. 아래 예제는 <code>rabbitmq:4.4-management</code>(4.4.0, Erlang 29.1.2) 컨테이너와, 같은 Docker 네트워크의 Java 클라이언트(<code>amqp-client</code> 5.37.1, JDK 25) 로 돌렸다.</p>
+<h2 id="docker">Docker</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">docker</span> run <span class="token parameter variable">-d</span> <span class="token parameter variable">--name</span> rq <span class="token parameter variable">--hostname</span> rq <span class="token parameter variable">--network</span> mq-net <span class="token punctuation">\</span>
+  <span class="token parameter variable">-e</span> <span class="token assign-left variable">RABBITMQ_DEFAULT_USER</span><span class="token operator">=</span>admin <span class="token parameter variable">-e</span> <span class="token assign-left variable">RABBITMQ_DEFAULT_PASS</span><span class="token operator">=</span>Admin-pass-1 <span class="token punctuation">\</span>
+  <span class="token parameter variable">-v</span> rq-data:/var/lib/rabbitmq <span class="token punctuation">\</span>
+  <span class="token parameter variable">-p</span> <span class="token number">127.0</span>.0.1:5672:5672 <span class="token parameter variable">-p</span> <span class="token number">127.0</span>.0.1:15672:15672 <span class="token punctuation">\</span>
+  rabbitmq:4.4-management
+<span class="token function">docker</span> logs rq <span class="token operator"><span class="token file-descriptor important">2</span>&gt;</span><span class="token file-descriptor important">&amp;1</span> <span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">"Server startup complete"</span></code></pre>
+<ul>
+<li>6 초 만에 <code>Server startup complete; 4 plugins started.</code> 가 나왔다. <code>-management</code> 태그는 관리 화면 · HTTP API(<code>rabbitmq_management</code>) 를 켠 이미지다. Prometheus 지표(<code>rabbitmq_prometheus</code>) 는 <code>-management</code> 가 없는 이미지에도 켜져 있다</li>
+<li>자료 폴더 이름에 호스트 이름이 들어간다(<code>data dir : /var/lib/rabbitmq/mnesia/rabbit@rq</code>). <code>--hostname</code> 을 정하지 않으면 컨테이너마다 이름이 바뀌어, 볼륨을 붙여도 다시 띄우면 다른 폴더를 쓴다</li>
+<li><code>RABBITMQ_DEFAULT_USER</code> 를 주지 않으면 <code>guest</code>/<code>guest</code> 관리자가 생긴다. 이미지의 <code>/etc/rabbitmq/conf.d/10-defaults.conf</code> 가 <code>loopback_users.guest = false</code> 라, 이 <code>guest</code> 는 네트워크 어디서든 붙는다. 다른 컨테이너에서 <code>guest</code> 로 붙어 큐를 만들었다</li>
+<li>설정은 <code>/etc/rabbitmq/conf.d/</code> 의 <code>.conf</code> 파일이다. 파일을 붙여 넣을 때는 이 폴더에 둔다</li>
+</ul>
+<h2 id="사용자--vhost--권한">사용자 · vhost · 권한</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh">rabbitmqctl add_vhost shop
+rabbitmqctl add_user app <span class="token string">'App-pass-1'</span>
+rabbitmqctl set_permissions <span class="token parameter variable">-p</span> shop app <span class="token string">'^app\..*|^q-app$'</span> <span class="token string">'^app\..*|^q-app$'</span> <span class="token string">'^app\..*|^q-app$'</span>
+rabbitmqctl list_permissions <span class="token parameter variable">-p</span> shop</code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">user	configure	write	read
+app	^app\..*|^q-app$	^app\..*|^q-app$	^app\..*|^q-app$</code></pre>
+<ul>
+<li>권한 셋은 정규식이다. configure(큐 · 교환기 만들기 · 지우기) · write(보내기 · 바인딩) · read(받기) 순서다. <code>'.*' '.*' '.*'</code> 이면 그 vhost 의 모든 것이다</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>붙은 것</th>
+<th>결과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>비밀번호가 틀림</td>
+<td><code>ACCESS_REFUSED - Login was refused using authentication mechanism PLAIN.</code></td>
+</tr>
+<tr>
+<td>권한이 없는 vhost(<code>/</code>)</td>
+<td><code>NOT_ALLOWED - access to vhost '/' refused for user 'app'</code> (코드 530)</td>
+</tr>
+<tr>
+<td>정규식 밖의 큐 <code>other</code> 를 만듦</td>
+<td><code>ACCESS_REFUSED - configure access to queue 'other' in vhost 'shop' refused for user 'app'</code> (코드 403)</td>
+</tr>
+<tr>
+<td><code>app.orders</code> 를 만듦</td>
+<td>된다</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>클라이언트에 오는 오류는 짧다. 서버 로그에 까닭이 남는다(<code>PLAIN login refused: user 'app' - invalid credentials</code>)</li>
+<li>앱마다 vhost 를 나누면 큐 이름이 겹쳐도 되고, 권한을 vhost 하나로 묶어 줄 수 있다</li>
+</ul>
+<h2 id="관리-화면--http-api">관리 화면 · HTTP API</h2>
+<p><code>http://localhost:15672</code> 에 관리자로 들어간다. 같은 것을 HTTP API 로도 본다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">curl</span> <span class="token parameter variable">-u</span> admin:Admin-pass-1 http://rq:15672/api/overview
+<span class="token comment"># {"product_version":"4.4.0","rabbitmq_version":"4.4.0","management_version":"4.4.0","erlang_version":"29.1.2", …}</span></code></pre>
+<table>
+<thead>
+<tr>
+<th>사용자 태그</th>
+<th>관리 화면 · API</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>없음</td>
+<td><code>{"error":"not_authorised","reason":"Not management user"}</code></td>
+</tr>
+<tr>
+<td><code>monitoring</code></td>
+<td>개요 · 큐 · 연결을 본다. <code>/api/users</code> 는 <code>Not administrator user</code></td>
+</tr>
+<tr>
+<td><code>administrator</code></td>
+<td>모두</td>
+</tr>
+</tbody>
+</table>
+<pre class="language-sh" data-language="sh"><code class="language-sh">rabbitmqctl set_user_tags app monitoring
+rabbitmqctl delete_user guest</code></pre>
+<ul>
+<li>모니터링 도구에 줄 사용자는 <code>monitoring</code> 태그로 만든다</li>
+<li>명령줄 관리 도구 <code>rabbitmqadmin</code>(2.35.0) 도 이미지에 있다. 관리 API 를 쓰므로 다른 서버에서도 돈다(<code>rabbitmqadmin -H rq -u admin -p … list queues</code>)</li>
+</ul>
+<h2 id="메모리--디스크-경보">메모리 · 디스크 경보</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh">rabbitmq-diagnostics status</code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">Memory high watermark setting: 0.6 of available memory, computed to: 2.4567 gb</code></pre>
+<ul>
+<li>쓰는 메모리가 한도(기본 <code>vm_memory_high_watermark</code> 0.6) 를 넘거나 디스크 남은 자리가 한도(기본 <code>disk_free_limit</code> 50 MB) 밑이면, 서버가 보내는 쪽 연결을 모두 멈춘다</li>
+<li>한도를 <code>rabbitmqctl set_vm_memory_high_watermark absolute 50MB</code> 로 낮춰 경보를 켰다. 보내기가 경보를 끌 때까지 7.7 초 멈췄고, 클라이언트는 그 사이 알림을 받았다</li>
+</ul>
+<pre class="language-java" data-language="java"><code class="language-java">conn<span class="token punctuation">.</span><span class="token function">addBlockedListener</span><span class="token punctuation">(</span>reason <span class="token operator">-&gt;</span> <span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"막힘: "</span> <span class="token operator">+</span> reason<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-&gt;</span> <span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"풀림"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// 막힘: low on memory</span>
+<span class="token comment">// 풀림</span></code></pre>
+<ul>
+<li>받는 쪽은 멈추지 않는다. 컨슈머가 큐를 비우면 메모리가 줄어 경보가 풀린다. 경보가 자주 나면 컨슈머가 따라가지 못하는 것이다</li>
+<li>운영에서는 <code>disk_free_limit</code> 를 메모리 크기쯤으로 올린다(<code>disk_free_limit.absolute = 4GB</code>)</li>
+</ul>
+<h2 id="java-클라이언트">Java 클라이언트</h2>
+<pre class="language-xml" data-language="xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>com.rabbitmq<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>amqp-client<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">&gt;</span></span>5.37.1<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">&gt;</span></span></code></pre>
+<pre class="language-java" data-language="java"><code class="language-java"><span class="token keyword">var</span> f <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ConnectionFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+f<span class="token punctuation">.</span><span class="token function">setHost</span><span class="token punctuation">(</span><span class="token string">"rq"</span><span class="token punctuation">)</span><span class="token punctuation">;</span> f<span class="token punctuation">.</span><span class="token function">setUsername</span><span class="token punctuation">(</span><span class="token string">"app"</span><span class="token punctuation">)</span><span class="token punctuation">;</span> f<span class="token punctuation">.</span><span class="token function">setPassword</span><span class="token punctuation">(</span><span class="token string">"App-pass-1"</span><span class="token punctuation">)</span><span class="token punctuation">;</span> f<span class="token punctuation">.</span><span class="token function">setVirtualHost</span><span class="token punctuation">(</span><span class="token string">"shop"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">try</span> <span class="token punctuation">(</span><span class="token class-name">Connection</span> c <span class="token operator">=</span> f<span class="token punctuation">.</span><span class="token function">newConnection</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token class-name">Channel</span> ch <span class="token operator">=</span> c<span class="token punctuation">.</span><span class="token function">createChannel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    ch<span class="token punctuation">.</span><span class="token function">queueDeclare</span><span class="token punctuation">(</span><span class="token string">"app.orders"</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    ch<span class="token punctuation">.</span><span class="token function">basicPublish</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">,</span> <span class="token string">"app.orders"</span><span class="token punctuation">,</span> <span class="token class-name">MessageProperties</span><span class="token punctuation">.</span><span class="token constant">PERSISTENT_TEXT_PLAIN</span><span class="token punctuation">,</span> <span class="token string">"hello"</span><span class="token punctuation">.</span><span class="token function">getBytes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<ul>
+<li>연결(TCP) 하나에 채널을 여럿 연다. 연결은 앱마다 하나 · 둘로 오래 두고, 스레드마다 채널을 쓴다</li>
+<li>채널에서 오류(권한 · 없는 큐) 가 나면 그 채널이 닫힌다. 다시 쓰려면 채널을 새로 연다</li>
+</ul>
+<h2 id="ubuntu-패키지">Ubuntu 패키지</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token function">apt-cache</span> policy rabbitmq-server     <span class="token comment"># Candidate: 3.12.1-1ubuntu1.7</span></code></pre>
+<ul>
+<li>3.12 는 지원이 끝났고 4.x 와 기능 · 설정이 다르다. 서버에 바로 깔 때는 RabbitMQ 설명서의 Debian · Ubuntu 안내대로 RabbitMQ 팀의 저장소(Erlang 패키지 포함) 를 더한다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://www.rabbitmq.com/docs/access-control">Access Control</a> — 사용자 · 권한 정규식 · <code>guest</code></li>
+<li><a href="https://www.rabbitmq.com/docs/vhosts">Virtual Hosts</a> — vhost 의 쓰임</li>
+<li><a href="https://www.rabbitmq.com/docs/management">Management Plugin</a> — 관리 화면 · HTTP API · 사용자 태그</li>
+<li><a href="https://www.rabbitmq.com/docs/alarms">Memory and Disk Alarms</a> — 경보 · 보내는 쪽 멈춤</li>
+<li><a href="https://www.rabbitmq.com/docs/install-debian">Installing on Debian and Ubuntu</a> — 저장소 · Erlang</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/MessageQueue/">메시지 큐</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/">RabbitMQ</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/RabbitMQ/" rel="tag">RabbitMQ</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-09T07:24:27.000Z">2026-11-09</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

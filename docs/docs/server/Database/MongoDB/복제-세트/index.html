@@ -1,0 +1,177 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>복제 세트 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">DB</span><span class="up"> / <a href="/docs/server/" title="한 단계 위로">서버</a></span></p><ul><li><a href="/docs/server/Database/">개요</a></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/Database/MySQL/">MySQL</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Database/MySQL/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/Database/MySQL/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/Database/MySQL/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/Database/MariaDB/">MariaDB</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Database/MariaDB/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/Database/MariaDB/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/Database/MariaDB/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/Database/PostgreSQL/">PostgreSQL</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Database/PostgreSQL/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/Database/PostgreSQL/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/Database/PostgreSQL/백업과-복원/">백업과 복원</a></li><li><a href="/docs/server/Database/PostgreSQL/MySQL과-다른-것/">MySQL과 다른 것</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/Database/Redis/">Redis</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Database/Redis/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/Database/Redis/자료형/">자료형</a></li><li><a href="/docs/server/Database/Redis/캐시/">캐시</a></li><li><a href="/docs/server/Database/Redis/저장/">저장</a></li></ul></details></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/server/Database/MongoDB/">MongoDB</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Database/MongoDB/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/Database/MongoDB/문서와-쿼리/">문서와 쿼리</a></li><li><a href="/docs/server/Database/MongoDB/복제-세트/" aria-current="page">복제 세트</a></li><li><a href="/docs/server/Database/MongoDB/샤딩/">샤딩</a></li><li><a href="/docs/server/Database/MongoDB/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/Database/Cassandra/">Cassandra</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Database/Cassandra/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/Database/Cassandra/데이터-모델/">데이터 모델</a></li><li><a href="/docs/server/Database/Cassandra/클러스터/">클러스터</a></li><li><a href="/docs/server/Database/Cassandra/백업/">백업</a></li></ul></details></li></ul></nav><article><h1 class="page-title">복제 세트</h1><details class="sidebar-m"><summary>목록 · DB</summary><ul><li><a href="/docs/server/Database/">개요</a></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/Database/MySQL/">MySQL</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Database/MySQL/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/Database/MySQL/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/Database/MySQL/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/Database/MariaDB/">MariaDB</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Database/MariaDB/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/Database/MariaDB/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/Database/MariaDB/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/Database/PostgreSQL/">PostgreSQL</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Database/PostgreSQL/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/Database/PostgreSQL/사용자와-권한/">사용자와 권한</a></li><li><a href="/docs/server/Database/PostgreSQL/백업과-복원/">백업과 복원</a></li><li><a href="/docs/server/Database/PostgreSQL/MySQL과-다른-것/">MySQL과 다른 것</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/Database/Redis/">Redis</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Database/Redis/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/Database/Redis/자료형/">자료형</a></li><li><a href="/docs/server/Database/Redis/캐시/">캐시</a></li><li><a href="/docs/server/Database/Redis/저장/">저장</a></li></ul></details></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/server/Database/MongoDB/">MongoDB</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Database/MongoDB/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/Database/MongoDB/문서와-쿼리/">문서와 쿼리</a></li><li><a href="/docs/server/Database/MongoDB/복제-세트/" aria-current="page">복제 세트</a></li><li><a href="/docs/server/Database/MongoDB/샤딩/">샤딩</a></li><li><a href="/docs/server/Database/MongoDB/백업과-복원/">백업과 복원</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/Database/Cassandra/">Cassandra</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/Database/Cassandra/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/Database/Cassandra/데이터-모델/">데이터 모델</a></li><li><a href="/docs/server/Database/Cassandra/클러스터/">클러스터</a></li><li><a href="/docs/server/Database/Cassandra/백업/">백업</a></li></ul></details></li></ul></details><div class="content"><p>복제 세트는 같은 자료를 가진 <code>mongod</code> 여럿의 묶음이다. 쓰기는 primary 하나가 받고, secondary 들이 그 기록(oplog) 을 받아 따라 쓴다. primary 가 죽으면 남은 노드가 투표해 새 primary 를 뽑는다. 투표는 과반이 있어야 이기므로 노드는 셋 이상 홀수로 둔다. 셋이면 하나가 죽어도 쓰기가 이어지고, 둘이 죽으면 남은 하나는 primary 가 되지 못해 쓰기가 멈춘다. 이것이 분산 DB 가 장애 때 고르는 길이다 — 자료가 엇갈리느니(일관성) 쓰기를 멈춘다(가용성). 아래 예제는 <code>mongo:9</code>(9.0.4) 컨테이너 셋(<code>mongo1</code> · <code>mongo2</code> · <code>mongo3</code>) 을 한 Docker 네트워크에 띄워 돌렸다.</p>
+<h2 id="띄우기">띄우기</h2>
+<p>노드끼리도 서로 인증해야 한다. 같은 열쇠 파일을 모든 노드에 나눠 준다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token comment"># 열쇠 파일을 볼륨에 만든다 — 주인은 컨테이너의 mongodb(uid 999), 권한 400</span>
+<span class="token function">docker</span> run <span class="token parameter variable">--rm</span> <span class="token parameter variable">-v</span> mongo-key:/key mongo:9 <span class="token function">bash</span> <span class="token parameter variable">-c</span> <span class="token punctuation">\</span>
+  <span class="token string">'openssl rand -base64 756 &gt; /key/keyfile &amp;&amp; chmod 400 /key/keyfile &amp;&amp; chown 999:999 /key/keyfile'</span>
+
+<span class="token keyword">for</span> <span class="token for-or-select variable">i</span> <span class="token keyword">in</span> <span class="token number">1</span> <span class="token number">2</span> <span class="token number">3</span><span class="token punctuation">;</span> <span class="token keyword">do</span>
+  <span class="token function">docker</span> run <span class="token parameter variable">-d</span> <span class="token parameter variable">--name</span> mongo<span class="token variable">$i</span> <span class="token parameter variable">--hostname</span> mongo<span class="token variable">$i</span> <span class="token parameter variable">--network</span> mongo-net <span class="token punctuation">\</span>
+    <span class="token parameter variable">-v</span> mongo-key:/key:ro <span class="token parameter variable">-v</span> mongo<span class="token variable">$i</span>-data:/data/db <span class="token punctuation">\</span>
+    mongo:9 mongod <span class="token parameter variable">--replSet</span> rs0 <span class="token parameter variable">--bind_ip_all</span> <span class="token parameter variable">--keyFile</span> /key/keyfile
+<span class="token keyword">done</span></code></pre>
+<pre class="language-js" data-language="js"><code class="language-js"><span class="token comment">// mongo1 에서 (아직 사용자가 없어 localhost exception 으로 들어간다)</span>
+rs<span class="token punctuation">.</span><span class="token function">initiate</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token literal-property property">_id</span><span class="token operator">:</span> <span class="token string">"rs0"</span><span class="token punctuation">,</span> <span class="token literal-property property">members</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+  <span class="token punctuation">{</span> <span class="token literal-property property">_id</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token literal-property property">host</span><span class="token operator">:</span> <span class="token string">"mongo1:27017"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span> <span class="token literal-property property">_id</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token literal-property property">host</span><span class="token operator">:</span> <span class="token string">"mongo2:27017"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span> <span class="token literal-property property">_id</span><span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token literal-property property">host</span><span class="token operator">:</span> <span class="token string">"mongo3:27017"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token comment">// 10 초쯤 뒤 primary 가 정해지면</span>
+db<span class="token punctuation">.</span><span class="token function">getSiblingDB</span><span class="token punctuation">(</span><span class="token string">"admin"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">createUser</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token literal-property property">user</span><span class="token operator">:</span> <span class="token string">"root"</span><span class="token punctuation">,</span> <span class="token literal-property property">pwd</span><span class="token operator">:</span> <span class="token string">"Root-pass-1"</span><span class="token punctuation">,</span> <span class="token literal-property property">roles</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"root"</span><span class="token punctuation">]</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
+rs<span class="token punctuation">.</span><span class="token function">status</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>members<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token parameter">m</span> <span class="token operator">=&gt;</span> m<span class="token punctuation">.</span>name <span class="token operator">+</span> <span class="token string">" "</span> <span class="token operator">+</span> m<span class="token punctuation">.</span>stateStr<span class="token punctuation">)</span>
+<span class="token comment">// [ 'mongo1:27017 PRIMARY', 'mongo2:27017 SECONDARY', 'mongo3:27017 SECONDARY' ]</span></code></pre>
+<ul>
+<li><code>host</code> 에는 앱도 찾을 수 있는 이름을 적는다. 드라이버는 이 이름으로 노드마다 다시 붙는다</li>
+<li><code>--keyFile</code> 을 주면 인증도 함께 켜진다</li>
+</ul>
+<h2 id="붙기">붙기</h2>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">mongodb://root:Root-pass-1@mongo1:27017,mongo2:27017,mongo3:27017/?replicaSet=rs0&amp;authSource=admin</code></pre>
+<ul>
+<li>노드를 모두 적고 <code>replicaSet</code> 을 준다. 드라이버가 지금의 primary 를 찾아 쓰고, 바뀌면 따라간다(<code>db.hello().primary</code> → <code>mongo1:27017</code>)</li>
+<li>노드 하나에만 바로 붙어(<code>directConnection=true</code>) secondary 에 쓰면 <code>MongoServerError: not primary</code> 다</li>
+</ul>
+<h2 id="쓰기-확인">쓰기 확인</h2>
+<table>
+<thead>
+<tr>
+<th><code>writeConcern</code></th>
+<th>성공을 돌려주는 때</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>w: 1</code></td>
+<td>primary 가 썼을 때</td>
+</tr>
+<tr>
+<td><code>w: "majority"</code> (5.0 부터 기본)</td>
+<td>과반(셋 중 둘) 이 썼을 때</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>기본값은 <code>db.adminCommand({ getDefaultRWConcern: 1 })</code> 로 본다 — <code>{ w: 'majority', wtimeout: 0 }</code></li>
+<li><code>w: 1</code> 로 성공한 쓰기는 primary 가 그 직후 죽으면 사라질 수 있다. 새 primary 가 그 쓰기를 받기 전이라면, 옛 primary 가 돌아올 때 그 쓰기를 되돌린다(rollback). <code>majority</code> 로 성공한 쓰기는 남는다</li>
+</ul>
+<h2 id="primary-를-꺼-보기">primary 를 꺼 보기</h2>
+<p>0.1 초마다 <code>w: "majority"</code> 로 하나씩 넣으면서 primary 를 껐다.</p>
+<table>
+<thead>
+<tr>
+<th>끄는 법</th>
+<th>앱에서 본 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>docker stop mongo1</code> (SIGTERM)</td>
+<td>오류 없이 바로 <code>mongo2</code> 가 primary. 끄기 전에 primary 를 넘겨주고(step down) 내려간다</td>
+</tr>
+<tr>
+<td><code>docker kill mongo2</code> (SIGKILL)</td>
+<td>쓰기 하나가 10.2 초 기다린 뒤 성공하고, <code>mongo3</code> 이 primary. 400 개가 모두 들어갔다</td>
+</tr>
+</tbody>
+</table>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">"msg":"Starting an election, since we've seen no PRIMARY in election timeout period"
+"msg":"Election succeeded, assuming primary role"
+"msg":"Transition to primary complete; database writes are now permitted"</code></pre>
+<ul>
+<li>갑자기 죽으면 남은 노드는 <code>electionTimeoutMillis</code>(기본 10000) 동안 primary 소리를 못 들은 뒤 선거를 한다. 그동안 쓰기는 멈춘다</li>
+<li>드라이버는 실패한 쓰기를 한 번 다시 보낸다(retryable writes). 그래서 앱에는 오류가 아니라 10 초쯤 걸린 쓰기로 보였다. 앱의 요청 시간 제한이 10 초보다 짧으면 그쪽에서 실패한다</li>
+<li>죽었던 노드를 다시 띄우면 secondary 로 돌아와 그 사이의 기록을 따라잡는다</li>
+</ul>
+<h2 id="둘을-꺼-보기">둘을 꺼 보기</h2>
+<p><code>mongo3</code> 을 죽인 채 primary(<code>mongo1</code>) 도 죽였다. 남은 <code>mongo2</code> 는 이렇다.</p>
+<pre class="language-js" data-language="js"><code class="language-js">db<span class="token punctuation">.</span><span class="token function">hello</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>isWritablePrimary   <span class="token comment">// false</span>
+rs<span class="token punctuation">.</span><span class="token function">status</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>members<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token parameter">m</span> <span class="token operator">=&gt;</span> m<span class="token punctuation">.</span>name <span class="token operator">+</span> <span class="token string">" "</span> <span class="token operator">+</span> m<span class="token punctuation">.</span>stateStr<span class="token punctuation">)</span>
+<span class="token comment">// [ 'mongo1:27017 (not reachable/healthy)', 'mongo2:27017 SECONDARY', 'mongo3:27017 (not reachable/healthy)' ]</span></code></pre>
+<table>
+<thead>
+<tr>
+<th>해 본 것</th>
+<th>결과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>쓰기</td>
+<td><code>MongoServerSelectionError</code> — primary 가 없다</td>
+</tr>
+<tr>
+<td><code>readPreference=secondaryPreferred</code> 로 읽기</td>
+<td>400 — 읽기는 된다</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>셋 중 하나만 남으면 과반(둘) 이 안 되어 스스로 primary 가 되지 않는다. 네트워크가 둘로 갈렸을 때 양쪽이 각자 primary 가 되어 자료가 엇갈리는 것을 막는 규칙이다</li>
+<li>죽인 두 노드를 다시 띄우자 primary 가 뽑히고(<code>mongo2</code>) 쓰기가 이어졌다</li>
+</ul>
+<h2 id="읽기-선호">읽기 선호</h2>
+<table>
+<thead>
+<tr>
+<th><code>readPreference</code></th>
+<th>읽는 곳</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>primary</code> (기본)</td>
+<td>primary 만</td>
+</tr>
+<tr>
+<td><code>primaryPreferred</code></td>
+<td>primary, 없으면 secondary</td>
+</tr>
+<tr>
+<td><code>secondary</code></td>
+<td>secondary 만</td>
+</tr>
+<tr>
+<td><code>secondaryPreferred</code></td>
+<td>secondary, 없으면 primary</td>
+</tr>
+<tr>
+<td><code>nearest</code></td>
+<td>가장 빨리 답하는 노드</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>secondary 는 primary 보다 조금 늦다. 방금 쓴 것을 바로 읽어야 하는 화면(쓰고 나서 목록 보기) 은 <code>primary</code> 로 읽는다</li>
+<li>보고서 · 백업처럼 늦어도 되는 무거운 읽기를 secondary 로 보내 primary 의 짐을 던다</li>
+</ul>
+<h2 id="노드-둘이면">노드 둘이면</h2>
+<p>노드 둘(primary + secondary) 은 하나가 죽으면 남은 하나가 과반이 아니어서 쓰기가 멈춘다. 노드 하나일 때보다 나을 게 없다. 셋째 서버를 둘 수 없으면 자료 없이 투표만 하는 arbiter 를 더한다. 다만 arbiter 가 있는 셋에서 자료 노드 하나가 죽으면 <code>w: "majority"</code> 쓰기가 끝나지 않으므로, 자료 노드 셋이 낫다.</p>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://www.mongodb.com/docs/manual/replication/">Replication</a> — 복제 세트 · oplog · 노드 종류</li>
+<li><a href="https://www.mongodb.com/docs/manual/core/replica-set-elections/">Replica Set Elections</a> — 선거 · <code>electionTimeoutMillis</code></li>
+<li><a href="https://www.mongodb.com/docs/manual/reference/write-concern/">Write Concern</a> — <code>w</code> · <code>majority</code> · rollback</li>
+<li><a href="https://www.mongodb.com/docs/manual/core/read-preference/">Read Preference</a> — 모드 · 늦음</li>
+<li><a href="https://www.mongodb.com/docs/manual/core/security-internal-authentication/">Internal/Membership Authentication</a> — 열쇠 파일</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/Database/">DB</a></li><li><a href="/docs/server/Database/MongoDB/">MongoDB</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/MongoDB/" rel="tag">MongoDB</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-09T04:51:50.000Z">2026-11-09</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

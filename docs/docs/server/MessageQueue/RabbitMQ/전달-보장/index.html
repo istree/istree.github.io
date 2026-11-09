@@ -1,0 +1,162 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>전달 보장 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">메시지 큐</span><span class="up"> / <a href="/docs/server/" title="한 단계 위로">서버</a></span></p><ul><li><a href="/docs/server/MessageQueue/">개요</a></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/MessageQueue/Kafka/">Kafka</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/MessageQueue/Kafka/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/MessageQueue/Kafka/토픽과-파티션/">토픽과 파티션</a></li><li><a href="/docs/server/MessageQueue/Kafka/컨슈머-그룹/">컨슈머 그룹</a></li><li><a href="/docs/server/MessageQueue/Kafka/클러스터와-복제/">클러스터와 복제</a></li></ul></details></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/server/MessageQueue/RabbitMQ/">RabbitMQ</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/MessageQueue/RabbitMQ/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/교환기와-큐/">교환기와 큐</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/전달-보장/" aria-current="page">전달 보장</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/클러스터/">클러스터</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/Kafka와-다른-것/">Kafka와 다른 것</a></li></ul></details></li></ul></nav><article><h1 class="page-title">전달 보장</h1><details class="sidebar-m"><summary>목록 · 메시지 큐</summary><ul><li><a href="/docs/server/MessageQueue/">개요</a></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/MessageQueue/Kafka/">Kafka</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/MessageQueue/Kafka/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/MessageQueue/Kafka/토픽과-파티션/">토픽과 파티션</a></li><li><a href="/docs/server/MessageQueue/Kafka/컨슈머-그룹/">컨슈머 그룹</a></li><li><a href="/docs/server/MessageQueue/Kafka/클러스터와-복제/">클러스터와 복제</a></li></ul></details></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/server/MessageQueue/RabbitMQ/">RabbitMQ</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/MessageQueue/RabbitMQ/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/교환기와-큐/">교환기와 큐</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/전달-보장/" aria-current="page">전달 보장</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/클러스터/">클러스터</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/Kafka와-다른-것/">Kafka와 다른 것</a></li></ul></details></li></ul></details><div class="content"><p>RabbitMQ 는 컨슈머가 처리했다고 알릴 때(ack) 메시지를 큐에서 지운다. ack 를 보내기 전에 컨슈머가 죽으면 메시지는 큐로 돌아가 다른 컨슈머가 다시 받는다. 그래서 수동 ack 를 쓰면 메시지를 잃지 않는 대신 두 번 받을 수 있다. 처리할 수 없는 메시지는 dead letter 교환기로 빼고, 컨슈머마다 한 번에 쥘 수(prefetch) 를 정해 일을 고르게 나눈다. 보내는 쪽은 publisher confirm 으로 브로커가 받았는지 확인한다. 서버를 다시 띄웠을 때 남는지는 큐와 메시지의 성질에 따라 다르다. 아래 예제는 <code>rabbitmq:4.4-management</code>(4.4.0) 노드 하나와 Java 클라이언트(<code>amqp-client</code> 5.37.1) 로 돌렸다.</p>
+<h2 id="ack">ack</h2>
+<p>메시지 다섯을 넣고, 둘을 처리한 뒤 셋째를 처리하다 연결이 끊기게 했다.</p>
+<pre class="language-java" data-language="java"><code class="language-java">ch<span class="token punctuation">.</span><span class="token function">basicConsume</span><span class="token punctuation">(</span><span class="token string">"q.work"</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>tag<span class="token punctuation">,</span> d<span class="token punctuation">)</span> <span class="token operator">-&gt;</span> <span class="token punctuation">{</span>     <span class="token comment">// autoAck = false</span>
+    <span class="token function">handle</span><span class="token punctuation">(</span>d<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    ch<span class="token punctuation">.</span><span class="token function">basicAck</span><span class="token punctuation">(</span>d<span class="token punctuation">.</span><span class="token function">getEnvelope</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getDeliveryTag</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span> tag <span class="token operator">-&gt;</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<table>
+<thead>
+<tr>
+<th>방식</th>
+<th>받은 것</th>
+<th>끊긴 뒤 큐에 남은 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>수동 ack (<code>autoAck=false</code>)</td>
+<td>m0 ~ m4 (m0 · m1 만 ack)</td>
+<td>3 개 — m2 · m3 · m4 가 <code>redelivered=true</code> 로 다시 왔다</td>
+</tr>
+<tr>
+<td>자동 ack (<code>autoAck=true</code>)</td>
+<td>m0 ~ m4</td>
+<td>0 개 — 처리하지 못한 셋을 잃었다</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>자동 ack 는 서버가 메시지를 보내는 순간 지운다. 처리 중에 죽으면 잃는다</li>
+<li>수동 ack 에서 다시 온 메시지는 <code>getEnvelope().isRedeliver()</code> 가 <code>true</code> 다. 앞서 처리하다 죽었을 수 있으니, 받는 쪽은 같은 메시지를 두 번 처리해도 괜찮게 만든다</li>
+<li>수동 ack 는 끝까지 보내야 한다. ack 를 빠뜨린 메시지는 <code>unacked</code> 로 남아 다른 컨슈머에게 가지 않는다. 서버는 ack 없이 <code>consumer_timeout</code>(기본 1800000, 30 분) 이 지나면 그 컨슈머에 손을 쓴다(4.4 의 설정값 <code>consumer_timeout_response: notify_consumer</code>)</li>
+</ul>
+<h2 id="prefetch">prefetch</h2>
+<p>처리가 느린 컨슈머(500 ms) 와 빠른 컨슈머(50 ms) 를 함께 띄우고 메시지 20 개를 넣었다.</p>
+<pre class="language-java" data-language="java"><code class="language-java">ch<span class="token punctuation">.</span><span class="token function">basicQos</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>     <span class="token comment">// ack 하지 않은 메시지를 하나까지만 쥔다</span></code></pre>
+<table>
+<thead>
+<tr>
+<th>prefetch</th>
+<th>느린 쪽</th>
+<th>빠른 쪽</th>
+<th>다 끝난 시간</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>없음</td>
+<td>10</td>
+<td>10</td>
+<td>5.0 초</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2</td>
+<td>18</td>
+<td>0.8 초</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>prefetch 가 없으면 서버는 메시지를 차례로 나눠 미리 다 보낸다. 느린 쪽이 받아 둔 10 개를 끝낼 때까지 빠른 쪽은 놀았다</li>
+<li>prefetch 를 정하면 ack 한 만큼만 더 받으므로, 빨리 끝내는 쪽이 더 많이 가져간다. 작업 큐에는 꼭 정한다. 한 건이 짧은 일은 10 ~ 100 쯤으로 두어 오가는 시간을 줄인다</li>
+</ul>
+<h2 id="처리할-수-없는-메시지">처리할 수 없는 메시지</h2>
+<pre class="language-java" data-language="java"><code class="language-java">ch<span class="token punctuation">.</span><span class="token function">basicNack</span><span class="token punctuation">(</span>tag<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>     <span class="token comment">// 다시 큐에 넣는다</span>
+ch<span class="token punctuation">.</span><span class="token function">basicNack</span><span class="token punctuation">(</span>tag<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment">// 버린다 (dead letter 교환기가 있으면 그쪽으로)</span></code></pre>
+<ul>
+<li>다시 넣으면(<code>requeue=true</code>) 곧바로 다시 온다. 늘 실패하는 메시지는 컨슈머와 큐 사이를 끝없이 돈다. 몇 번 실패했는지 보고 버린다</li>
+</ul>
+<p>큐에 dead letter 교환기를 정해 두면, 버린 · 만료된 · 넘친 메시지가 그쪽으로 간다.</p>
+<pre class="language-java" data-language="java"><code class="language-java">ch<span class="token punctuation">.</span><span class="token function">exchangeDeclare</span><span class="token punctuation">(</span><span class="token string">"dlx"</span><span class="token punctuation">,</span> <span class="token class-name">BuiltinExchangeType</span><span class="token punctuation">.</span><span class="token constant">FANOUT</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ch<span class="token punctuation">.</span><span class="token function">queueDeclare</span><span class="token punctuation">(</span><span class="token string">"q.dead"</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ch<span class="token punctuation">.</span><span class="token function">queueBind</span><span class="token punctuation">(</span><span class="token string">"q.dead"</span><span class="token punctuation">,</span> <span class="token string">"dlx"</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+ch<span class="token punctuation">.</span><span class="token function">queueDeclare</span><span class="token punctuation">(</span><span class="token string">"q.main"</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token class-name">Map</span><span class="token punctuation">.</span><span class="token function">of</span><span class="token punctuation">(</span><span class="token string">"x-dead-letter-exchange"</span><span class="token punctuation">,</span> <span class="token string">"dlx"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ch<span class="token punctuation">.</span><span class="token function">queueDeclare</span><span class="token punctuation">(</span><span class="token string">"q.ttl"</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token class-name">Map</span><span class="token punctuation">.</span><span class="token function">of</span><span class="token punctuation">(</span><span class="token string">"x-dead-letter-exchange"</span><span class="token punctuation">,</span> <span class="token string">"dlx"</span><span class="token punctuation">,</span> <span class="token string">"x-message-ttl"</span><span class="token punctuation">,</span> <span class="token number">1000</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ch<span class="token punctuation">.</span><span class="token function">queueDeclare</span><span class="token punctuation">(</span><span class="token string">"q.short"</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token class-name">Map</span><span class="token punctuation">.</span><span class="token function">of</span><span class="token punctuation">(</span><span class="token string">"x-dead-letter-exchange"</span><span class="token punctuation">,</span> <span class="token string">"dlx"</span><span class="token punctuation">,</span> <span class="token string">"x-max-length"</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p><code>q.main</code> 에서 하나를 <code>basicNack(…, false)</code> 하고, <code>q.ttl</code> 에 하나를 넣고 1.5 초 기다리고, <code>q.short</code> 에 다섯을 넣었다.</p>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">q.main=0 q.ttl=0 q.short=3 q.dead=4
+dead bad · 이유 rejected · 큐 q.main
+dead s0 · 이유 maxlen · 큐 q.short
+dead s1 · 이유 maxlen · 큐 q.short
+dead late · 이유 expired · 큐 q.ttl</code></pre>
+<ul>
+<li>까닭과 원래 큐가 <code>x-death</code> 머리말에 담긴다. dead letter 큐를 지켜보면 무엇이 왜 실패했는지 안다</li>
+<li>길이 한도를 넘으면 기본으로 가장 오래된 메시지(앞) 를 뺀다. 새 메시지를 거절하려면 <code>x-overflow: reject-publish</code> 를 준다(아래)</li>
+<li>같은 인자는 큐마다 주지 않고 정책으로 한 번에 건다(<code>rabbitmqctl set_policy DLX "^q\." '{"dead-letter-exchange":"dlx"}' --apply-to queues</code>). 정책은 이미 있는 큐에도 걸린다</li>
+</ul>
+<h2 id="publisher-confirm">publisher confirm</h2>
+<pre class="language-java" data-language="java"><code class="language-java">ch<span class="token punctuation">.</span><span class="token function">confirmSelect</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ch<span class="token punctuation">.</span><span class="token function">basicPublish</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">,</span> <span class="token string">"q.full"</span><span class="token punctuation">,</span> <span class="token class-name">MessageProperties</span><span class="token punctuation">.</span><span class="token constant">PERSISTENT_TEXT_PLAIN</span><span class="token punctuation">,</span> body<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">boolean</span> ok <span class="token operator">=</span> ch<span class="token punctuation">.</span><span class="token function">waitForConfirms</span><span class="token punctuation">(</span><span class="token number">5000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>      <span class="token comment">// true = ack, false = nack</span></code></pre>
+<p>길이 한도 2 · <code>x-overflow: reject-publish</code> 인 큐에 넷을 보냈다.</p>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">f0 확인 ack
+f1 확인 ack
+f2 확인 nack
+f3 확인 nack</code></pre>
+<ul>
+<li>confirm 이 없으면 셋째 · 넷째가 거절된 것을 보내는 쪽은 모른다</li>
+<li>하나 보낼 때마다 기다리면 느리다. persistent 메시지 10000 개를 보내는 데 하나씩 기다리면 9.1 초, 100 개마다 기다리면 0.7 초였다. 많이 보낼 때는 묶어서 기다리거나 <code>addConfirmListener</code> 로 따로 받는다</li>
+<li>클러스터에서 quorum 큐의 ack 는 노드 과반이 받은 뒤에 온다</li>
+</ul>
+<h2 id="다시-띄우면">다시 띄우면</h2>
+<p>durable classic 큐와 quorum 큐에 persistent 메시지와 transient 메시지를 하나씩 넣고 서버를 다시 띄웠다.</p>
+<table>
+<thead>
+<tr>
+<th>큐</th>
+<th>넣은 뒤</th>
+<th>다시 띄운 뒤</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>classic, durable</td>
+<td>2</td>
+<td>1 — transient 메시지가 사라졌다</td>
+</tr>
+<tr>
+<td>quorum</td>
+<td>2</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<pre class="language-java" data-language="java"><code class="language-java">ch<span class="token punctuation">.</span><span class="token function">basicPublish</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">,</span> q<span class="token punctuation">,</span> <span class="token class-name">MessageProperties</span><span class="token punctuation">.</span><span class="token constant">PERSISTENT_TEXT_PLAIN</span><span class="token punctuation">,</span> body<span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// deliveryMode 2</span>
+ch<span class="token punctuation">.</span><span class="token function">basicPublish</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">,</span> q<span class="token punctuation">,</span> <span class="token class-name">MessageProperties</span><span class="token punctuation">.</span><span class="token constant">TEXT_PLAIN</span><span class="token punctuation">,</span> body<span class="token punctuation">)</span><span class="token punctuation">;</span>              <span class="token comment">// deliveryMode 1 (transient)</span></code></pre>
+<ul>
+<li>classic 큐에 남기려면 큐는 durable, 메시지는 persistent 로 보낸다. 둘 중 하나라도 빠지면 다시 띄울 때 잃는다</li>
+<li>quorum 큐는 메시지를 늘 디스크에 남긴다</li>
+<li>persistent 라도 서버가 디스크에 쓰기 전에 죽으면 잃을 수 있다. 잃으면 안 되는 메시지는 confirm 의 ack 를 받은 뒤에 보낸 것으로 친다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://www.rabbitmq.com/docs/confirms">Consumer Acknowledgements and Publisher Confirms</a> — ack · nack · redelivery · confirm</li>
+<li><a href="https://www.rabbitmq.com/docs/consumer-prefetch">Consumer Prefetch</a> — <code>basicQos</code> 를 얼마로 둘까</li>
+<li><a href="https://www.rabbitmq.com/docs/dlx">Dead Letter Exchanges</a> — dead letter 가 되는 경우 · <code>x-death</code></li>
+<li><a href="https://www.rabbitmq.com/docs/ttl">Time-To-Live</a> · <a href="https://www.rabbitmq.com/docs/maxlength">Queue Length Limit</a> — 만료 · 길이 한도 · overflow</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/MessageQueue/">메시지 큐</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/">RabbitMQ</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/RabbitMQ/" rel="tag">RabbitMQ</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-09T07:24:27.000Z">2026-11-09</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

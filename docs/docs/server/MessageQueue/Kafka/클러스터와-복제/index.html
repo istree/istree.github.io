@@ -1,0 +1,142 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>클러스터와 복제 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">메시지 큐</span><span class="up"> / <a href="/docs/server/" title="한 단계 위로">서버</a></span></p><ul><li><a href="/docs/server/MessageQueue/">개요</a></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/server/MessageQueue/Kafka/">Kafka</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/MessageQueue/Kafka/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/MessageQueue/Kafka/토픽과-파티션/">토픽과 파티션</a></li><li><a href="/docs/server/MessageQueue/Kafka/컨슈머-그룹/">컨슈머 그룹</a></li><li><a href="/docs/server/MessageQueue/Kafka/클러스터와-복제/" aria-current="page">클러스터와 복제</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/MessageQueue/RabbitMQ/">RabbitMQ</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/MessageQueue/RabbitMQ/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/교환기와-큐/">교환기와 큐</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/전달-보장/">전달 보장</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/클러스터/">클러스터</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/Kafka와-다른-것/">Kafka와 다른 것</a></li></ul></details></li></ul></nav><article><h1 class="page-title">클러스터와 복제</h1><details class="sidebar-m"><summary>목록 · 메시지 큐</summary><ul><li><a href="/docs/server/MessageQueue/">개요</a></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/server/MessageQueue/Kafka/">Kafka</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/MessageQueue/Kafka/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/MessageQueue/Kafka/토픽과-파티션/">토픽과 파티션</a></li><li><a href="/docs/server/MessageQueue/Kafka/컨슈머-그룹/">컨슈머 그룹</a></li><li><a href="/docs/server/MessageQueue/Kafka/클러스터와-복제/" aria-current="page">클러스터와 복제</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/MessageQueue/RabbitMQ/">RabbitMQ</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/MessageQueue/RabbitMQ/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/교환기와-큐/">교환기와 큐</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/전달-보장/">전달 보장</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/클러스터/">클러스터</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/Kafka와-다른-것/">Kafka와 다른 것</a></li></ul></details></li></ul></details><div class="content"><p>Kafka 클러스터는 브로커 여럿이 파티션을 나눠 가진 묶음이다. 복제 계수가 3 이면 파티션마다 브로커 셋이 사본을 갖고, 그중 하나(리더) 가 읽기 · 쓰기를 받고 나머지(팔로어) 가 따라 쓴다. 리더를 잘 따라오는 사본의 목록이 ISR 이다. 프로듀서가 <code>acks=all</code> 로 보내면 ISR 이 모두 받아야 성공이고, <code>min.insync.replicas=2</code> 를 함께 두면 ISR 이 둘보다 적을 때 쓰기를 거절해 메시지를 잃지 않는다. 리더 브로커가 죽으면 컨트롤러가 ISR 에서 새 리더를 고른다. 4.0 부터 컨트롤러도 Kafka 노드가 맡고(KRaft), 컨트롤러끼리도 과반이 있어야 일한다. 아래 예제는 <code>apache/kafka:4.4.0</code> 브로커 셋(<code>kb1</code> · <code>kb2</code> · <code>kb3</code>, 저마다 브로커 겸 컨트롤러, 힙 512 MB) 과 Java 프로듀서(<code>kafka-clients</code> 4.4.0) 로 돌렸다.</p>
+<h2 id="띄우기">띄우기</h2>
+<p>세 노드에 같은 <code>CLUSTER_ID</code> 와 같은 컨트롤러 목록을 준다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh"><span class="token assign-left variable">CID</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">docker</span> run <span class="token parameter variable">--rm</span> apache/kafka:4.4.0 /opt/kafka/bin/kafka-storage.sh random-uuid<span class="token variable">)</span></span>   <span class="token comment"># HAmQccNQQO6ynHP1MFxn_w</span>
+
+<span class="token keyword">for</span> <span class="token for-or-select variable">i</span> <span class="token keyword">in</span> <span class="token number">1</span> <span class="token number">2</span> <span class="token number">3</span><span class="token punctuation">;</span> <span class="token keyword">do</span>
+  <span class="token function">docker</span> run <span class="token parameter variable">-d</span> <span class="token parameter variable">--name</span> kb<span class="token variable">$i</span> <span class="token parameter variable">--hostname</span> kb<span class="token variable">$i</span> <span class="token parameter variable">--network</span> kafka-net <span class="token punctuation">\</span>
+    <span class="token parameter variable">-e</span> <span class="token assign-left variable">CLUSTER_ID</span><span class="token operator">=</span><span class="token variable">$CID</span> <span class="token parameter variable">-e</span> <span class="token assign-left variable">KAFKA_NODE_ID</span><span class="token operator">=</span><span class="token variable">$i</span> <span class="token parameter variable">-e</span> <span class="token assign-left variable">KAFKA_PROCESS_ROLES</span><span class="token operator">=</span>broker,controller <span class="token punctuation">\</span>
+    <span class="token parameter variable">-e</span> <span class="token assign-left variable">KAFKA_LISTENERS</span><span class="token operator">=</span>INTERNAL://:19092,CONTROLLER://:9093 <span class="token punctuation">\</span>
+    <span class="token parameter variable">-e</span> <span class="token assign-left variable">KAFKA_ADVERTISED_LISTENERS</span><span class="token operator">=</span>INTERNAL://kb<span class="token variable">$i</span>:19092 <span class="token punctuation">\</span>
+    <span class="token parameter variable">-e</span> <span class="token assign-left variable">KAFKA_LISTENER_SECURITY_PROTOCOL_MAP</span><span class="token operator">=</span>INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT <span class="token punctuation">\</span>
+    <span class="token parameter variable">-e</span> <span class="token assign-left variable">KAFKA_INTER_BROKER_LISTENER_NAME</span><span class="token operator">=</span>INTERNAL <span class="token parameter variable">-e</span> <span class="token assign-left variable">KAFKA_CONTROLLER_LISTENER_NAMES</span><span class="token operator">=</span>CONTROLLER <span class="token punctuation">\</span>
+    <span class="token parameter variable">-e</span> <span class="token assign-left variable">KAFKA_CONTROLLER_QUORUM_VOTERS</span><span class="token operator">=</span><span class="token number">1</span>@kb1:9093,2@kb2:9093,3@kb3:9093 <span class="token punctuation">\</span>
+    <span class="token parameter variable">-e</span> <span class="token assign-left variable">KAFKA_DEFAULT_REPLICATION_FACTOR</span><span class="token operator">=</span><span class="token number">3</span> <span class="token parameter variable">-e</span> <span class="token assign-left variable">KAFKA_MIN_INSYNC_REPLICAS</span><span class="token operator">=</span><span class="token number">2</span> <span class="token punctuation">\</span>
+    <span class="token parameter variable">-e</span> <span class="token assign-left variable">KAFKA_LOG_DIRS</span><span class="token operator">=</span>/var/lib/kafka/data <span class="token parameter variable">-e</span> <span class="token assign-left variable">KAFKA_HEAP_OPTS</span><span class="token operator">=</span><span class="token string">"-Xmx512m -Xms512m"</span> <span class="token punctuation">\</span>
+    <span class="token parameter variable">-v</span> kb<span class="token variable">$i</span>-data:/var/lib/kafka/data apache/kafka:4.4.0
+<span class="token keyword">done</span></code></pre>
+<pre class="language-sh" data-language="sh"><code class="language-sh">kafka-metadata-quorum.sh --bootstrap-server kb1:19092 describe <span class="token parameter variable">--status</span></code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">LeaderId:               1
+CurrentVoters:          [{"id": 1, …"CONTROLLER://kb1:9093"]}, {"id": 2, …}, {"id": 3, …}]</code></pre>
+<ul>
+<li>세 노드 모두 15 초 안에 <code>Kafka Server started</code> 였다. 노드마다 메모리는 300 MB 쯤이었다</li>
+<li>컨트롤러 셋 가운데 하나(<code>LeaderId: 1</code>) 가 메타데이터를 쓰고 나머지가 따라 쓴다. 노드가 많은 클러스터는 컨트롤러 셋 · 브로커 여럿으로 역할을 나눈다(<code>KAFKA_PROCESS_ROLES=controller</code> · <code>broker</code>)</li>
+<li>클라이언트에는 <code>bootstrap.servers=kb1:19092,kb2:19092,kb3:19092</code> 처럼 둘셋을 적는다. 하나가 죽어도 처음 연결이 된다</li>
+</ul>
+<h2 id="리더와-isr">리더와 ISR</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh">kafka-topics.sh --bootstrap-server kb1:19092 <span class="token parameter variable">--create</span> <span class="token parameter variable">--topic</span> pay <span class="token parameter variable">--partitions</span> <span class="token number">3</span>    <span class="token comment"># 복제 계수는 기본 3</span>
+kafka-topics.sh --bootstrap-server kb1:19092 <span class="token parameter variable">--describe</span> <span class="token parameter variable">--topic</span> pay</code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">	Topic: pay	Partition: 0	Leader: 3	Replicas: 3,1,2	Isr: 3,1,2
+	Topic: pay	Partition: 1	Leader: 1	Replicas: 1,2,3	Isr: 1,2,3
+	Topic: pay	Partition: 2	Leader: 2	Replicas: 2,3,1	Isr: 2,3,1</code></pre>
+<ul>
+<li>파티션마다 리더가 다른 브로커에 있어 쓰기가 셋에 나뉜다</li>
+<li><code>Replicas</code> 의 첫 브로커가 원래 리더다. 리더가 바뀌었다가 그 브로커가 돌아오면 원래 리더로 되돌린다(<code>auto.leader.rebalance.enable=true</code>, 검사 간격 <code>leader.imbalance.check.interval.seconds=300</code>). 파티션 0 의 리더가 몇 분 뒤 <code>kb3</code> 로 돌아와 있었다</li>
+</ul>
+<h2 id="리더-브로커를-죽이기">리더 브로커를 죽이기</h2>
+<p><code>acks=all</code> 로 0.1 초마다 파티션 0 에 보내면서, 파티션 0 의 리더 <code>kb3</code> 를 <code>docker kill</code> 했다.</p>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">6.9s 실패 TimeoutException: Expiring 1 record(s) for pay-0:10002 ms has passed since batch creation.
+17.0s 성공 (3089 ms 걸림) offset 44
+성공 128 · 실패 1</code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">	Topic: pay	Partition: 0	Leader: 1	Replicas: 3,1,2	Isr: 1,2</code></pre>
+<ul>
+<li>새 리더(<code>kb1</code>) 가 정해지기까지 쓰기가 13 초쯤 멈췄다. 그 사이 한 건은 프로듀서의 <code>delivery.timeout.ms</code> 를 넘겨 실패했다. 이 시험은 <code>delivery.timeout.ms=10000</code> · <code>request.timeout.ms=3000</code> 으로 줄여 돌렸다</li>
+<li>컨트롤러는 브로커가 <code>broker.session.timeout.ms</code>(기본 9000) 동안 소식이 없어야 죽은 것으로 보고 리더를 옮긴다</li>
+<li>제대로 끄면(<code>docker stop</code>) 브로커가 끄기 전에 리더를 넘긴다. 같은 시험에서 <code>kb3</code> 를 <code>docker stop</code> 하자 208 건이 모두 성공했고, 가장 오래 걸린 것이 0.6 초였다</li>
+<li>클라이언트 시간 제한을 기본값(<code>delivery.timeout.ms</code> 120 초 · <code>request.timeout.ms</code> 30 초) 으로 두고 리더를 <code>kill</code> 하자 실패는 없었지만 한 건이 35.7 초 걸렸다. 죽은 리더에게 보낸 요청의 답을 30 초 기다린 뒤 새 리더로 다시 보냈다. 앱의 요청 시간 제한이 이보다 짧으면 그쪽에서 실패한다</li>
+<li><code>kb3</code> 를 다시 띄우자 15 초 뒤 ISR 이 <code>1,2,3</code> 으로 돌아왔다. 빠진 동안의 메시지를 리더에서 받아 따라잡는다</li>
+</ul>
+<h2 id="mininsyncreplicas">min.insync.replicas</h2>
+<p><code>min.insync.replicas=3</code> 인 토픽 <code>strict</code> 를 만들고 브로커 하나를 껐다. ISR 이 <code>1,2</code> 둘이 되었다.</p>
+<table>
+<thead>
+<tr>
+<th>보낸 것</th>
+<th>결과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>acks=all</code></td>
+<td>브로커가 <code>NOT_ENOUGH_REPLICAS</code> 로 거절하고, 프로듀서가 되풀이해 다시 보내다 <code>delivery.timeout.ms</code> 뒤 <code>TimeoutException</code></td>
+</tr>
+<tr>
+<td><code>acks=1</code></td>
+<td>성공 — 리더 혼자 받으면 된다</td>
+</tr>
+</tbody>
+</table>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">WARN … Got error produce response with correlation id 6 on topic-partition strict-0, retrying (2147483646 attempts left). Error: NOT_ENOUGH_REPLICAS</code></pre>
+<ul>
+<li><code>acks=all</code> 과 <code>min.insync.replicas</code> 가 함께 있어야 "성공한 메시지는 브로커 둘 이상에 있다" 가 된다. <code>acks=all</code> 만 두면 ISR 이 리더 하나로 줄었을 때 리더 혼자 받고도 성공이다</li>
+<li>보통은 복제 계수 3 · <code>min.insync.replicas=2</code> 다. 브로커 하나를 잃어도 쓰기가 이어지고, 성공한 메시지는 두 곳에 있다</li>
+<li><code>acks=1</code> 로 성공한 메시지는 팔로어가 받기 전에 리더가 죽으면 사라질 수 있다. 잃어도 되는 로그 · 지표에만 쓴다</li>
+</ul>
+<h2 id="둘을-죽이기">둘을 죽이기</h2>
+<p><code>kb3</code> · <code>kb2</code> 를 죽여 <code>kb1</code> 만 남겼다(토픽 <code>pay</code>, <code>min.insync.replicas=2</code>).</p>
+<table>
+<thead>
+<tr>
+<th>보낸 것</th>
+<th>결과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>둘 살아 있을 때 <code>acks=all</code></td>
+<td>19 건 모두 성공</td>
+</tr>
+<tr>
+<td>하나만 남았을 때 <code>acks=all</code></td>
+<td><code>TimeoutException</code></td>
+</tr>
+<tr>
+<td>하나만 남았을 때 <code>acks=1</code></td>
+<td>46 건 모두 성공</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>컨트롤러도 셋 중 하나만 남아 과반이 아니다. 메타데이터를 바꾸지 못해 ISR 도 <code>1,2</code> 에서 줄지 않았고, 리더는 <code>kb2</code> 의 답을 기다리다 시간이 지났다</li>
+<li>브로커를 모두 다시 띄우자 ISR 이 셋으로 돌아왔다. 복제가 덜 된 파티션은 <code>kafka-topics.sh --describe --under-replicated-partitions</code> 로 찾는다(돌아온 뒤에는 빈 결과)</li>
+</ul>
+<h2 id="프로듀서-기본값">프로듀서 기본값</h2>
+<p><code>acks</code> 만 정하고 띄운 프로듀서의 설정 로그다.</p>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">	acks = -1
+	enable.idempotence = true
+	linger.ms = 5
+	max.in.flight.requests.per.connection = 5
+	retries = 2147483647</code></pre>
+<ul>
+<li><code>acks=-1</code> 은 <code>all</code> 이다. 3.0 부터 기본이 <code>all</code> 이고, 멱등(<code>enable.idempotence</code>) 도 켜져 있다. 다시 보내도 브로커가 같은 메시지를 한 번만 적는다</li>
+<li><code>retries</code> 는 사실상 끝이 없고, 언제까지 다시 보낼지는 <code>delivery.timeout.ms</code> 가 정한다</li>
+<li><code>linger.ms</code> 의 기본은 4.0 부터 5 ms 다. 5 ms 동안 모은 메시지를 한 번에 보낸다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://kafka.apache.org/44/design/design/#replication">Design — Replication</a> — 리더 · ISR · <code>min.insync.replicas</code> · 리더 선출</li>
+<li><a href="https://kafka.apache.org/44/operations/kraft/">KRaft</a> — 컨트롤러 과반 · 역할 나누기</li>
+<li><a href="https://kafka.apache.org/44/configuration/producer-configs/">Producer Configs</a> — <code>acks</code> · <code>enable.idempotence</code> · <code>delivery.timeout.ms</code></li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/MessageQueue/">메시지 큐</a></li><li><a href="/docs/server/MessageQueue/Kafka/">Kafka</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Kafka/" rel="tag">Kafka</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-09T07:24:27.000Z">2026-11-09</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>

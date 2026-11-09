@@ -1,0 +1,190 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>컨슈머 그룹 | istree</title><link rel="stylesheet" href="/_astro/Default.7qTbdecv.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="site-header__inner"><a class="site-title" href="/">istree<span class="site-subtitle">프로그래밍 노트</span></a><nav class="site-nav" aria-label="메뉴"><ul><li><a href="/posts/">기록</a></li><li><a href="/docs/" aria-current="page">정리</a></li><li><a href="/tags/">태그</a></li></ul></nav></div></header><main id="main" class="main main--wide"><div class="with-sidebar"><nav class="sidebar" aria-label="이 쪽과 하위 항목"><p class="sidebar-title"><span class="here">메시지 큐</span><span class="up"> / <a href="/docs/server/" title="한 단계 위로">서버</a></span></p><ul><li><a href="/docs/server/MessageQueue/">개요</a></li><li class="side-folder"><details name="side-0" open><summary><a href="/docs/server/MessageQueue/Kafka/">Kafka</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/MessageQueue/Kafka/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/MessageQueue/Kafka/토픽과-파티션/">토픽과 파티션</a></li><li><a href="/docs/server/MessageQueue/Kafka/컨슈머-그룹/" aria-current="page">컨슈머 그룹</a></li><li><a href="/docs/server/MessageQueue/Kafka/클러스터와-복제/">클러스터와 복제</a></li></ul></details></li><li class="side-folder"><details name="side-0"><summary><a href="/docs/server/MessageQueue/RabbitMQ/">RabbitMQ</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/MessageQueue/RabbitMQ/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/교환기와-큐/">교환기와 큐</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/전달-보장/">전달 보장</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/클러스터/">클러스터</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/Kafka와-다른-것/">Kafka와 다른 것</a></li></ul></details></li></ul></nav><article><h1 class="page-title">컨슈머 그룹</h1><details class="sidebar-m"><summary>목록 · 메시지 큐</summary><ul><li><a href="/docs/server/MessageQueue/">개요</a></li><li class="side-folder"><details name="side-m-0" open><summary><a href="/docs/server/MessageQueue/Kafka/">Kafka</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/MessageQueue/Kafka/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/MessageQueue/Kafka/토픽과-파티션/">토픽과 파티션</a></li><li><a href="/docs/server/MessageQueue/Kafka/컨슈머-그룹/" aria-current="page">컨슈머 그룹</a></li><li><a href="/docs/server/MessageQueue/Kafka/클러스터와-복제/">클러스터와 복제</a></li></ul></details></li><li class="side-folder"><details name="side-m-0"><summary><a href="/docs/server/MessageQueue/RabbitMQ/">RabbitMQ</a><span class="fold" aria-label="펼치기"></span></summary><ul><li><a href="/docs/server/MessageQueue/RabbitMQ/설치와-접속/">설치와 접속</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/교환기와-큐/">교환기와 큐</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/전달-보장/">전달 보장</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/클러스터/">클러스터</a></li><li><a href="/docs/server/MessageQueue/RabbitMQ/Kafka와-다른-것/">Kafka와 다른 것</a></li></ul></details></li></ul></details><div class="content"><p>Kafka 의 컨슈머는 그룹(<code>group.id</code>) 으로 묶인다. 한 그룹 안에서는 토픽의 파티션을 컨슈머들이 나눠 가지므로, 메시지 하나는 그룹마다 한 컨슈머에게만 간다. 컨슈머를 더하면 일이 나뉘고, 하나가 죽으면 남은 컨슈머가 그 파티션을 넘겨받는다(리밸런스). 그룹은 파티션마다 어디까지 읽었는지(offset) 를 브로커에 커밋해 둔다. 다른 그룹은 같은 토픽을 처음부터 따로 읽는다. 커밋하기 전에 죽은 컨슈머가 처리한 메시지는 다음 컨슈머가 다시 받으므로, 메시지는 적어도 한 번 온다. 아래 예제는 <code>apache/kafka:4.4.0</code> 브로커 한 대, 파티션 셋짜리 토픽 <code>events</code> 와 Java 클라이언트(<code>kafka-clients</code> 4.4.0) 로 돌렸다.</p>
+<h2 id="컨슈머">컨슈머</h2>
+<pre class="language-java" data-language="java"><code class="language-java"><span class="token keyword">var</span> props <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Properties</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"bootstrap.servers"</span><span class="token punctuation">,</span> <span class="token string">"k1:19092"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"group.id"</span><span class="token punctuation">,</span> <span class="token string">"g1"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"key.deserializer"</span><span class="token punctuation">,</span> <span class="token string">"org.apache.kafka.common.serialization.StringDeserializer"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"value.deserializer"</span><span class="token punctuation">,</span> <span class="token string">"org.apache.kafka.common.serialization.StringDeserializer"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"auto.offset.reset"</span><span class="token punctuation">,</span> <span class="token string">"earliest"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>     <span class="token comment">// 커밋된 offset 이 없으면 처음부터</span>
+
+<span class="token keyword">try</span> <span class="token punctuation">(</span><span class="token keyword">var</span> c <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">KafkaConsumer</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>props<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    c<span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span><span class="token class-name">List</span><span class="token punctuation">.</span><span class="token function">of</span><span class="token punctuation">(</span><span class="token string">"events"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">ConsumerRebalanceListener</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onPartitionsRevoked</span><span class="token punctuation">(</span><span class="token class-name">Collection</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">TopicPartition</span><span class="token punctuation">&gt;</span></span> p<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"내놓음 "</span> <span class="token operator">+</span> p<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+        <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onPartitionsAssigned</span><span class="token punctuation">(</span><span class="token class-name">Collection</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">TopicPartition</span><span class="token punctuation">&gt;</span></span> p<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"받음 "</span> <span class="token operator">+</span> p<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">ConsumerRecord</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> r <span class="token operator">:</span> c<span class="token punctuation">.</span><span class="token function">poll</span><span class="token punctuation">(</span><span class="token class-name">Duration</span><span class="token punctuation">.</span><span class="token function">ofMillis</span><span class="token punctuation">(</span><span class="token number">500</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"p%d o%d %s=%s%n"</span><span class="token punctuation">,</span> r<span class="token punctuation">.</span><span class="token function">partition</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> r<span class="token punctuation">.</span><span class="token function">offset</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> r<span class="token punctuation">.</span><span class="token function">key</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> r<span class="token punctuation">.</span><span class="token function">value</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<ul>
+<li><code>poll</code> 이 메시지를 묶음으로 가져온다. 기본은 <code>enable.auto.commit=true</code> 라, 5 초(<code>auto.commit.interval.ms</code>) 마다 다음 <code>poll</code> 에서 앞서 받은 것까지 커밋한다</li>
+<li><code>auto.offset.reset</code> 의 기본은 <code>latest</code> 다. 새 그룹 <code>g3</code> 을 그대로 띄우자 이미 있던 메시지는 하나도 받지 않았다(<code>Processed a total of 0 messages</code>). 처음부터 읽을 그룹은 <code>earliest</code> 로 둔다</li>
+</ul>
+<h2 id="리밸런스">리밸런스</h2>
+<p>컨슈머 A 를 띄우고 12 초 뒤 B, 다시 12 초 뒤 C · D 를 띄웠다. C · D 는 14 초, B 는 28 초 뒤 끝나게 했다.</p>
+<table>
+<thead>
+<tr>
+<th>그때</th>
+<th>A</th>
+<th>B</th>
+<th>C</th>
+<th>D</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A 만</td>
+<td>0 · 1 · 2</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>B 가 들어옴</td>
+<td>2</td>
+<td>0 · 1</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>C · D 가 들어옴</td>
+<td>2</td>
+<td>0</td>
+<td>1</td>
+<td>(없음)</td>
+</tr>
+<tr>
+<td>C · D 가 나감</td>
+<td>2</td>
+<td>0 · 1</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>B 가 나감</td>
+<td>0 · 1 · 2</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>파티션(셋) 보다 많은 컨슈머(넷) 는 빈 목록 <code>[]</code> 을 받고 논다. 그룹의 컨슈머 수는 파티션 수까지만 의미가 있다</li>
+<li>기본 방식(<code>group.protocol=classic</code>) 에서는 리밸런스 때마다 모든 컨슈머가 가진 파티션을 다 내놓고 다시 받았다(A 가 <code>내놓음 [0, 1, 2]</code> 뒤 <code>받음 [2]</code>). 그동안 그룹 전체가 잠깐 멈춘다</li>
+</ul>
+<p>4.0 부터 쓸 수 있는 새 방식은 옮길 파티션만 옮긴다.</p>
+<pre class="language-java" data-language="java"><code class="language-java">props<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"group.protocol"</span><span class="token punctuation">,</span> <span class="token string">"consumer"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">A 받음 [0, 1, 2]
+A 내놓음 [2]          ← B 가 들어옴. 0 · 1 은 그대로 쥐고 있다
+B 받음 [2]</code></pre>
+<ul>
+<li>그룹의 방식은 <code>kafka-consumer-groups.sh --describe --group g4 --state</code> 의 <code>ASSIGNMENT-STRATEGY</code> 에 <code>uniform</code> 으로 보였다</li>
+<li>콘솔 컨슈머도 띄울 때마다 <code>The consumer rebalance protocol (KIP-848) is production-ready! Set group.protocol=consumer to try it out.</code> 를 알린다</li>
+</ul>
+<h2 id="lag">LAG</h2>
+<pre class="language-sh" data-language="sh"><code class="language-sh">kafka-consumer-groups.sh --bootstrap-server k1:19092 <span class="token parameter variable">--describe</span> <span class="token parameter variable">--group</span> g1</code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">Consumer group 'g1' has no active members.
+GROUP  TOPIC   PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG  CONSUMER-ID  HOST  CLIENT-ID
+g1     events  0          2               5               3    -            -     -
+g1     events  1          2               5               3    -            -     -
+g1     events  2          2               5               3    -            -     -</code></pre>
+<ul>
+<li><code>CURRENT-OFFSET</code> 은 그룹이 커밋한 다음 읽을 자리, <code>LOG-END-OFFSET</code> 은 파티션의 끝이다. 그 차이(<code>LAG</code>) 가 아직 처리하지 않은 메시지 수다. 그룹이 멈춘 사이 9 개를 보내자 파티션마다 3 씩 쌓였다</li>
+<li>LAG 이 계속 늘면 컨슈머가 따라가지 못하는 것이다. 컨슈머를 파티션 수까지 늘리거나, 처리를 빠르게 하거나, 파티션을 늘린다. 모니터링에 이 값을 넣는다</li>
+</ul>
+<h2 id="처리-중에-죽으면">처리 중에 죽으면</h2>
+<p>자동 커밋을 끄고(<code>enable.auto.commit=false</code>) <code>poll</code> 한 묶음을 다 처리한 뒤 <code>commitSync()</code> 하는 컨슈머로, 넷째 메시지를 처리하고 커밋 전에 죽게 했다.</p>
+<pre class="language-java" data-language="java"><code class="language-java"><span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">ConsumerRecord</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> r <span class="token operator">:</span> c<span class="token punctuation">.</span><span class="token function">poll</span><span class="token punctuation">(</span><span class="token class-name">Duration</span><span class="token punctuation">.</span><span class="token function">ofMillis</span><span class="token punctuation">(</span><span class="token number">500</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">handle</span><span class="token punctuation">(</span>r<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+c<span class="token punctuation">.</span><span class="token function">commitSync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>          <span class="token comment">// 묶음을 다 처리한 뒤 커밋</span></code></pre>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">A p0 o2 u2=msg-2
+A p0 o3 u4=msg-4
+A p0 o4 u2=msg-8
+A p1 o2 u1=msg-1
+A 죽음 (커밋 안 함)</code></pre>
+<p>같은 그룹으로 새 컨슈머를 띄웠다.</p>
+<pre class="language-plaintext" data-language="plaintext"><code class="language-plaintext">45s A2 받음 [0, 1, 2]
+45s A2 p0 o2 u2=msg-2     ← A 가 처리한 넷을 다시 받았다
+45s A2 p0 o3 u4=msg-4
+45s A2 p0 o4 u2=msg-8
+45s A2 p1 o2 u1=msg-1
+45s A2 p1 o3 u3=msg-3
+…</code></pre>
+<ul>
+<li>커밋한 자리부터 다시 받으므로 A 가 처리한 네 메시지가 한 번 더 왔다. 받는 쪽은 같은 메시지를 두 번 처리해도 결과가 같게 만든다(주문 번호로 이미 처리했는지 보기 · upsert)</li>
+<li>새 컨슈머는 45 초 동안 아무것도 받지 못했다. 브로커는 죽은 A 가 <code>session.timeout.ms</code>(기본 45000) 동안 소식이 없어야 그룹에서 빼고 파티션을 다시 나눈다. 제대로 끝낸(<code>close()</code>) 컨슈머는 바로 빠진다</li>
+<li>커밋을 처리보다 먼저 하면 반대로 죽은 뒤 그 메시지를 잃는다(at-most-once). 보통은 처리한 뒤에 커밋한다</li>
+</ul>
+<h2 id="다시-읽기">다시 읽기</h2>
+<p>그룹이 멈춘 동안 offset 을 옮겨 지난 메시지를 다시 읽힌다.</p>
+<pre class="language-sh" data-language="sh"><code class="language-sh">kafka-consumer-groups.sh --bootstrap-server k1:19092 <span class="token parameter variable">--group</span> g1 <span class="token parameter variable">--topic</span> events <span class="token punctuation">\</span>
+  --reset-offsets --to-earliest --dry-run      <span class="token comment"># 바꿀 자리만 보인다</span>
+kafka-consumer-groups.sh --bootstrap-server k1:19092 <span class="token parameter variable">--group</span> g1 <span class="token parameter variable">--topic</span> events <span class="token punctuation">\</span>
+  --reset-offsets --to-earliest <span class="token parameter variable">--execute</span></code></pre>
+<table>
+<thead>
+<tr>
+<th>옵션</th>
+<th>옮길 자리</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--to-earliest</code> · <code>--to-latest</code></td>
+<td>처음 · 끝</td>
+</tr>
+<tr>
+<td><code>--to-datetime 2026-01-01T00:00:00.000</code></td>
+<td>그 시각 뒤의 첫 메시지</td>
+</tr>
+<tr>
+<td><code>--shift-by -100</code></td>
+<td>지금에서 100 개 앞</td>
+</tr>
+<tr>
+<td><code>--to-offset 42</code></td>
+<td>그 번호</td>
+</tr>
+<tr>
+<td><code>--topic events:0</code></td>
+<td>파티션 0 만</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>그룹에 살아 있는 컨슈머가 있으면 <code>Error: Assignments can only be reset if the group 'g1' is inactive, but the current state is Stable.</code> 다. 컨슈머를 모두 멈춘 뒤에 한다</li>
+<li>처음보다 앞으로 옮기면 <code>WARN New offset (-1) is lower than earliest offset for topic partition events-0. Value will be set to 0.</code> 를 남기고 처음으로 맞춘다</li>
+<li>다른 처리를 새로 붙일 때는 offset 을 되돌리지 않고 새 그룹으로 처음부터 읽는다. 기존 그룹의 자리는 그대로다</li>
+</ul>
+<h2 id="참고">참고</h2>
+<ul>
+<li><a href="https://kafka.apache.org/44/configuration/consumer-configs/">Consumer Configs</a> — <code>auto.offset.reset</code> · <code>enable.auto.commit</code> · <code>session.timeout.ms</code></li>
+<li><a href="https://kafka.apache.org/44/operations/consumer-rebalance-protocol/">Consumer Rebalance Protocol</a> — <code>group.protocol=consumer</code></li>
+<li><a href="https://kafka.apache.org/44/design/design/#message-delivery-semantics">Design — Message Delivery Semantics</a> — 적어도 한 번 · 많아야 한 번 · 딱 한 번</li>
+</ul>
+</div><footer class="page-meta"><nav class="breadcrumb" aria-label="위치"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h3.6l1.5 1.5h5.9A1.5 1.5 0 0 1 15 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5v-9z"></path></svg> <strong>위치</strong><ol><li><a href="/docs/">정리</a></li><li><a href="/docs/">서버</a></li><li><a href="/docs/server/MessageQueue/">메시지 큐</a></li><li><a href="/docs/server/MessageQueue/Kafka/">Kafka</a></li></ol></nav><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h6.6l6.7 6.7a1 1 0 0 1 0 1.4l-5.2 5.2a1 1 0 0 1-1.4 0L2 8.6V2zm3 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path></svg> <strong>태그</strong><a class="chip" href="/tags/정리/" rel="tag">정리</a><a class="chip" href="/tags/Kafka/" rel="tag">Kafka</a></p><p><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h1.5v1.5h5V1H12v1.5h1.5A1.5 1.5 0 0 1 15 4v9.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 13.5V4a1.5 1.5 0 0 1 1.5-1.5H4V1zM2.5 6v7.5h11V6h-11z"></path></svg> <strong>업데이트</strong> <time datetime="2026-11-09T05:56:30.000Z">2026-11-09</time></p></footer></article></div></main><footer class="site-footer"><div class="site-footer__inner"><p>&copy; istree</p><ul><li><a href="https://github.com/istree" rel="nofollow noopener noreferrer"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.49c-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg> GitHub</a></li></ul></div></footer><!-- 원고의 ```mermaid 코드 블록을 그림으로 바꾼다. 블록이 있는 쪽에서만 mermaid 를 불러온다 --><script type="module">
+      const blocks = document.querySelectorAll("pre > code.language-mermaid");
+      if (blocks.length) {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          themeVariables: {
+            primaryColor: "#f4f5f6", primaryBorderColor: "#7a8288", primaryTextColor: "#3d4144",
+            lineColor: "#2f7d95", secondaryColor: "#e3f0f3", tertiaryColor: "#ffffff", fontSize: "14px",
+          },
+        });
+        for (const code of blocks) {
+          const div = document.createElement("div");
+          div.className = "mermaid";
+          div.textContent = code.textContent;
+          code.parentElement.replaceWith(div);
+        }
+        await mermaid.run({ querySelector: ".mermaid" });
+      }
+    </script></body></html>
